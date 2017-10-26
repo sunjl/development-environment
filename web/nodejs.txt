@@ -1,0 +1,77 @@
+# https://github.com/nodesource/distributions
+
+sudo apt-get install build-essential software-properties-common \
+  python-software-properties python g++ make
+
+curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -
+
+sudo apt-get install nodejs
+
+cat >> ~/.npmrc <<"EOF"
+prefix = ${HOME}/.npm-global
+registry = https://registry.npm.taobao.org
+EOF
+
+mkdir ~/.npm-global
+
+echo 'export PATH=$HOME/.npm-global/bin:$PATH' | tee -a ~/.bash_profile
+
+source ~/.bash_profile
+
+cat >> ~/.bashrc <<"EOF"
+[[ -f $HOME/.bash_profile ]] && . $HOME/.bash_profile
+EOF
+
+npm config ls -l
+npm config get prefix
+npm config set prefix '~/.npm-global'
+
+npm ls -g --depth=0
+
+npm info <package_name>
+
+npm install -g <package_name>
+
+npm install -g nodemon node-static node-gyp babel babel-cli webpack webpack-dev-server
+
+sudo gem install sass
+npm install -g node-sass
+
+npm update -g <package_name>
+
+npm install -g npm-check-updates
+ncu -u
+ncu -a
+
+# remove all packages
+npm ls -gp --depth=0 | awk -F/node_modules/ '{print $2}' | grep -vE '^(npm|)$' | xargs -r npm -g rm
+
+netstat -lnp | grep :3005 | awk '{print $7}' | sed 's/\/node//' | xargs kill
+
+nohup static -p 3005 &
+
+sudo vi /etc/nginx/sites-available/example-subdomain
+
+```
+upstream example-subdomain {
+  server 127.0.0.1:3005;
+}
+
+server {
+  listen 0.0.0.0:80;
+  server_name subdomain.example.com;
+  access_log /var/log/nginx/example-subdomain_access.log;
+  error_log  /var/log/nginx/example-subdomain_error.log;
+  location / {
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_set_header X-Forwarder-For $proxy_add_x_forwarded_for;
+    proxy_set_header Host $http_host;
+    proxy_set_header X-NginX-Proxy true;
+    proxy_pass http://example-subdomain;
+    proxy_redirect off;
+  }
+}
+```
+
+sudo ln -s /etc/nginx/sites-available/example-subdomain /etc/nginx/sites-enabled/example-subdomain
+

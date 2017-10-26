@@ -1,0 +1,33 @@
+sudo pip install -U twisted service_identity pytz \
+  requests lxml cssselect beautifulsoup4 pyquery queuelib w3lib \
+  scrapy pymongo scrapy-mongodb
+
+ENV_DIR=python-env
+PACKAGES="twisted service_identity pytz requests lxml cssselect beautifulsoup4 pyquery scrapy queuelib w3lib pymongo scrapy-mongodb"
+virtualenv $ENV_DIR
+source $ENV_DIR/bin/activate
+for package in $PACKAGES
+do
+    pip install $package
+done
+
+find . -name "*.pyc" -exec rm -rf {} \;
+
+scrapy startproject <some_name>
+
+scrapy crawl somespider -s JOBDIR=crawls/somespider-1
+
+# debug
+sudo apt-get install ipython
+scrapy shell <url>
+>>> sel.xpath("//h2/text()").extract()[0]
+>>> fetch("<url>")
+
+# http://localhost:6080/crawler
+
+telnet localhost 6023
+>>> prefs()
+>>> from scrapy.utils.trackref import get_oldest
+>>> r = get_oldest('HtmlResponse')
+>>> r.url
+

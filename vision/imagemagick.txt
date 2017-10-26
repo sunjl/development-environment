@@ -1,0 +1,27 @@
+sudo apt-get install imagemagick libmagickwand-dev libjmagick6-java
+
+sudo cp /usr/lib/jni/libJMagick.so $JAVA_HOME/jre/lib/amd64
+
+sudo vi /etc/profile.d/jmagick.sh
+```
+export CLASSPATH=$CLASSPATH:/usr/share/java/jmagick6.jar
+export LD_LIBRARY_PATH=/usr/lib/jni/libJMagick.so
+```
+
+source /etc/profile.d/jmagick.sh
+
+sudo apt-get install graphicsmagick libgraphicsmagick3
+
+# image crop script
+#!/bin/bash
+IN_DIR=~/download/test
+OUT_DIR=~/download/crop
+EXT=".jpg"
+mkdir $OUT_DIR
+cp $IN_DIR/* $OUT_DIR
+cd $OUT_DIR
+for file in `ls $OUT_DIR/*$EXT`; do
+  ls -al $file
+  convert $file -gravity center -crop 640x340+0+0 -resize 640x340^ $file
+done
+

@@ -1,0 +1,138 @@
+# https://www.sonatype.com/download-oss-sonatype
+
+unzip nexus-2.14.1-01-bundle.zip
+mkdir ~/software
+mv nexus-2.14.1-01 sonatype-work ~/software
+
+cat >> ~/.bash_profile <<"EOF"
+export NEXUS_HOME=$HOME/software/nexus-2.14.1-01
+export PATH=$NEXUS_HOME/bin:$PATH
+EOF
+
+source ~/.bash_profile
+
+cat >> ~/.bashrc <<"EOF"
+[[ -f $HOME/.bash_profile ]] && . $HOME/.bash_profile
+EOF
+
+nexus start
+
+# http://<hostname>:8081/nexus
+# username: admin
+# password: admin123
+
+nexus stop
+
+cp nexus.xml $HOME/software/sonatype-work/nexus/conf
+
+# http://books.sonatype.com/nexus-book/reference/install-sect-service.html
+sudo cp $NEXUS_HOME/bin/nexus /etc/init.d/nexus
+sudo chmod 755 /etc/init.d/nexus
+sudo chown ubuntu /etc/init.d/nexus
+
+sudo vi /etc/init.d/nexus
+```
+NEXUS_HOME="/home/ubuntu/software/nexus-2.14.1-01"
+RUN_AS_USER=ubuntu
+PIDDIR="${NEXUS_HOME}"
+```
+
+cd /etc/init.d
+sudo update-rc.d nexus defaults
+sudo service nexus start
+
+tail -f $NEXUS_HOME/logs/wrapper.log
+netstat -lnp | grep 8081
+
+# additional repositories
+http://download.java.net/maven/2/
+http://repository.jboss.org/nexus/content/repositories/releases/
+https://oss.sonatype.org/content/repositories/snapshots/
+
+# desktop
+mkdir ~/.m2
+vi ~/.m2/settings.xml
+
+# server
+sudo vi /etc/maven/settings.xml
+
+# settings.xml
+```
+<settings>
+  <mirrors>
+    <mirror>
+      <id>nexus</id>
+      <mirrorOf>*</mirrorOf>
+      <url>http://<hostname>:8081/nexus/content/groups/public</url>
+    </mirror>
+  </mirrors>
+  <profiles>
+    <profile>
+      <id>nexus</id>
+      <repositories>
+        <repository>
+          <id>public</id>
+          <url>http://<hostname>:8081/nexus/content/groups/public</url>
+          <releases>
+            <enabled>true</enabled>
+          </releases>
+          <snapshots>
+            <enabled>true</enabled>
+          </snapshots>
+        </repository>
+      </repositories>
+      <pluginRepositories>
+        <pluginRepository>
+          <id>public</id>
+          <url>http://<hostname>:8081/nexus/content/groups/public</url>
+          <releases>
+            <enabled>true</enabled>
+          </releases>
+          <snapshots>
+            <enabled>true</enabled>
+          </snapshots>
+        </pluginRepository>
+      </pluginRepositories>
+    </profile>
+  </profiles>
+  <activeProfiles>
+    <activeProfile>nexus</activeProfile>
+  </activeProfiles>
+  <servers>
+    <server>
+      <id>nexus-releases</id>
+      <username>admin</username>
+      <password>admin123</password>
+    </server>
+    <server> 
+      <id>nexus-snapshots</id>
+      <username>admin</username>
+      <password>admin123</password>
+    </server>
+  </servers>
+</settings>
+```
+
+sed -i "s/<hostname>/localhost/g" ~/.m2/settings.xml
+sudo sed -i "s/<hostname>/localhost/g" /etc/maven/settings.xml
+
+# pom.xml
+```
+<project>
+	<distributionManagement>
+		<repository>
+			<id>nexus-releases</id>
+			<url>http://<hostname>:8081/nexus/content/repositories/releases/</url>
+		</repository>
+		<snapshotRepository>
+			<id>nexus-snapshots</id>
+			<url>http://<hostname>:8081/nexus/content/repositories/snapshots/</url>
+		</snapshotRepository>
+	</distributionManagement>
+	<scm>
+		<connection>scm:git:http://<hostname>:<port>/git/<project_name>.git</connection>
+		<developerConnection>scm:git:http://<hostname>:<port>/git/<project_name>.git</developerConnection>
+	</scm>
+</project>
+```
+

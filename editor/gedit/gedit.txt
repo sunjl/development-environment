@@ -1,0 +1,6 @@
+sudo cp scala.lang /usr/share/gtksourceview-3.0/language-specs/
+sudo cp go.lang /usr/share/gtksourceview-3.0/language-specs/
+
+cd /usr/share/
+sudo update-mime-database mime
+

@@ -1,0 +1,49 @@
+# http://cassandra.apache.org/download/
+
+tar xzf apache-cassandra-3.9-bin.tar.gz
+mv apache-cassandra-3.9 ~/software/cassandra-3.9
+
+cat >> ~/.bash_profile <<"EOF"
+export CASSANDRA_HOME=$HOME/software/cassandra-3.9
+export PATH=$CASSANDRA_HOME/bin:$PATH
+EOF
+
+source ~/.bash_profile
+
+vi $CASSANDRA_HOME/conf/cassandra.yaml
+```
+hints_directory: /data/cassandra/hints
+data_file_directories:
+    - /data/cassandra/data
+commitlog_directory: /data/cassandra/commitlog
+cdc_raw_directory: /data/cassandra/cdc_raw
+saved_caches_directory: /data/cassandra/saved_caches
+```
+
+vi $CASSANDRA_HOME/conf/cassandra-env.sh
+```
+JVM_OPTS="$JVM_OPTS -Xloggc:/data/cassandra/logs/gc.log"
+```
+
+sed -i "s/\${cassandra.logdir}/\/data\/cassandra\/logs/g" $CASSANDRA_HOME/conf/logback.xml
+
+sudo mkdir -p /data/cassandra/data
+sudo mkdir -p /data/cassandra/hints
+sudo mkdir -p /data/cassandra/commitlog
+sudo mkdir -p /data/cassandra/cdc_raw
+sudo mkdir -p /data/cassandra/saved_caches
+sudo mkdir -p /data/cassandra/logs
+sudo chown -R ubuntu /data/cassandra
+
+cassandra
+
+nodetool status
+
+cqlsh --help
+cqlsh localhost
+> SELECT cluster_name, listen_address FROM system.local;
+
+pgrep -f cassandra
+pkill -f cassandra
+netstat -lnp | grep :7199 | awk '{print $7}' | sed 's/\/java//' | xargs kill
+

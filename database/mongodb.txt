@@ -1,0 +1,135 @@
+# https://docs.mongodb.com/manual/tutorial/install-mongodb-on-ubuntu/
+# https://docs.mongodb.com/manual/administration/configuration/
+
+tar xzf mongodb-linux-x86_64-ubuntu1604-3.4.2.tgz
+mv mongodb-linux-x86_64-ubuntu1604-3.4.2 ~/software/mongodb-3.4.2
+
+cat >> ~/.bash_profile <<"EOF"
+export MONGODB_HOME=$HOME/software/mongodb-3.4.2
+export PATH=$MONGODB_HOME/bin:$PATH
+EOF
+
+source ~/.bash_profile
+
+mkdir $MONGODB_HOME/conf/
+vi $MONGODB_HOME/conf/mongod.conf
+```
+processManagement:
+  fork: true
+net:
+  bindIp: 127.0.0.1
+  port: 27017
+storage:
+  dbPath: /data/mongodb/db
+systemLog:
+  destination: file
+  path: /data/mongodb/log/mongod.log
+  logAppend: true
+storage:
+  journal:
+    enabled: true
+```
+
+sudo mkdir -p /data/mongodb/db
+sudo mkdir -p /data/mongodb/log
+sudo chown -R ubuntu /data/mongodb
+
+$MONGODB_HOME/bin/mongod --config $MONGODB_HOME/conf/mongod.conf
+
+netstat -tln
+sudo lsof -i:27017
+tail -f /data/mongodb/log/mongod.log
+
+$MONGODB_HOME/bin/mongod --config $MONGODB_HOME/conf/mongod.conf --shutdown
+
+# gui
+tar xvzf robomongo-0.9.0.tar.gz
+mv robomongo-0.9.0 ~/software
+
+vi ~/.bash_profile
+```
+export ROBOMONGO_HOME=$HOME/software/robomongo-0.9.0
+export PATH=$ROBOMONGO_HOME/bin:$PATH
+```
+
+source ~/.bash_profile
+
+sudo vi /usr/share/applications/robomongo.desktop
+```
+[Desktop Entry]
+Type=Application
+Name=Robomongo
+Icon=/home/ubuntu/software/robomongo-0.9.0/icon/robomongo.png
+Exec=/home/ubuntu/software/robomongo-0.9.0/bin/robomongo %f
+Categories=Development;Database;
+Terminal=false
+StartupNotify=true
+StartupWMClass=robomongo
+```
+
+mongo
+> use admin
+> db.createUser("<username>", "<password>")
+> db.auth("<username>", "<password>")
+> db.system.users.find()
+> use <db_name>
+> db.createUser(
+   {
+     user: "accountUser",
+     pwd: "password",
+     roles: [ "readWrite", "dbAdmin" ]
+   }
+)
+> show dbs
+> use <db_name>
+> db.dropDatabase()
+> show collections
+> db.<collection_name>.drop()
+> db.<collection_name>.find().limit(5)
+> db.<collection_name>.find({"aliases": {$exists: true}})
+> db.<collection_name>.update({"_id": ObjectId("<oid>"), { }...})
+> db.<collection_name>.update({}, {$rename: {"<field_name>": "<new_field_name>"}}, {multi: true})
+> db.<collection_name>.update({}, {$unset: {<field_name>: 1}}, false, true)
+> db.<collection_name>.remove({})
+> db.fs.chunks.count()
+> db.fs.chunks.findOne()
+> db.fs.files.find({"_id": ObjectId("<oid>")}).sort({"_id": -1})
+> db.fs.chunks.find({files_id: ObjectId("<oid>")})
+> db.<collection_name>.find({"name": /.*name.*/})
+> db.<collection_name>.find({"company_types":{$in:["listed","fund"]}})
+> db.user.aggregate([
+    { $group: {
+      _id: { name: "$name",company:"$company_id" },
+      uniqueIds: { $addToSet: "$_id" },
+      count: { $sum: 1 } 
+    } }, 
+    { $match: { 
+      count: { $gte: 2 } 
+    } },
+    { $sort : { count : -1} },
+    { $limit : 10 }
+  ]);
+
+mongo --username "prodManager" --password "cleartextPassword" --authenticationDatabase "products"
+
+mongodump --dbpath /var/lib/mongodb --out <some_path>
+
+mongorestore <some_path>
+
+sudo mkdir -p /backup/mongodb
+
+sudo vi /backup/mongodb.sh
+```
+#!/bin/sh
+DATE=`date +%Y%m%d`
+FILE_PATH="/backup/mongodb/$DATE"
+mongodump --db <db_name> -o $FILE_PATH
+```
+
+sudo vi /etc/crontab
+```
+0 3 * * *  root /backup/mongodb.sh
+```
+
+sudo service cron restart
+

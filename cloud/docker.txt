@@ -1,0 +1,38 @@
+# https://store.docker.com/editions/community/docker-ce-server-ubuntu
+
+sudo apt-get install apt-transport-https ca-certificates curl
+
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+
+sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+
+sudo apt-get update && sudo apt-get install docker-ce
+
+sudo groupadd docker
+
+sudo usermod -aG docker $USER
+
+sudo systemctl enable docker
+
+sudo service docker restart
+
+# basic commands
+docker pull hello-world
+docker run hello-world
+docker build -t friendlyname .
+docker run -p 4000:80 friendlyname
+docker run -d -p 4000:80 friendlyname
+docker ps
+docker stop <hash>
+docker ps -a
+docker kill <hash>
+docker rm <hash>
+docker rm $(docker ps -a -q)
+docker images -a
+docker rmi <imagename>
+docker rmi $(docker images -q)
+docker login
+docker tag <image> username/repository:tag
+docker push username/repository:tag
+docker run username/repository:tag
+

@@ -1,0 +1,86 @@
+# server
+sudo apt-get install pptpd
+
+sudo vi /etc/pptpd.conf
+```
+localip 192.168.200.1
+remoteip 192.168.200.100-255
+```
+
+sudo vi /etc/ppp/pptpd-options
+```
+ms-dns 208.67.222.222
+ms-dns 208.67.220.220
+```
+
+sudo echo "<username> pptpd <password> *" >> /etc/ppp/chap-secrets
+
+sudo /etc/init.d/pptpd restart
+
+sudo vi /etc/sysctl.conf
+```
+net.ipv4.ip_forward=1
+```
+
+ifconfig
+
+sudo iptables -t nat -A POSTROUTING -o <device> -j MASQUERADE
+
+sudo vi /etc/rc.local
+```
+iptables -t nat -A POSTROUTING -o <device> -j MASQUERADE 
+exit 0
+```
+
+# client command line
+sudo apt-get install pptp-linux
+
+sudo vi /etc/ppp/chap-secrets
+```
+<username> <vpn-name> <password> *
+```
+
+sudo vi /etc/ppp/peers/<vpn-name>
+```
+pty "pptp <server-ip> --nolaunchpppd"
+name <username>
+remotename <vpn-name>
+ipparam <vpn-name>
+require-mppe-128
+usepeerdns
+defaultroute
+persist
+file /etc/ppp/options.pptp
+```
+
+sudo vi /etc/ppp/ip-up.d/<vpn-name>
+```
+#!/bin/bash
+HOST=`ps aux | grep 'sh -c pptp' | grep -v grep | awk '{print $14}' | head -n 1`
+GW=`route -n | grep UGH | awk '{print $2}' | head -n 1`
+DEV=`route -n | grep UGH | awk '{print $8}' | head -n 1`
+route add -host $HOST gw $GW dev $DEV
+route del default $DEV
+route add default dev ppp0
+```
+
+sudo vi /etc/ppp/ip-down.d/<vpn-name>
+```
+#!/bin/bash
+HOST=`route -n | grep UGH | awk '{print $1}' | head -n 1`
+GW=`route -n | grep UGH | awk '{print $2}' | head -n 1`
+DEV=`route -n | grep UGH | awk '{print $8}' | head -n 1`
+route del -host $HOST
+route add default gw $GW dev $DEV
+```
+
+sudo chmod +x /etc/ppp/ip-up.d/<vpn-name>
+sudo chmod +x /etc/ppp/ip-down.d/<vpn-name>
+
+sudo pon <vpn-name>
+
+ifconfig
+route -n
+
+sudo poff <vpn-name>
+

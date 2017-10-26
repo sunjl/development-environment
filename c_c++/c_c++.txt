@@ -1,0 +1,14 @@
+sudo apt install flex bison gcc llvm clang
+
+sudo apt-get install libc6-dev libreadline-dev libacl1-dev liburcu-dev
+
+autoreconf --install
+
+automake --add-missing --copy >/dev/null 2>&1
+
+./configure --prefix=/some/path
+
+make
+
+make install
+

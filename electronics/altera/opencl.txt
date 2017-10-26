@@ -1,0 +1,66 @@
+# MSEL[4:0]=01010
+
+# UART-to-USB port
+# PuTTY COM3 baud rate 115200
+
+source ~/init_opencl.sh
+
+cd hello_world
+
+aocl program /dev/acl0 hello_world.aocx
+
+./hello_world
+
+cd ../vector_add
+
+aocl program /dev/acl0 vectorAdd.aocx
+
+./vector_add
+
+# Windows Environment Variables
+
+LM_LICENSE_FILE
+C:\altera\16.0\licenses\license.dat
+
+ALTERAOCLSDKROOT
+C:\altera\16.0\hld
+
+AOCL_BOARD_PACKAGE_ROOT
+%ALTERAOCLSDKROOT%\board\terasic\de1soc
+
+Path
+%ALTERAOCLSDKROOT%\bin;%ALTERAOCLSDKROOT%\host\windows64\bin;
+
+# Command Promt
+
+aocl version
+
+aoc --list-boards
+
+cd C:\altera\16.0\hld\board\terasic\de1soc\examples\boardtest
+
+aoc device/boardtest.cl --sw-dimm-partition -o bin/boardtest.aocx --board de1soc_sharedonly
+
+# view bin\boardtest\quartus_sh_compile.log
+
+# Visual Studio 2017
+Project -> Properties -> Linker -> Input -> Additional Dependencies
+OpenCL.lib;legacy_stdio_definitions.lib
+
+C:\altera\16.0\embedded\Embedded_Command_Shell.bat
+
+cd /cygdrive/c/altera/16.0/hld/board/terasic/de1soc/examples/boardtest
+
+make
+
+# libacl_emulator_kernel_rt.so needed by libalteracl.so, not found
+
+# use WinSCP to copy boardtest.aocx and boardtest_host to linux
+
+source ~/init_opencl.sh
+
+chmod +x boardtest_host
+
+aocl program /dev/acl0 boardtest.aocx
+
+./boardtest_host

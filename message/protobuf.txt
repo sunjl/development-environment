@@ -1,0 +1,24 @@
+# https://github.com/google/protobuf/releases
+
+PROTOC_VERSION=3.4.0
+unzip protoc-$PROTOC_VERSION-linux-x86_64.zip -d protoc-$PROTOC_VERSION
+sudo mv protoc-$PROTOC_VERSION /opt/protoc-$PROTOC_VERSION
+sudo chown -R root:root /opt/protoc-$PROTOC_VERSION
+sudo chmod -R a+rx /opt/protoc-$PROTOC_VERSION
+
+sudo bash -c "cat > /etc/profile.d/protoc.sh" <<"EOF"
+export PROTOC_HOME=/opt/protoc-3.4.0
+export PATH=$PROTOC_HOME/bin:$PATH
+EOF
+
+source /etc/profile.d/protoc.sh
+
+go get -u github.com/golang/protobuf/{proto,protoc-gen-go}
+
+protoc --go_out=. *.proto
+protoc --go_out=plugins=grpc:. *.proto
+protoc --go_out=plugins=grpc,import_path=mypackage:. *.proto
+
+protoc --java_out=src/main/java -I../src \
+     ../src/google/protobuf/descriptor.proto
+

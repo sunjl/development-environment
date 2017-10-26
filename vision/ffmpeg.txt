@@ -1,0 +1,50 @@
+sudo apt-get -y install autoconf automake build-essential checkinstall git \
+  libass-dev libfdk-aac-dev libgpac-dev libjack-jackd2-dev libmp3lame-dev \
+  libopencore-amrnb-dev libopencore-amrwb-dev libopus-dev librtmp-dev \
+  libsdl1.2-dev libtheora-dev libtool libva-dev libvdpau-dev libvorbis-dev \
+  libvpx-dev libx11-dev libx264-dev libxext-dev libxfixes-dev \
+  pkg-config texi2html yasm zlib1g-dev
+
+# https://www.ffmpeg.org/download.html
+
+wget https://www.ffmpeg.org/releases/ffmpeg-3.3.4.tar.gz
+
+tar xzf ffmpeg-3.3.4.tar.gz
+
+cd ffmpeg-3.3.4
+
+./configure \
+  --prefix=/opt/ffmpeg-3.3.4 \
+  --enable-gpl \
+  --enable-libass \
+  --enable-libfdk-aac \
+  --enable-libmp3lame \
+  --enable-libopus \
+  --enable-librtmp \
+  --enable-libtheora \
+  --enable-libvorbis \
+  --enable-libvpx \
+  --enable-libx264 \
+  --enable-nonfree
+
+make
+
+sudo make install
+
+sudo bash -c "cat > /etc/profile.d/ffmpeg.sh" <<"EOF"
+export FFMPEG_HOME=/opt/ffmpeg-3.3.4
+export PATH=$FFMPEG_HOME/bin:$PATH
+EOF
+
+source /etc/profile.d/ffmpeg.sh
+
+ffmpeg \
+  -i input.mp4 \
+  -map 0 \
+  -codec:v libx264 \
+  -codec:a libfdk_aac \
+  -f stream_segment \
+  -segment_list_flags +live -segment_time 10 \
+  -segment_list index.m3u8 \
+  output_%03d.ts
+

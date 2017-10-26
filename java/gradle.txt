@@ -1,0 +1,57 @@
+# package
+sudo add-apt-repository ppa:cwchien/gradle
+sudo apt-get update && sudo apt-get install gradle
+
+# manual
+# https://gradle.org/gradle-download/
+unzip gradle-3.4.1-all.zip
+sudo mv gradle-3.4.1 /opt/gradle-3.4.1
+sudo chown -R root:root /opt/gradle-3.4.1
+
+sudo bash -c "cat > /etc/profile.d/gradle.sh" <<"EOF"
+export GRADLE_HOME=/opt/gradle-3.4.1
+export PATH=$GRADLE_HOME/bin:$PATH
+EOF
+
+source /etc/profile.d/gradle.sh
+
+mkdir ~/.gradle
+touch ~/.gradle/gradle.properties
+
+cat >> ~/.gradle/gradle.properties <<"EOF"
+org.gradle.daemon=true
+EOF
+
+gradlew -Dhttp.proxyHost=<host> -Dhttp.proxyPort=<port>
+
+mkdir -p ~/.gradle/wrapper/dists/gradle-3.4.1-bin/71zneekfcxxu7l9p7nr2sc65s
+cp gradle-3.4.1-bin.zip ~/.gradle/wrapper/dists/gradle-3.4.1-bin/71zneekfcxxu7l9p7nr2sc65s/
+
+mkdir -p ~/.gradle/wrapper/dists/gradle-3.4.1-all/c3ib5obfnqr0no9szq6qc17do
+cp gradle-3.4.1-all.zip ~/.gradle/wrapper/dists/gradle-3.4.1-all/c3ib5obfnqr0no9szq6qc17do/
+
+gradle tasks
+gradle build
+gradle wrapper
+
+./gradlew tasks
+./gradlew build
+./gradlew run
+
+vi build.gradle
+
+```
+apply plugin: 'maven'
+
+repositories {
+    maven {
+        url "http://localhost:8081/nexus/content/groups/public"
+        credentials {
+            username '<userName>'
+            password '<password>'
+        }
+    }
+    mavenLocal()
+    mavenCentral()
+}
+```

@@ -1,0 +1,35 @@
+sudo bash -c 'echo "deb http://www.rabbitmq.com/debian/ testing main" > /etc/apt/sources.list.d/rabbitmq.list'
+
+wget -q http://www.rabbitmq.com/rabbitmq-signing-key-public.asc -O- | sudo apt-key add -
+
+sudo apt-get update && sudo apt-get install rabbitmq-server
+
+sudo service rabbitmq-server start
+sudo rabbitmqctl status
+sudo rabbitmqctl help
+
+sudo rabbitmqctl add_user <username> <password>
+sudo rabbitmqctl delete_user guest
+sudo rabbitmqctl set_user_tags <username> administrator
+sudo rabbitmqctl list_users
+
+sudo rabbitmqctl add_vhost <vhost_name>
+sudo rabbitmqctl set_permissions -p <vhost_name> <username> ".*" ".*" ".*"
+
+sudo rabbitmqctl list_vhosts
+sudo rabbitmqctl list_user_permissions <username>
+sudo rabbitmqctl list_queues -p <vhost_name>
+
+sudo rabbitmq-plugins list
+sudo rabbitmq-plugins enable rabbitmq_management_visualiser
+sudo service rabbitmq-server restart
+
+# http://<hostname>:15672/
+
+wget http://<hostname>:15672/cli/rabbitmqadmin
+chmod u+x rabbitmqadmin
+./rabbitmqadmin --help
+./rabbitmqadmin help subcommands
+./rabbitmqadmin delete binding source=amq.fanout destination= destination_type=queue properties_key=
+sudo sh -c 'rabbitmqadmin --bash-completion > /etc/bash_completion.d/rabbitmqadmin'
+

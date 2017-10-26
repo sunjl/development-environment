@@ -1,0 +1,40 @@
+# https://neo4j.com/download/community-edition/
+
+tar xzf neo4j-community-3.1.2-unix.tar.gz
+mv neo4j-community-3.1.2 ~/software/neo4j-3.1.2
+
+cat >> ~/.bash_profile <<"EOF"
+export NEO4J_HOME=$HOME/software/neo4j-3.1.2
+export PATH=$NEO4J_HOME/bin:$PATH
+EOF
+
+source ~/.bash_profile
+
+vi $NEO4J_HOME/conf/neo4j.conf
+```
+dbms.directories.data=/data/neo4j/data
+dbms.directories.certificates=/data/neo4j/certificates
+dbms.directories.logs=/data/neo4j/logs
+dbms.directories.import=/data/neo4j/import
+```
+
+sudo mkdir -p /data/neo4j/data
+sudo mkdir -p /data/neo4j/certificates
+sudo mkdir -p /data/neo4j/logs
+sudo mkdir -p /data/neo4j/import
+sudo chown -R ubuntu /data/neo4j
+
+sudo vi /etc/security/limits.conf
+```
+<username>   soft    nofile  40000
+<username>   hard    nofile  40000
+```
+
+neo4j-admin set-initial-password <password>
+neo4j console
+neo4j start
+neo4j status
+neo4j stop
+
+# http://<host>:7474/browser/
+

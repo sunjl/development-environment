@@ -1,0 +1,59 @@
+tar xzf sbt-0.13.15.tgz
+sudo mv sbt /opt/sbt-0.13.15
+sudo chown -R root:root /opt/sbt-0.13.15/
+sudo chmod -R u+x /opt/sbt-0.13.15/bin/
+
+sudo bash -c "cat >> /etc/profile.d/scala.sh" <<"EOF"
+export SBT_HOME=/opt/sbt-0.13.15
+export PATH=$SBT_HOME/bin:$PATH
+export SBT_OPTS="-Xmx16g"
+EOF
+
+source /etc/profile.d/scala.sh
+
+# nexus proxy repository
+http://repo.typesafe.com/typesafe/releases/
+http://repo.typesafe.com/typesafe/snapshots/
+http://repo.typesafe.com/typesafe/ivy-releases/
+http://repo.typesafe.com/typesafe/ivy-snapshots/
+http://repo.scala-sbt.org/scalasbt/sbt-plugin-releases/
+https://oss.sonatype.org/content/repositories/releases
+https://oss.sonatype.org/content/repositories/snapshots
+http://repo.akka.io/releases/
+
+mkdir -p ~/.sbt/
+
+cat > ~/.sbt/repositories <<"EOF"
+[repositories]
+  local
+  ivy-proxy-releases: http://localhost:8081/nexus/content/groups/public/, [organization]/[module]/(scala_[scalaVersion]/)(sbt_[sbtVersion]/)[revision]/[type]s/[artifact](-[classifier]).[ext]
+  maven-proxy-releases: http://localhost:8081/nexus/content/groups/public/
+EOF
+
+$SBT_HOME/bin/sbt
+ls -al ~/.sbt/boot/
+ls -al ~/.ivy2/cache/
+
+sudo mkdir -p /root/.sbt/
+
+sudo bash -c "cat > /root/.sbt/repositories" <<"EOF"
+[repositories]
+  local
+  ivy-proxy-releases: http://localhost:8081/nexus/content/groups/public/, [organization]/[module]/(scala_[scalaVersion]/)(sbt_[sbtVersion]/)[revision]/[type]s/[artifact](-[classifier]).[ext]
+  maven-proxy-releases: http://localhost:8081/nexus/content/groups/public/
+EOF
+
+sudo $SBT_HOME/bin/sbt
+sudo ls -al /root/.sbt/boot/
+sudo ls -al /root/.ivy2/cache/
+
+mkdir -p ~/.sbt/0.13/plugins
+
+cat > ~/.sbt/0.13/plugins/plugins.sbt <<"EOF"
+addSbtPlugin("com.typesafe.sbteclipse" % "sbteclipse-plugin" % "5.1.0")
+addSbtPlugin("com.github.mpeltonen" % "sbt-idea" % "1.6.0")
+EOF
+
+sbt eclipse
+sbt gen-idea
+

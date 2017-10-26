@@ -1,0 +1,22 @@
+# ubuntu
+npm install -g react-native-cli
+
+react-native init <project_name>
+
+cd <project_name>
+
+react-native start
+
+react-native run-android
+
+# mac
+brew install node
+
+brew install watchman
+
+brew install flow
+
+sudo chown -R $(whoami) $(npm config get prefix)/{lib/node_modules,bin,share}
+
+npm install -g react-native-cli
+

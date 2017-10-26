@@ -1,0 +1,13 @@
+unzip groovy-sdk-2.4.5.zip
+sudo mv groovy-2.4.5/ /opt/
+sudo chown -R root:root /opt/groovy-2.4.5/
+
+sudo vi /etc/profile.d/groovy.sh
+```
+export GROOVY_HOME=/opt/groovy-2.4.5
+export PATH=$GROOVY_HOME/bin:$PATH
+export CLASSPATH=$CLASSPATH:$GROOVY_HOME/lib/
+```
+
+source /etc/profile.d/groovy.sh
+

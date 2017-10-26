@@ -1,0 +1,14 @@
+# http://docs.ceph.com/docs/master/start/
+# https://www.howtoforge.com/tutorial/how-to-install-a-ceph-cluster-on-ubuntu-16-04/
+
+# ceph deploy
+wget -q -O- 'https://download.ceph.com/keys/release.asc' | sudo apt-key add -
+
+echo deb https://download.ceph.com/debian-jewel/ $(lsb_release -sc) main | \
+  sudo tee /etc/apt/sources.list.d/ceph.list
+
+sudo apt-get update && sudo apt-get install ceph-deploy
+
+# ceph node
+sudo apt-get install ntp openssh-server
+

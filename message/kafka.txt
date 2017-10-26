@@ -1,0 +1,146 @@
+# install
+tar xzf kafka_2.11-0.10.2.1.tgz
+
+mv kafka_2.11-0.10.2.1 ~/software/kafka-0.10.2.1
+
+vi ~/.bash_profile
+```
+export KAFKA_HOME=$HOME/software/kafka-0.10.2.1
+export PATH=$KAFKA_HOME/bin:$PATH
+```
+
+source ~/.bash_profile
+
+vi $KAFKA_HOME/config/server.properties
+```
+log.dirs=/data/kafka/log
+zookeeper.connect=<host>:2181
+```
+
+sed -i "s/\${kafka.logs.dir}/\/data\/kafka\/logs/g" $KAFKA_HOME/config/log4j.properties
+
+sudo mkdir -p /data/kafka/server
+sudo mkdir -p /data/kafka/logs
+sudo chown -R ubuntu /data/kafka
+
+$ZOOKEEPER_HOME/bin/zkServer.sh start
+
+$KAFKA_HOME/bin/kafka-server-start.sh $KAFKA_HOME/config/server.properties &
+
+# single broker
+$KAFKA_HOME/bin/kafka-topics.sh \
+    --create \
+    --zookeeper <host>:2181 \
+    --replication-factor 1 \
+    --partitions 1 \
+    --topic test
+
+$KAFKA_HOME/bin/kafka-topics.sh \
+    --describe \
+    --zookeeper <host>:2181 \
+    --topic test
+
+$KAFKA_HOME/bin/kafka-topics.sh \
+    --list \
+    --zookeeper <host>:2181
+
+$KAFKA_HOME/bin/kafka-console-producer.sh \
+    --broker-list <host>:9092 \
+    --topic test 
+
+$KAFKA_HOME/bin/kafka-console-consumer.sh \
+    --bootstrap-server <host>:9092 \
+    --topic test \
+    --from-beginning
+
+# multi-broker cluster
+cp $KAFKA_HOME/config/server.properties $KAFKA_HOME/config/server-1.properties
+
+cp $KAFKA_HOME/config/server.properties $KAFKA_HOME/config/server-2.properties
+
+vi $KAFKA_HOME/config/server-1.properties
+```
+broker.id=1
+listeners=PLAINTEXT://:9093
+log.dir=/data/kafka/log/1
+```
+
+vi $KAFKA_HOME/config/server-2.properties
+```
+broker.id=2
+listeners=PLAINTEXT://:9094
+log.dir=/data/kafka/log/2
+```
+
+$KAFKA_HOME/bin/kafka-server-start.sh $KAFKA_HOME/config/server-1.properties &
+
+$KAFKA_HOME/bin/kafka-server-start.sh $KAFKA_HOME/config/server-2.properties &
+
+$KAFKA_HOME/bin/kafka-topics.sh \
+    --create \
+    --zookeeper <host>:2181 \
+    --replication-factor 3 \
+    --partitions 1 \
+    --topic my-replicated-topic
+
+$KAFKA_HOME/bin/kafka-topics.sh \
+    --describe \
+    --zookeeper <host>:2181 \
+    --topic my-replicated-topic
+
+$KAFKA_HOME/bin/kafka-console-producer.sh \
+    --broker-list <host>:9092 \
+    --topic my-replicated-topic
+
+$KAFKA_HOME/bin/kafka-console-consumer.sh \
+    --bootstrap-server <host>:9092 \
+    --from-beginning \
+    --topic my-replicated-topic
+
+pkill -9 -f $KAFKA_HOME/server-1.properties
+
+$KAFKA_HOME/bin/kafka-topics.sh \
+    --describe \
+    --zookeeper <host>:2181 \
+    --topic my-replicated-topic
+
+# connect
+$KAFKA_HOME/bin/connect-standalone.sh \
+    config/connect-standalone.properties \
+    config/connect-file-source.properties \
+    config/connect-file-sink.properties
+
+$KAFKA_HOME/bin/kafka-console-consumer.sh \
+    --bootstrap-server <host>:9092 \
+    --topic connect-test \
+    --from-beginning
+
+# stream
+$KAFKA_HOME/bin/kafka-topics.sh --create \
+    --zookeeper <host>:2181 \
+    --replication-factor 1 \
+    --partitions 1 \
+    --topic streams-file-input
+
+$KAFKA_HOME/bin/kafka-console-producer.sh \
+    --broker-list <host>:9092 \
+    --topic streams-file-input < file-input.txt
+
+$KAFKA_HOME/bin/kafka-run-class.sh \
+    org.apache.kafka.streams.examples.wordcount.WordCountDemo
+
+$KAFKA_HOME/bin/kafka-console-consumer.sh \
+    --bootstrap-server <host>:9092 \
+    --topic streams-wordcount-output \
+    --from-beginning \
+    --formatter kafka.tools.DefaultMessageFormatter \
+    --property print.key=true \
+    --property print.value=true \
+    --property key.deserializer=org.apache.kafka.common.serialization.StringDeserializer \
+    --property value.deserializer=org.apache.kafka.common.serialization.LongDeserializer
+
+# stop
+$KAFKA_HOME/bin/kafka-server-stop.sh
+
+ps aux | grep kafka | awk '{print $2}' | xargs kill -9
+

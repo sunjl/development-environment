@@ -1,0 +1,29 @@
+# https://golang.org/dl/
+tar xzf go1.7.3.linux-amd64.tar.gz
+sudo mv go /opt/go-1.7.3
+sudo chown -R root:root /opt/go-1.7.3
+
+sudo bash -c "cat > /etc/profile.d/go.sh" <<"EOF"
+export GOROOT=/opt/go-1.7.3
+export PATH=$GOROOT/bin:$PATH
+EOF
+
+source /etc/profile.d/go.sh
+
+cat >> ~/.bash_profile <<"EOF"
+export GOPATH=$HOME/workspace/go
+export PATH=$GOPATH/bin:$PATH
+EOF
+
+source ~/.bash_profile
+
+cat >> ~/.bashrc <<"EOF"
+[[ -f $HOME/.bash_profile ]] && . $HOME/.bash_profile
+EOF
+
+mkdir -p $HOME/workspace/go
+
+# dependency manager
+go get -u github.com/Masterminds/glide
+go list -e -json github.com/Masterminds/glide
+

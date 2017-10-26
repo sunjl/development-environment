@@ -1,0 +1,183 @@
+#!/bin/sh
+
+ip addr show %s | awk '/inet / {print $2}' | cut -d/ -f1
+cat /proc/cpuinfo | egrep '^model name' | uniq | awk '{print substr($0, index($0,$4))}'
+cat /proc/meminfo | egrep '^MemTotal' | awk '{print substr($2, index($0,$1))}'
+df | grep '^/dev/%s' | awk '{print $2}'
+df | grep '^/dev/[hs]d' | awk '{s+=$2} END {print s}'
+lsb_release -d | awk '{print substr($0, index($0,$2))}'
+
+sudo sed -i -e 's/deb http/deb [arch=amd64] http/' "/etc/apt/sources.list.d/google-chrome.list"
+sudo sed -i -e 's/deb http/deb [arch=amd64] http/' "/opt/google/chrome/cron/google-chrome"
+
+sed -i '/^$/d' input.txt
+sed -i '/^[^http].*/d' input.txt
+awk '!x[$0]++' input.txt  > output.txt
+sed -i 's/.*\/\(.*\)$/\1/g' output.txt
+
+for url in `cat ~/download/input.txt` ; do
+  user=`expr match "$url" '^https://.*/\(.*\)/.*$'`
+  repo=`expr match "$url" '^https://.*/\(.*\)$'`
+  name=$user-$repo
+  if [ -d $name ]; then
+    cd $name && git pull && cd ..
+    echo -e "\033[31m update $name \033[0m"
+  else
+    git clone $url $name
+  fi
+done
+
+for dir in `ls -d -1 $PWD/**` ; do
+  echo $dir;
+  cd $dir && npm install;
+done
+
+for dir in `ls .` ; do
+  if [ -d $dir ]; then
+    cd $dir
+    for file in `ls .` ; do
+      if [[ -f $file ]] && [[ $file = *.pdf ]]; then
+        mv $file ../
+      fi
+    done
+    cd ..
+  fi
+done
+
+for i in *.ipynb **/*.ipynb; do 
+  echo "$i"
+  jupyter nbconvert --to python "$i"
+done
+
+for i in `ls ` ; do sudo sed -i 's/A1_JSSSW_13012_A_similar/A2_JSSSW_13014_A_similar/g' $i/task.yml ; done
+sed '2s/.*/push_date: 2013-99-29 16:00:00 +0800/g' task.yml
+sed -i 's/ *//g' /path/to/some/file
+sudo sed -i '/bind-address/s/^/#/' /etc/mysql/my.cnf
+sudo sed -i 's/^# admin_token = ADMIN/admin_token = '"$(sudo openssl rand -hex 10)"'/' /etc/keystone/keystone.conf
+
+end="$((SECONDS+10))"
+while true; do
+    [[ "200" = "$(curl --silent --write-out %{http_code} --output /dev/null http://localhost:7474)" ]] && break
+    [[ "${SECONDS}" -ge "${end}" ]] && exit 1
+    sleep 1
+done
+
+npm ls -gp --depth=0 | awk -F/node_modules/ '{print $2}' | grep -vE '^(npm|)$' | xargs -r npm -g rm
+
+sudo find /home/user/public_html/ -type f -exec chmod 644 {} \;
+sudo find /home/user/public_html/ -type d -exec chmod 755 {} \;
+
+find /usr/lib/ -iname '*keyword*' -print > download/find.txt
+
+grep -lir "keyword" ~/tutorial*
+
+netstat -na|grep ESTABLISHED|awk '{print $5}'|awk -F: '{print $1}'|sort|uniq -c|sort -r -n
+netstat -na|grep SYN|awk '{print $5}'|awk -F: '{print $1}'|sort|uniq -c|sort -r -n
+netstat -lnp | grep :9000 | awk '{print $7}' | sed 's/\/java//' | xargs kill
+
+ifconfig eth0 |awk '/inet/ {split($2,x,":");print x[2]}'
+w3m -no-cookie -dump ip.loveroot.com|grep -o '[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}'
+
+find . -name "*.pyc" -exec rm -rf {} \;
+
+find src -type d -exec mkdir -p utf8/{} \;
+find src -type f -exec iconv -f GBK -t UTF-8 {} -o utf8/{} \;
+
+find . -type f ! -name '*.java' -delete
+
+grep admin_password /etc/nova/nova.conf | awk '{ print $NF }'
+
+ls -d crawl/segments/* | tail -1
+
+solr_clustering_cmd="java -Dsolr.clustering.enabled=true -jar start.jar"
+nohup $solr_clustering_cmd > logs/clustering.log 2>&1 &
+kill -9 `ps aux | grep -i "$solr_clustering_cmd" | head -n 1 | awk '{print $2}'`
+
+ps aux | grep elasticsearch | awk '{print $2}' | xargs sudo kill -9
+
+sudo bash -c 'echo "deb http://www.rabbitmq.com/debian/ testing main" > /etc/apt/sources.list.d/rabbitmq.list'
+
+wget -q http://www.rabbitmq.com/rabbitmq-signing-key-public.asc -O- | sudo apt-key add -
+
+echo 'deb http://downloads-distro.mongodb.org/repo/ubuntu-upstart dist 10gen' | \
+sudo tee /etc/apt/sources.list.d/mongodb.list
+
+echo -e "<ip-address> `hostname -f` `hostname -s`" | sudo tee -a /etc/hosts
+
+find .-name .DS_Store -print0 | xargs -0 git-rm
+
+sudo find /var/lib/puppet -type f -print0 |xargs -0r sudo rm
+
+echo "deb http://repo.varnish-cache.org/ubuntu/ $(lsb_release -cs) varnish-3.0" >> /etc/apt/sources.list
+
+/usr/bin/ruby -e "$(/usr/bin/curl -fksSL https://raw.github.com/mxcl/homebrew/master/Library/Contributions/install_homebrew.rb)"
+
+echo 'export PATH="$HOME/.rbenv/bin:$PATH"' >> ~/.bash_profile
+echo 'eval "$(rbenv init -)"' >> ~/.bash_profile
+echo '[[ -f $HOME/.bash_profile ]] && . $HOME/.bash_profile' >> ~/.bashrc
+exec $SHELL -l
+
+curl -L https://get.rvm.io | bash -s stable --rails --autolibs=enabled --ruby=1.9.3
+
+for a in *.less; do mv $a _$a; done
+
+sed -i 's|@import "|@import "utils/_|' bootstrap.less
+
+for service in /etc/init.d/hadoop-*; do sudo $service restart; done
+
+echo stat |nc <zk-server-host> 2181
+
+sudo bash -c "cat > /opt/test.txt" <<"EOF"
+  hello
+EOF
+
+ls -li > temp.txt
+awk -f - temp.txt <<"EOF"
+  {
+    print $1;
+  }
+EOF
+
+find . -type f -exec sh -c 'echo "${0##*.}"' {} \;
+
+find vendor/ -type f -not -path "*/.git/*" -exec git add {} \;
+
+for path in agent client common server; do
+    find $path -type f -name "*.go" -exec go fmt {} \;
+done
+
+for mixlib in config cli log authentication
+do
+  pushd mixlib-$mixlib
+  rake install
+  popd
+done
+
+automake --version | head -n 1 | sed 's/[^.0-9]//g'
+
+/^[a-zA-Z0-9]{64}$/
+/^([a-z]|[A-Z]|[0-9]|_|-)+$/
+/^\d+$/
+/^0?\d{3,4}$/
+
+sed -n -i 'H;${x;s/^\n//;s/nameserver .*\n/nameserver 127.0.0.1\n&/;p;}' resolv.conf
+
+MID_LIST=`cat /home/upsmart/mid-posid-data-encry.txt |awk -F"," '{print $2}'`
+for mid in $MID_LIST ; do
+  echo "get 'merchant_property','$mid','month_business_indicator:transaction_people'" | hbase shell
+done
+
+sudo sed -i "s/\(GRUB_CMDLINE_LINUX=\)\"\"/\1\"acpi_osi=Linux acpi_backlight=vendor\"/" /etc/default/grub
+
+sed -i 's/^\(\s*\)API:.*$/\1API: '\''http:\/\/'"$API_HOST"':9000'\''/' app/scripts/shared/Constant.coffee
+
+sudo find /usr/local -depth -iname 'git*' -exec rm -rf {} \;
+
+sed 's/^port .*/port 0/' /etc/redis/redis.conf.orig | sudo tee /etc/redis/redis.conf
+echo 'unixsocket /var/run/redis/redis.sock' | sudo tee -a /etc/redis/redis.conf
+echo 'unixsocketperm 770' | sudo tee -a /etc/redis/redis.conf
+
+HOST=`ps aux | grep 'sh -c pptp' | grep -v grep | awk '{print $14}'`
+GW=`route -n | grep UG | awk '{print $2}' | head -n 1`
+DEV=`route -n | grep UG | awk '{print $8}' | head -n 1`
+

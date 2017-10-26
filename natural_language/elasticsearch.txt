@@ -1,0 +1,40 @@
+# https://www.elastic.co/downloads/elasticsearch
+
+tar xfz elasticsearch-5.2.1.tar.gz
+mv elasticsearch-5.2.1 ~/software
+
+cat >> ~/.bash_profile <<"EOF"
+export ELASTICSEARCH_HOME=$HOME/software/elasticsearch-5.2.1
+export PATH=$ELASTICSEARCH_HOME/bin:$PATH
+EOF
+
+source ~/.bash_profile
+
+vi $ELASTICSEARCH_HOME/config/elasticsearch.yml
+```
+path.data: /data/elasticsearch/data
+path.logs: /data/elasticsearch/logs
+```
+
+sudo mkdir -p /data/elasticsearch/data
+sudo mkdir -p /data/elasticsearch/logs
+sudo chown -R ubuntu /data/elasticsearch
+
+elasticsearch-plugin list
+elasticsearch-plugin install analysis-icu
+elasticsearch-plugin install analysis-smartcn
+
+elasticsearch -d
+
+# status
+http://localhost:9200
+http://localhost:9200/_cat/nodes?v
+http://localhost:9200/_cat/health?v
+http://localhost:9200/_stats?pretty=true
+http://localhost:9200/_mapping?pretty=true
+http://localhost:9200/_cat/indices?v
+
+pgrep -f elasticsearch
+pkill -f elasticsearch
+netstat -lnp | grep :9200 | awk '{print $7}' | sed 's/\/java//' | xargs kill
+

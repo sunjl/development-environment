@@ -1,0 +1,22 @@
+sudo apt-get install software-properties-common python-software-properties
+
+sudo apt-add-repository ppa:brightbox/ruby-ng
+sudo apt-get update && sudo apt-get install ruby2.4 ruby2.4-dev
+
+sudo update-alternatives --config ruby
+sudo update-alternatives --config gem
+
+ls /usr/lib/ruby/
+ls /var/lib/gems/
+
+sudo gem sources -l
+sudo gem sources -a https://ruby.taobao.org/
+sudo gem sources -r https://rubygems.org/
+sudo gem install <package_name> --source http://ruby.taobao.org/
+sudo gem update
+sudo gem update --system
+sudo gem update <package_name>
+sudo gem env path
+sudo gem search -rd <package_name>
+sudo gem list | cut -d" " -f1 | xargs gem uninstall -aIx
+

@@ -1,0 +1,46 @@
+vi ~/software/jetbrains/idea/bin/idea64.vmoptions
+```
+-Xms256m
+-Xmx8192m
+```
+
+sudo vi /usr/share/applications/idea.desktop
+```
+[Desktop Entry]
+Type=Application
+Name=IDEA
+Icon=/home/ubuntu/software/jetbrains/idea/bin/idea.png
+Exec=/home/ubuntu/software/jetbrains/idea/bin/idea.sh %f
+Categories=Development;IDE;
+Terminal=false
+StartupNotify=true
+StartupWMClass=jetbrains-idea
+```
+
+# config
+Settings -> Build, Execution, Deployment -> Compiler -> Annotation Processors
+check "Enable annotation processing", select "Obtain processors from project classpath"
+
+# java properties encoding
+cd src/main/resources/properties/
+native2ascii -encoding UTF-8 dev.properties dev.properties
+native2ascii -encoding UTF-8 prod.properties prod.properties
+
+# txt to json
+^(.*) (.*) (.*)$
+"$1": "$2",
+
+# camel to snake
+([A-Z]+[a-z]+)
+_$1
+
+# remove java annotation
+^\s*@.*$
+
+# remove java comment
+^\s*[*/]+.*$
+
+# remove blank lines before package
+^\s*\n*(package.*)$
+$1
+

@@ -1,0 +1,82 @@
+sudo apt-get install openjdk-8-jdk
+
+# package
+sudo add-apt-repository ppa:webupd8team/java
+sudo apt-get update && sudo apt-get install oracle-java8-installer
+ls /var/cache/oracle-jdk8-installer/
+
+# manual
+# http://www.oracle.com/technetwork/java/javase/downloads/index.html
+tar xvzf jdk-8u111-linux-x64.tar.gz
+sudo mkdir -p /opt/jdk1.8.0_111
+sudo chown -R root:root /opt/jdk1.8.0_111/
+sudo cp -r jdk1.8.0_111/* /opt/jdk1.8.0_111/
+
+sudo rm /usr/lib/jvm/default-java
+sudo ln -f -s /opt/jdk1.8.0_111 /usr/lib/jvm/default-java
+
+sudo bash -c "cat > /etc/profile.d/java.sh" <<"EOF"
+export JAVA_HOME=/usr/lib/jvm/default-java
+export PATH=$JAVA_HOME/bin:$PATH
+export CLASSPATH=$CLASSPATH:$JAVA_HOME/lib/
+export JAVA_OPTS="-Xmx16g"
+EOF
+
+source /etc/profile.d/java.sh
+
+sudo update-alternatives --install /usr/bin/java java /usr/lib/jvm/default-java/bin/java 1082
+sudo update-alternatives --install /usr/bin/javac javac /usr/lib/jvm/default-java/bin/javac 1082
+sudo update-alternatives --install /usr/bin/javadoc javadoc /usr/lib/jvm/default-java/bin/javadoc 1082
+sudo update-alternatives --install /usr/bin/javah javah /usr/lib/jvm/default-java/bin/javah 1082
+sudo update-alternatives --install /usr/bin/javap javap /usr/lib/jvm/default-java/bin/javap 1082
+sudo update-alternatives --install /usr/bin/javaws javaws /usr/lib/jvm/default-java/bin/javaws 1082
+sudo update-alternatives --install /usr/bin/jar jar /usr/lib/jvm/default-java/bin/jar 1082
+sudo update-alternatives --install /usr/bin/jps jps /usr/lib/jvm/default-java/bin/jps 1082
+
+sudo update-alternatives --set java /usr/lib/jvm/default-java/bin/java
+sudo update-alternatives --set javac /usr/lib/jvm/default-java/bin/javac
+sudo update-alternatives --set javadoc /usr/lib/jvm/default-java/bin/javadoc
+sudo update-alternatives --set javah /usr/lib/jvm/default-java/bin/javah
+sudo update-alternatives --set javap /usr/lib/jvm/default-java/bin/javap
+sudo update-alternatives --set javaws /usr/lib/jvm/default-java/bin/javaws
+sudo update-alternatives --set jar /usr/lib/jvm/default-java/bin/jar
+sudo update-alternatives --set jps /usr/lib/jvm/default-java/bin/jps
+
+sudo update-alternatives --display java
+sudo update-alternatives --display javac
+sudo update-alternatives --display javadoc
+sudo update-alternatives --display javah
+sudo update-alternatives --display javap
+sudo update-alternatives --display javaws
+sudo update-alternatives --display jar
+sudo update-alternatives --display jps
+
+sudo update-alternatives --config java
+sudo update-alternatives --config javac
+sudo update-alternatives --config javadoc
+sudo update-alternatives --config javah
+sudo update-alternatives --config javap
+sudo update-alternatives --config javaws
+sudo update-alternatives --config jar
+sudo update-alternatives --config jps
+
+java -version
+ls -la /etc/alternatives/java*
+update-java-alternatives -l
+
+# firefox plugin
+cd /usr/lib/firefox-addons/plugins/
+sudo ln -s /usr/lib/jvm/default-java/jre/lib/amd64/libnpjp2.so .
+
+jcontrol
+
+# remove
+sudo update-alternatives --remove java /usr/lib/jvm/default-java/bin/java
+sudo update-alternatives --remove javac /usr/lib/jvm/default-java/bin/javac
+sudo update-alternatives --remove javadoc /usr/lib/jvm/default-java/bin/javadoc
+sudo update-alternatives --remove javah /usr/lib/jvm/default-java/bin/javah
+sudo update-alternatives --remove javap /usr/lib/jvm/default-java/bin/javap
+sudo update-alternatives --remove javaws /usr/lib/jvm/default-java/bin/javaws
+sudo update-alternatives --remove javap /usr/lib/jvm/default-java/bin/jar
+sudo update-alternatives --remove javaws /usr/lib/jvm/default-java/bin/jps
+

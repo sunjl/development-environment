@@ -1,0 +1,1 @@
+sudo apt-get install libsasl2-dev memcached libmemcached-dev libmemcached-dbg libmemcached-tools

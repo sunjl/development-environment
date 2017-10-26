@@ -1,0 +1,39 @@
+tar xvzf solr-6.2.1.tgz
+mv solr-6.2.1 ~/software
+
+cat >> ~/.bash_profile <<"EOF"
+export SOLR_HOME=$HOME/software/solr-6.2.1
+export PATH=$SOLR_HOME/bin:$PATH
+EOF
+
+source ~/.bash_profile
+
+$SOLR_HOME/bin/solr start -e cloud -noprompt
+
+# http://<host>:8983/solr
+
+cd $SOLR_HOME/example
+java -Djava.util.logging.config.file=etc/logging.properties -jar start.jar
+
+solr_clustering_cmd="java -Dsolr.clustering.enabled=true -jar start.jar"
+nohup $solr_clustering_cmd > logs/clustering.log 2>&1 &
+
+# http://<host>:8983/solr/collection1/clustering?q=*:*&wt=xml
+
+kill -9 `ps aux | grep -i "$solr_clustering_cmd" | head -n 1 | awk '{print $2}'`
+
+cd $SOLR_HOME/example
+rm -r solr/collection1/data/*
+rm -r solr/zoo_data
+
+# host-1
+java -Dbootstrap_confdir=./solr/collection1/conf -Dcollection.configName=myconf \
+-DzkRun -DnumShards=2 -DzkHost=<host>:9983 -jar start.jar
+
+# host-2
+java -Djetty.port=8983 -DzkHost=<host>:9983 -jar start.jar
+
+http://<host>:8983/solr/#/~cloud
+
+vi solr/zoo.cfg
+

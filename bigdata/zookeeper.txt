@@ -1,0 +1,47 @@
+tar xfz zookeeper-3.4.9.tar.gz
+mv zookeeper-3.4.9 ~/software
+
+vi ~/.bash_profile
+```
+export ZOOKEEPER_HOME=$HOME/software/zookeeper-3.4.9
+export PATH=$ZOOKEEPER_HOME/bin:$PATH
+```
+
+source ~/.bash_profile
+
+cp $ZOOKEEPER_HOME/conf/zoo_sample.cfg $ZOOKEEPER_HOME/conf/zoo.cfg
+
+vi $ZOOKEEPER_HOME/conf/zoo.cfg
+```
+dataDir=/data/zookeeper
+```
+
+vi $ZOOKEEPER_HOME/bin/zkEnv.sh
+```
+ZOO_LOG_DIR=/data/zookeeper/log
+```
+
+mkdir -p /data/zookeeper
+
+$ZOOKEEPER_HOME/bin/zkServer.sh start
+
+$ZOOKEEPER_HOME/bin/zkCli.sh -server <host>:2181
+] ls /
+] create /zk_test my_data
+] get /zk_test
+] set /zk_test junk
+] delete /zk_test
+
+echo stat |nc 127.0.0.1 2181
+
+$ZOOKEEPER_HOME/bin/zkServer.sh stop
+
+# cluster
+vi $ZOOKEEPER_HOME/conf/zoo.cfg
+```
+server.<id>=<host>:<port>:<port>
+```
+
+echo "<id>" > /data/zookeeper/myid
+$ZOOKEEPER_HOME/bin/zkServer.sh start
+

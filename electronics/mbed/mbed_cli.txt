@@ -1,0 +1,62 @@
+# https://docs.mbed.com/docs/mbed-os-handbook/en/latest/dev_tools/cli/
+
+# https://www.python.org/
+
+# https://git-scm.com/downloads
+
+# https://www.mercurial-scm.org/
+
+# https://developer.arm.com/open-source/gnu-toolchain/gnu-rm
+
+pip install setuptools_scm colorama PrettyTable Jinja2 junit-xml pyYAML \
+    beautifulsoup4 requests PySerial IntelHex fuzzywuzzy \
+    mbed-cli mbed-ls mbed-host-tests mbed-greentea
+
+git clone https://github.com/ARMmbed/mbed-cli
+
+cd mbed-cli
+
+python setup.py install
+
+mbed import https://github.com/ARMmbed/mbed-os-example-blinky
+
+cd mbed-os-example-blinky
+
+# mbed_settings.py
+GCC_ARM_PATH = "C:\Program Files (x86)\GNU Tools ARM Embedded\6 2017-q2-update\bin"
+
+# main.cpp
+```
+#include "mbed.h"
+
+Serial pc(SERIAL_TX, SERIAL_RX);
+
+DigitalOut led(LED1);
+
+int main() {
+    while (true) {
+        led= 1;
+        pc.printf("LED is ON\n");
+        wait(0.5);
+        led= 0;
+        pc.printf("LED is OFF\n");
+        wait(1.0);
+    }
+}
+```
+
+mbed config --list
+
+mbed compile -t GCC_ARM -m detect
+
+mbed compile -t GCC_ARM -m NUCLEO_L476RG
+
+mbed test -t GCC_ARM -m NUCLEO_L476RG
+
+mbed export -i uvision -m NUCLEO_L476RG
+
+# BUILD\NUCLEO_L476RG\GCC_ARM\mbed-os-example-blinky.bin
+# Copy the binary file to the board
+# Press the reset button to start the program
+# PuTTY serial port with speed 9600 baud
+

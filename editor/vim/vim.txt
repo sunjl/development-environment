@@ -1,0 +1,10 @@
+cp vimrc ~/.vimrc
+cp gvimrc ~/.gvimrc
+
+# plugins
+nerdcommenter
+NERD_tree
+snipMate
+supertab
+taglist
+

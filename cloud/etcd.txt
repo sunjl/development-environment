@@ -1,0 +1,20 @@
+# https://github.com/coreos/etcd/releases
+
+tar xzvf etcd-v3.0.16-linux-amd64.tar.gz
+mv etcd-v3.0.16-linux-amd64 $HOME/software/etcd-3.0.16
+
+cat >> ~/.bash_profile <<"EOF"
+export ETCD_HOME=$HOME/software/etcd-3.0.16
+export PATH=$ETCD_HOME:$PATH
+export ETCD_DATA_DIR=/data/etcd
+EOF
+
+source ~/.bash_profile
+
+mkdir -p /data/etcd
+
+$ETCD_HOME/etcd
+
+ETCDCTL_API=3 etcdctl put foo "bar"
+ETCDCTL_API=3 etcdctl get foo
+

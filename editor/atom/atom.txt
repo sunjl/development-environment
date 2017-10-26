@@ -1,0 +1,16 @@
+# https://atom.io/
+
+apm install file-icons minimap markdown-scroll-sync tidy-markdown \
+  language-gradle language-groovy language-scala
+
+# Edit -> Stylesheet
+atom-text-editor::shadow {
+    .wrap-guide {
+        visibility: hidden;
+    }
+}
+
+# Find and Replace
+^http(s?.+)$
+- <http$1>\n
+

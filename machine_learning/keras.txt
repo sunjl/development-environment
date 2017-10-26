@@ -1,0 +1,6 @@
+sudo pip install -U keras
+
+KERAS_BACKEND=tensorflow python -c "from keras import backend; print backend._BACKEND"
+
+python -c "from tensorflow.python.client import device_lib; devices=device_lib.list_local_devices(); print(devices)"
+

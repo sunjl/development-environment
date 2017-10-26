@@ -1,0 +1,151 @@
+sudo apt-get install build-essential libpcre3 libpcre3-dev libssl-dev
+
+wget http://nginx.org/download/nginx-1.13.5.tar.gz
+
+wget https://github.com/arut/nginx-rtmp-module/archive/v1.2.0.zip -O nginx-rtmp-module-1.2.0.zip
+
+tar -zxvf nginx-1.13.5.tar.gz
+
+unzip nginx-rtmp-module-1.2.0.zip
+
+cd nginx-1.13.5
+
+./configure \
+  --prefix=/opt/nginx-1.13.5 \
+  --with-http_ssl_module \
+  --with-http_v2_module \
+  --with-http_flv_module \
+  --with-http_mp4_module \
+  --with-http_stub_status_module \
+  --add-module=../nginx-rtmp-module-1.2.0
+
+make
+
+sudo make install
+
+sudo bash -c "cat > /etc/profile.d/nginx.sh" <<"EOF"
+export NGINX_HOME=/opt/nginx-1.13.5
+export PATH=$NGINX_HOME:$PATH
+EOF
+
+source /etc/profile.d/nginx.sh
+
+sudo cp $NGINX_HOME/conf/nginx.conf $NGINX_HOME/conf/nginx.conf.original
+
+sudo vi $NGINX_HOME/conf/nginx.conf
+
+```
+error_log /data/nginx/log/error.log;
+
+rtmp {
+    server {
+        listen 1935;
+        chunk_size 4096;
+        allow play all;
+
+        application live {
+            allow play all;
+            live on;
+            record all;
+            record_path /data/video/record;
+            record_unique on;
+            hls on;
+            hls_nested on;
+            hls_path /data/video/hls/live;
+            hls_fragment 10s;
+
+            exec /opt/ffmpeg-3.3.4/bin/ffmpeg -i rtmp://localhost:1935/$app/$name 
+                -c:v libx264 -c:a libfdk_aac -b:v 256k -b:a 32k -s 480x360 
+                -f flv rtmp://localhost:1935/mobile/$name_low
+                -c:v libx264 -c:a libfdk_aac -b:v 1024k -b:a 64k -s 960x720
+                -f flv rtmp://localhost:1935/mobile/$name_high;
+        }
+
+        application mobile {
+            allow play all;
+            live on;
+            hls on;
+            hls_nested on;
+            hls_path /data/video/hls/mobile;
+            hls_fragment 10s;
+        }
+
+        application record {
+            play /data/video/record;
+        }
+    }
+}
+
+http {
+    access_log /data/nginx/log/access.log;
+
+    server {
+        listen       80;
+        server_name  localhost;
+        location /live {
+            types {
+                application/vnd.apple.mpegurl m3u8;
+                video/mp2t ts;
+            }
+            alias /data/video/hls/live;
+            add_header Cache-Control no-cache;
+        }
+
+        location /mobile {
+            types {
+                application/vnd.apple.mpegurl m3u8;
+                video/mp2t ts;
+            }
+            alias /data/video/hls/mobile;
+            add_header Cache-Control no-cache;
+        }
+
+        location /stats {
+            stub_status;
+        }
+    }
+}
+```
+sudo netstat -tunlp | grep -E '80.*nginx' | awk '{print $7}' | sed 's/\/nginx.*//' | xargs sudo kill -9
+
+sudo $NGINX_HOME/sbin/nginx -s stop
+sudo $NGINX_HOME/nginx/sbin/nginx
+
+sudo mkdir -p /data/nginx/log
+sudo chown -R www-data:adm /data/nginx
+
+sudo mkdir -p /data/video/hls
+sudo mkdir -p /data/video/hls/live
+sudo mkdir -p /data/video/hls/mobile
+sudo mkdir -p /data/video/record
+sudo chmod -R 777 /data/video
+
+ffmpeg -re -i input.mp4 -vcodec libx264 -vprofile baseline -acodec libfdk_aac -ar 44100 -strict -2 -ac 1 -f flv -s 1280x720 -q 10 rtmp://localhost:1935/live/input
+
+sudo apt install mesa-utils
+glxinfo | grep "OpenGL"
+
+sudo add-apt-repository ppa:obsproject/obs-studio
+sudo apt-get update && sudo apt-get install obs-studio
+
+# VLC Player -> Media -> Open Network Stream
+# http://localhost/live/input/index.m3u8
+# http://localhost/mobile/input/index.m3u8
+# rtmp://localhost/record/filename.flv
+# http://localhost/stats
+
+vi live.html
+```
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="content-type" content="text/html; charset=utf-8">
+        <title>Live</title>
+    </head>
+    <body>
+        <video height="720" width="1280" controls>
+            <source src="http://localhost/live/index.m3u8" type="application/vnd.apple.mpegurl" />
+        </video>
+    </body>
+</html>
+```

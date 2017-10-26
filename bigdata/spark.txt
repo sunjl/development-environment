@@ -1,0 +1,77 @@
+tar xfz spark-2.1.1-bin-hadoop2.7.tgz
+mv spark-2.1.1-bin-hadoop2.7 ~/software/spark-2.1.1
+
+vi ~/.bash_profile
+```
+export SPARK_HOME=$HOME/software/spark-2.1.1
+export PATH=$SPARK_HOME/bin:$PATH
+```
+
+source ~/.bash_profile
+
+cp $SPARK_HOME/conf/log4j.properties.template $SPARK_HOME/conf/log4j.properties
+
+cp $SPARK_HOME/conf/spark-env.sh.template $SPARK_HOME/conf/spark-env.sh
+
+vi $SPARK_HOME/conf/spark-env.sh
+```
+HADOOP_CONF_DIR=$HADOOP_HOME/etc/hadoop
+SPARK_EXECUTOR_INSTANCES=4
+SPARK_EXECUTOR_CORES=2
+SPARK_EXECUTOR_MEMORY=2G
+SPARK_DRIVER_MEMORY=4G
+SPARK_MASTER_HOST=<host>
+SPARK_WORKER_PORT=8085
+SPARK_LOG_DIR=/data/spark/log
+```
+
+cp $SPARK_HOME/conf/spark-defaults.conf.template $SPARK_HOME/conf/spark-defaults.conf
+
+vi $SPARK_HOME/conf/spark-defaults.conf
+```
+spark.master                       spark://<host>:7077
+spark.eventLog.enabled             true
+spark.eventLog.dir                 hdfs://<host>:8020/spark/log
+spark.history.fs.logDirectory      hdfs://<host>:8020/spark/log
+```
+
+$HADOOP_HOME/bin/hadoop fs -mkdir -p /spark/log
+
+vi $SPARK_HOME/conf/slaves
+```
+<host>
+```
+
+$SPARK_HOME/sbin/start-master.sh
+$SPARK_HOME/sbin/start-slave.sh spark://<host>:7077
+$SPARK_HOME/sbin/start-history-server.sh
+$SPARK_HOME/bin/spark-shell --master yarn --deploy-mode client
+
+# http://<host>:8080
+# http://<host>:8088
+# http://<host>:18080
+
+$SPARK_HOME/bin/spark-submit \
+  --class org.apache.spark.examples.SparkPi \
+  --master yarn \
+  --deploy-mode cluster \
+  $SPARK_HOME/examples/jars/spark-examples_2.11-2.1.1.jar \
+  100
+
+$SPARK_HOME/sbin/stop-history-server.sh
+$SPARK_HOME/sbin/stop-slave.sh
+$SPARK_HOME/sbin/stop-master.sh
+
+cp $HIVE_CONF_DIR/hive-site.xml $SPARK_HOME/conf/hive-site.xml
+
+$HIVE_HOME/bin/hive --service metastore
+
+$SPARK_HOME/bin/spark-sql --master spark://<host>:<port>
+
+$SPARK_HOME/sbin/start-thriftserver.sh
+
+netstat -ntulp | grep ':10000'
+
+$SPARK_HOME/bin/beeline
+>!connect jdbc:hive2://<host>:10000
+

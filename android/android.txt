@@ -1,0 +1,51 @@
+sudo dpkg --add-architecture i386 && sudo apt-get update
+sudo apt-get install libc6:i386 libncurses5:i386 libstdc++6:i386 lib32z1 libbz2-1.0:i386 zlib1g:i386
+
+unzip android-studio-ide-162.3871768-linux.zip
+mv android-studio ~/software/android-studio
+
+vi ~/.bash_profile
+```
+export ANDROID_STUDIO=$HOME/software/android-studio
+export PATH=$ANDROID_STUDIO/bin:$PATH
+```
+
+vi ~/software/android-studio/bin/studio64.vmoptions
+```
+-Xms256m
+-Xmx8192m
+```
+
+sudo vi /usr/share/applications/android-studio.desktop
+```
+[Desktop Entry]
+Type=Application
+Name=Android Studio
+Icon=/home/ubuntu/software/android-studio/bin/studio.png
+Exec=/home/ubuntu/software/android-studio/bin/studio.sh %f
+Categories=Development;IDE;
+Terminal=false
+StartupNotify=true
+StartupWMClass=android-studio
+```
+
+mkdir -p ~/software/android-sdk
+unzip sdk-tools-linux-3859397.zip
+mv tools ~/software/android-sdk/tools
+
+vi ~/.bash_profile
+```
+export ANDROID_HOME=$HOME/software/android-sdk
+export PATH=$ANDROID_HOME/tools:$PATH
+export PATH=$ANDROID_HOME/platform-tools:$PATH
+```
+
+source ~/.bash_profile
+
+vi ~/.bashrc
+```
+[[ -f $HOME/.bash_profile ]] && . $HOME/.bash_profile
+```
+
+touch /home/ubuntu/.android/repositories.cfg
+

@@ -1,0 +1,91 @@
+# https://github.com/shadowsocks/shadowsocks/wiki
+
+# server
+sudo apt-get install python-pip python-m2crypto python-gevent
+sudo pip install shadowsocks
+
+sudo mkdir -p /etc/shadowsocks
+
+sudo bash -c "cat > /etc/shadowsocks/config.json" <<"EOF"
+{
+    "server":"<server-ip>",
+    "server_port":8388,
+    "local_port":1080,
+    "password":"<password>",
+    "timeout":600,
+    "method":"aes-256-cfb",
+    "auth": true
+}
+EOF
+
+sudo ssserver -c /etc/shadowsocks/config.json -d start
+
+tail -f /var/log/shadowsocks.log
+
+sudo ssserver -c /etc/shadowsocks/config.json -d stop
+ 
+# client command line
+sudo pip install shadowsocks
+
+sudo mkdir -p /etc/shadowsocks
+
+sudo bash -c "cat > /etc/shadowsocks/config.json" <<"EOF"
+{
+    "server":"<server-ip>",
+    "server_port":8388,
+    "local_port":1080,
+    "password":"<password>",
+    "timeout":600,
+    "method":"aes-256-cfb",
+    "auth": true
+}
+EOF
+
+sudo sslocal -c /etc/shadowsocks/config.json -d start
+
+sudo apt-get install polipo
+
+sudo bash -c "cat >> /etc/polipo/config" <<"EOF"
+socksParentProxy = "127.0.0.1:1080"
+socksProxyType = socks5
+proxyAddress = "127.0.0.1"
+proxyPort = 8123
+EOF
+
+sudo /etc/init.d/polipo restart
+
+tail -f /var/log/polipo/polipo.log
+
+export http_proxy="http://localhost:8123/"
+
+http_proxy=http://localhost:8123 curl www.google.com
+http_proxy=http://localhost:8123 wget www.google.com
+
+git config --global http.proxy http://127.0.0.1:8123
+git config --global --unset-all http.proxy
+
+./gradlew -Dhttp.proxyHost=127.0.0.1 -Dhttp.proxyPort=8123
+
+sudo apt-get install proxychains
+
+sudo bash -c "cat > /etc/proxychains.conf" <<"EOF"
+strict_chain
+proxy_dns
+remote_dns_subnet 224
+tcp_read_time_out 15000
+tcp_connect_time_out 8000
+localnet 127.0.0.0/255.0.0.0
+quiet_mode
+
+[ProxyList]
+socks5 127.0.0.1 1080
+EOF
+
+proxychains wget https://www.twitter.com/
+proxychains bash
+wget https://www.twitter.com/
+
+# client gui
+sudo add-apt-repository ppa:hzwhuang/ss-qt5
+sudo apt-get update && sudo apt-get install shadowsocks-qt5
+

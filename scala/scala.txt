@@ -1,0 +1,12 @@
+tar xfz scala-2.11.8.tgz
+sudo mv scala-2.11.8 /opt/
+sudo chown -R root:root /opt/scala-2.11.8/
+sudo chmod -R u+x /opt/scala-2.11.8/bin/
+
+sudo bash -c "cat >> /etc/profile.d/scala.sh" <<"EOF"
+export SCALA_HOME=/opt/scala-2.11.8
+export PATH=$SCALA_HOME/bin:$PATH
+EOF
+
+source /etc/profile.d/scala.sh
+

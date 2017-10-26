@@ -1,0 +1,297 @@
+sudo fdisk -l
+sudo fdisk /dev/sdb
+sudo mkfs.ext4 /dev/sdb1
+sudo apt-get install xfsprogs
+sudo fdisk /dev/sdc
+sudo mkfs.xfs -f /dev/sdc1
+sudo blkid
+
+sudo vi /etc/fstab
+```
+UUID=<uuid> /data1 ext4 defaults 0 2
+UUID=<uuid> /data2 xfs defaults 0 2
+```
+
+sudo mkdir -p /data1
+sudo mkdir -p /data2
+sudo chown -R ubuntu /data1/
+sudo chown -R ubuntu /data2/
+sudo mount -a
+sudo df -h
+
+sudo mv /etc/apt/apt.conf.d/20auto-upgrades.ucf-dist \
+  /etc/apt/apt.conf.d/20auto-upgrades
+
+sudo add-apt-repository ppa:graphics-drivers/ppa
+sudo apt-get update && sudo apt-get install nvidia-375 nvidia-settings
+sudo prime-select --help
+
+# server login command line
+sudo systemctl disable lightdm.service
+
+sudo apt-get install linux-generic linux-headers-generic linux-image-generic \
+  build-essential python-software-properties software-properties-common
+
+sudo apt-get install language-pack-zh-hans language-pack-zh-hans-base \
+  fonts-arphic-uming fonts-arphic-ukai fonts-wqy-microhei fonts-wqy-zenhei
+
+cat /etc/default/locale
+sudo locale-gen en_US en_US.UTF-8
+sudo dpkg-reconfigure locales
+
+sudo apt-get install vim vim-scripts exuberant-ctags cscope
+
+# desktop
+sudo apt-get install vim-gnome vim-gtk unrar p7zip fbreader
+
+sudo apt-get install gconf-editor
+
+gconftool-2 --set --type=list --list-type=string \
+/apps/gedit-2/preferences/encodings/auto_detected  \
+"[UTF-8,GB2312,GBK,GB18030,CURRENT,ISO-8859-15,UTF-16]"
+
+sudo vi /etc/apt/sources.list
+```
+deb http://archive.canonical.com/ubuntu xenial partner
+deb-src http://archive.canonical.com/ubuntu xenial partner
+```
+
+sudo apt-get install gstreamer1.0-plugins-ugly gstreamer1.0-libav gstreamer1.0-fluendo-mp3
+sudo apt-get install vlc vlc-plugin-fluidsynth
+sudo apt-get install flashplugin-installer
+
+sudo apt-get install curl ssh openssh-server
+
+sudo bash -c "cat >> /etc/ssh/ssh_config" <<"EOF"
+TCPKeepAlive yes
+ServerAliveInterval 60
+EOF
+
+sudo bash -c "cat >> /etc/ssh/sshd_config" <<"EOF"
+ClientAliveInterval 60
+EOF
+
+sudo service ssh restart
+
+ssh-keygen -t rsa
+sudo ssh-keygen -t rsa -f /etc/ssh/ssh_host_rsa_key
+ssh-copy-id <user>@<host>
+ssh-add
+tail -f /var/log/auth.log
+
+sudo apt-get install axel
+axel -n 5 http://example.com/somefile.zip
+
+sudo apt-get install rsync grsync
+rsync --delete -azv --exclude '.git' /some/path/ /other/path/
+rsync --delete -vrltgoD -e ssh /some/path/ <user>@<host>:/some/path
+
+sudo apt-get install colordiff
+diff file1 file2 | colordiff
+
+tar czvf foo.tar.gz foo/
+tar xzvf foo.tar.gz
+zip -r -0 foo.zip foo/
+
+wget -r -c -N -p -np -k http://example.com/
+ulimit -a
+
+sudo vi /etc/security/limits.conf
+```
+* soft nofile 51200
+* hard nofile 51200
+root soft nofile 51200
+root hard nofile 51200
+```
+
+sudo vi /etc/pam.d/su
+```
+session required pam_limits.so
+```
+
+sudo apt-key list
+sudo apt-key del 98AB5139
+sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 16126D3A3E5C1192
+
+sudo adduser <username>
+sudo addgroup <groupname>
+sudo adduser <username> <groupname>
+sudo deluser <username> <groupname>
+sudo deluser --remove-home <username>
+sudo usermod -aG <groupname> <username>
+sudo usermod -aG sudo <username>
+groups <username>
+passwd <username>
+cat /etc/passwd | grep <username>
+cat /etc/group | grep <groupname>
+
+sudo visudo
+```
+root  ALL=(ALL:ALL) ALL
+%<groupname> ALL=(ALL) ALL
+<username> ALL=(ALL) ALL
+```
+
+sudo vi /etc/hostname
+sudo vi /etc/hosts
+sudo sed -i "s/<host-1>/<host-2>/g" /etc/hostname
+
+sudo vi /etc/default/grub
+```
+GRUB_CMDLINE_LINUX_DEFAULT="quiet splash text"
+```
+
+sudo update-grub
+
+sudo apt-get install sysv-rc-conf
+sysv-rc-conf --list | grep -i mysql
+
+sudo apt-get install x11vnc
+x11vnc -safer -nopw -forever -display :0
+
+netstat -lnp | grep :80
+lsof -i tcp:80
+sudo kill -9 PID
+
+sudo apt-get install bwm-ng
+bwm-ng
+
+sudo apt-get install iftop
+sudo iftop
+
+sudo apt-get install iptraf
+sudo iptraf
+
+netstat -na|grep ESTABLISHED|awk '{print $5}'|awk -F: '{print $1}'|sort|uniq -c|sort -r -n
+netstat -na|grep SYN|awk '{print $5}'|awk -F: '{print $1}'|sort|uniq -c|sort -r -n
+
+ifconfig eth0 |awk '/inet/ {split($2,x,":");print x[2]}'
+w3m -no-cookie -dump ip.loveroot.com|grep -o '[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}'
+
+netstat -rn
+sudo route -n
+
+sudo iptables -t filter -A INPUT -s 192.168.1.125 -i eth0 -j DROP
+sudo iptables -A OUTPUT -p tcp --dport 1234 -j DROP
+sudo iptables -A INPUT -p tcp --dport 80 -j ACCEPT
+sudo iptables -A INPUT -p tcp --dport 80 -m connlimit --connlimit-above 50 --connlimit-mask 32 -j DROP
+sudo iptables -t filter -I INPUT -s 192.168.2.0/24 -p tcp --dport http -j DROP
+sudo iptables -t filter -I INPUT -s 192.168.1.23 -p tcp --dport ftp -j DROP
+
+sudo ./blockip.sh 123.1.2.3
+sudo ./allowip.sh 123.1.2.3
+
+vi blockip.sh
+```
+/sbin/iptables -A INPUT -s $1 -j DROP
+/sbin/iptables-save > /etc/sysconfig/iptables
+```
+
+vi allowip.sh
+```
+/sbin/iptables -D INPUT -s $1 -j DROP
+/sbin/iptables-save > /etc/sysconfig/iptables
+```
+
+sudo apt-get install convmv
+convmv -r -f cp936 -t utf8 --notest --nosmart *
+
+iconv -f gbk -t utf8 $i > newfile
+
+sudo apt-get install acpi
+acpi -V
+
+sudo apt install lm-sensors
+sensors
+
+sudo apt-get install hddtemp
+sudo hddtemp /dev/sda
+
+sudo apt-get install sysstat
+sudo iostat -x 10
+df -lh
+
+sudo apt-get install ntp
+ntpq -p
+
+sudo vi /etc/NetworkManager/system-connections/Wired\ connection
+```
+[ipv4]
+method=manual
+dns=<ip-1>;<ip-2>;
+addresses1=<ip-1>;<ip-2>;
+```
+
+nautilus ./
+
+killall nm-applet
+nm-applet --sm-disable &
+sudo service network-manager restart
+
+sudo vi /etc/udev/rules.d/70-persistent-net.rules
+
+sudo lshw -class network
+
+sudo vi /etc/network/interfaces
+```
+auto lo
+iface lo inet loopback
+auto eth0
+iface eth0 inet static
+        address <ip-1>
+        netmask <mask-1>
+        gateway <gateway>
+        dns-nameservers <ip-1> <ip-2>
+auto eth0:0
+iface eth0:0 inet static
+        address <ip-2>
+        netmask <mask-2>
+        gateway <gateway>
+```
+
+sudo /etc/init.d/networking restart
+
+ifconfig -a
+
+sudo ifconfig eth0 add 210.51.23.18 netmask 255.255.255.0 broadcast 210.51.23.255 up
+
+nslookup example.com
+
+sudo apt-get install traceroute
+
+sudo route add default gw 210.51.23.1
+
+ip route
+210.51.23.0/24 dev eth2 proto kernel scope link src 210.51.23.18
+169.254.0.0/16 dev eth2 scope link metric 1000
+default via 210.51.23.1 dev eth2 metric 100
+
+ip route
+192.168.1.0/24 dev wlan0 proto kernel scope link src 192.168.1.103 metric 2
+169.254.0.0/16 dev wlan0 scope link metric 1000
+default via 192.168.1.1 dev wlan0 proto static
+
+nmap localhost
+nmap <ip>
+
+sudo iptables -L -n
+
+sudo service ufw start
+sudo ufw enable
+sudo ufw status
+sudo ufw allow 22
+sudo ufw deny 22
+sudo ufw delete allow ssh
+sudo ufw --dry-run allow http
+sudo ufw app list
+sudo ufw allow Samba
+sudo ufw app info Samba
+sudo ufw logging on
+sudo vi /etc/default/ufw
+
+sudo apt-get install apache2-utils
+ab -k -c 100 -n 1000000 http://localhost:9000/load
+
+sudo poweroff
+sudo shutdown -h now
+

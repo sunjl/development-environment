@@ -1,0 +1,84 @@
+sudo apt-get install git-core
+
+git config --global user.name "<name>"
+git config --global user.email "<email>"
+git config --global color.ui auto
+git config --global push.default simple
+git config --list
+cat ~/.gitconfig
+
+mkdir test_project
+cd test_project
+git init
+touch a_text_file.txt
+git add .
+git reset -- vendor
+find vendor/ -type f -not -path "*/.git/*" -exec git add {} \;
+for f in $(git status --porcelain | grep '^??' | sed 's/^?? //'); do
+    test -L "$f" && echo $f >> .gitignore;
+    test -d "$f" && echo $f\* >> .gitignore;
+done
+git commit -am "init"
+git remote add origin git@<host>:test_project.git
+git push origin master
+
+git config --global credential.helper 'cache --timeout=8640000'
+
+vi test_project/.git/config
+```
+[branch "master"]
+	remote = origin
+	merge = refs/heads/master
+```
+
+git clone git@<host>:test_project.git -b master --depth 1
+
+git tag -l
+git tag tag_name -m 'tag message'
+git tag tag_name commit_id
+git checkout tag_name
+
+git branch -a
+git branch branch_name
+git checkout branch_name
+git push origin branch_name
+git checkout master
+git merge branch_name
+git branch -d branch_name
+git branch -D branch_name
+git push origin :branch_name
+
+git rm -r --cached dir_name
+git rm --cached file_name
+
+git pull
+git stash apply
+git checkout .
+git checkout -f
+git checkout file_name
+git checkout HEAD -- dir_name
+git reset HEAD file_name
+git reset --soft HEAD^
+git reset --hard ORIG_HEAD
+git clean -fdx
+git push -f
+git rebase -i HEAD
+git rebase master
+
+gitk
+git status
+git diff HEAD
+git diff --cached
+git log -p
+git log -p --follow file_name
+git blame file_name
+git show HEAD^
+git show <some_commit_id>:path/to/file
+
+cat .gitmodules
+git submodule update --init --recursive
+
+echo ".DS_Store" >> ~/.gitignore
+git config --global core.excludesfile ~/.gitignore
+find .-name .DS_Store -print0 | xargs -0 git-rm
+

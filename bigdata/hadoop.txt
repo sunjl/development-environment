@@ -1,0 +1,168 @@
+tar xfz hadoop-2.7.3.tar.gz
+mv hadoop-2.7.3 ~/software
+
+ssh-keygen -t rsa
+cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
+ssh-copy-id `whoami`@`hostname`
+ssh-add
+
+sudo vi /etc/hosts
+```
+# 127.0.1.1 <host>
+<ip> <host>
+```
+
+vi ~/.bash_profile
+```
+export HADOOP_HOME=$HOME/software/hadoop-2.7.3
+export PATH=$HADOOP_HOME/bin:$PATH
+export LD_LIBRARY_PATH=$HADOOP_HOME/lib/native/:$LD_LIBRARY_PATH
+```
+
+source ~/.bash_profile
+
+vi $HADOOP_HOME/etc/hadoop/core-site.xml
+```
+<configuration>
+  <property>
+    <name>fs.defaultFS</name>
+    <value>hdfs://<host>:8020</value>
+  </property>
+</configuration>
+```
+
+vi $HADOOP_HOME/etc/hadoop/hdfs-site.xml
+```
+<configuration>
+  <property>
+    <name>dfs.namenode.name.dir</name>
+    <value>/data/hadoop/dfs/nn</value>
+  </property>
+  <property>
+    <name>dfs.datanode.data.dir</name>
+    <value>/data/hadoop/dfs/dn</value>
+  </property>
+</configuration>
+```
+
+vi $HADOOP_HOME/etc/hadoop/yarn-site.xml
+```
+<configuration>
+  <property>
+    <name>yarn.resourcemanager.address</name>
+    <value><host>:8031</value>
+  </property>
+  <property>
+    <name>yarn.resourcemanager.scheduler.address</name>
+    <value><host>:8030</value>
+  </property>
+  <property>
+    <name>yarn.resourcemanager.resource-tracker.address</name>
+    <value><host>:8025</value>
+  </property>
+  <property>
+    <name>yarn.resourcemanager.admin.address</name>
+    <value><host>:8141</value>
+  </property>
+  <property>
+    <name>yarn.resourcemanager.webapp.address</name>
+    <value><host>:8088</value>
+  </property>
+  <property>
+    <name>yarn.resourcemanager.scheduler.class</name>
+    <value>org.apache.hadoop.yarn.server.resourcemanager.scheduler.capacity.CapacityScheduler</value>
+  </property>
+  <property>
+    <name>yarn.nodemanager.address</name>
+    <value><host>:8034</value>
+  </property>
+  <property>
+    <name>yarn.nodemanager.resource.memory-mb</name>
+    <value>10240</value>
+  </property>
+  <property>
+    <name>yarn.nodemanager.vmem-check-enabled</name>
+    <value>false</value>
+  </property>
+  <property>
+    <name>yarn.nodemanager.local-dirs</name>
+    <value>/data/hadoop/yarn/local</value>
+  </property>
+  <property>
+    <name>yarn.nodemanager.log-dirs</name>
+    <value>/data/hadoop/yarn/log</value>
+  </property>
+  <property>
+    <name>yarn.nodemanager.aux-services</name>
+    <value>mapreduce_shuffle</value>
+  </property>
+</configuration>
+```
+
+cp $HADOOP_HOME/etc/hadoop/mapred-site.xml.template $HADOOP_HOME/etc/hadoop/mapred-site.xml
+
+vi $HADOOP_HOME/etc/hadoop/mapred-site.xml
+```
+<configuration>
+  <property>
+    <name>mapreduce.framework.name</name>
+    <value>yarn</value>
+  </property>
+  <property>
+    <name>mapreduce.cluster.temp.dir</name>
+    <value>/data/hadoop/mr/tmp</value>
+    <final>true</final>
+  </property>
+  <property>
+    <name>mapreduce.cluster.local.dir</name>
+    <value>/data/hadoop/mr/local</value>
+    <final>true</final>
+  </property>
+</configuration>
+```
+
+vi $HADOOP_HOME/etc/hadoop/slaves
+```
+<host>
+```
+
+vi $HADOOP_HOME/etc/hadoop/hadoop-env.sh
+```
+export JAVA_HOME=/usr/lib/jvm/default-java
+```
+
+mkdir -p /data/hadoop/dfs/nn
+mkdir -p /data/hadoop/dfs/dn
+mkdir -p /data/hadoop/yarn/local
+mkdir -p /data/hadoop/yarn/log
+mkdir -p /data/hadoop/mr/tmp
+mkdir -p /data/hadoop/mr/local
+$HADOOP_HOME/bin/hdfs namenode -format
+
+$HADOOP_HOME/sbin/start-dfs.sh
+$HADOOP_HOME/sbin/start-yarn.sh
+$HADOOP_HOME/sbin/mr-jobhistory-daemon.sh start historyserver
+
+jps
+netstat -ntl | grep 8020
+lsof -i:8020
+
+# http://<host>:50070/
+# http://<host>:8088/
+# http://<host>:19888/
+
+$HADOOP_HOME/bin/hadoop fs -ls -R /
+$HADOOP_HOME/bin/hadoop fs -mkdir -p /user/$USER
+$HADOOP_HOME/bin/hadoop fs -mkdir input
+$HADOOP_HOME/bin/hadoop fs -put $HADOOP_HOME/etc/hadoop/*.xml input
+$HADOOP_HOME/bin/hadoop fs -ls input
+$HADOOP_HOME/bin/hadoop jar $HADOOP_HOME/share/hadoop/mapreduce/hadoop-mapreduce-examples-2.7.3.jar grep input output 'dfs[a-z.]+'
+$HADOOP_HOME/bin/hadoop fs -ls
+$HADOOP_HOME/bin/hadoop fs -ls output
+$HADOOP_HOME/bin/hadoop fs -cat output/part-r-00000 | head
+$HADOOP_HOME/bin/hadoop fs -rm -r output*
+
+$HADOOP_HOME/sbin/mr-jobhistory-daemon.sh stop historyserver
+$HADOOP_HOME/sbin/stop-yarn.sh
+$HADOOP_HOME/sbin/stop-dfs.sh
+

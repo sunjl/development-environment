@@ -1,0 +1,111 @@
+tar xfz hive-0.13.1.tar.gz
+sudo mv hive-0.13.1 /opt
+
+sudo vi /etc/profile.d/hive.sh
+```
+export HIVE_HOME=/opt/hive-0.13.1
+export PATH=$HIVE_HOME/bin:$PATH
+```
+
+source /etc/profile.d/hive.sh
+
+sudo apt-get install mysql-client libmysql-java
+dpkg -L libmysql-java
+sudo cp /usr/share/java/mysql-connector-java-5.1.16.jar $HIVE_HOME/lib
+sudo chown -R `whoami`:root /opt/hive-0.13.1
+
+sudo vi /etc/mysql/my.cnf
+```
+#bind-address = 127.0.0.1
+```
+
+sudo service mysql restart
+
+cd /opt/hive-0.13.1/conf/
+sudo mv hive-default.xml.template hive-site.xml
+sudo mv hive-env.sh.template hive-env.sh
+sudo mv hive-exec-log4j.properties.template hive-exec-log4j.properties
+sudo mv hive-log4j.properties.template hive-log4j.properties
+
+sudo vi hive-site.xml
+```
+<property>
+  <name>mapred.job.tracker</name>
+  <value><host></value>
+</property>
+<property>
+  <name>hive.metastore.uris</name>
+  <value>thrift://<host>:9083</value>
+</property>
+<property>
+  <name>javax.jdo.option.ConnectionURL</name>
+  <value>jdbc:mysql://<host>/hive</value>
+</property>
+<property>
+  <name>javax.jdo.option.ConnectionDriverName</name>
+  <value>com.mysql.jdbc.Driver</value>
+</property>
+<property>
+  <name>javax.jdo.option.ConnectionUserName</name>
+  <value>hive</value>
+</property>
+<property>
+  <name>javax.jdo.option.ConnectionPassword</name>
+  <value>hive</value>
+</property>
+<property>
+  <name>datanucleus.autoCreateSchema</name>
+  <value>false</value>
+</property>
+<property>
+  <name>datanucleus.fixedDatastore</name>
+  <value>true</value>
+</property>
+<property>
+  <name>hive.hwi.listen.host</name>
+  <value><host></value>
+</property>
+```
+
+sudo vi $HIVE_HOME/conf/hive-env.sh
+```
+export HIVE_AUX_JARS_PATH=$HIVE_HOME/lib
+```
+
+mysql -u root -h <host> -p
+> drop user hive@'<host>';
+> create user 'hive'@'<host>' identified by 'hive';
+> drop database hive;
+> create database hive;
+> use hive;
+> source /opt/hive-0.13.1/scripts/metastore/upgrade/mysql/hive-schema-0.10.0.mysql.sql;
+> grant all privileges on hive.* to 'hive'@'<host>' with grant option;
+> flush privileges;
+
+$HADOOP_HOME/bin/hadoop fs -mkdir /tmp
+$HADOOP_HOME/bin/hadoop fs -chmod g+w /tmp
+$HADOOP_HOME/bin/hadoop fs -mkdir /user/hive/warehouse
+$HADOOP_HOME/bin/hadoop fs -chmod g+w /user/hive/warehouse
+
+$HIVE_HOME/bin/hive --hiveconf mapreduce.job.queuename=queue1
+$HIVE_HOME/bin/hive
+> create table user (id string, username string);
+> show tables;
+> describe user;
+> load data inpath '</path/to/some/data>' overwrite into table user;
+> select u.* from user u where u.id like '%1%';
+> alter table user add columns (name string);
+> drop table user;
+
+$HIVE_HOME/bin/hive --service metastore
+# $HIVE_HOME/bin/hive --service hiveserver
+$HIVE_HOME/bin/hiveserver2
+
+$HIVE_HOME/bin/hive --service hwi
+nohup $HIVE_HOME/bin/hive --service hwi > /dev/null 2> /dev/null &
+
+# http://<host>:9999/hwi/
+
+sudo netstat -nlp | grep 10000
+sudo lsof -i:10000
+

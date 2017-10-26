@@ -1,0 +1,3 @@
+sudo apt-get install autoconf automake libtool make tar \
+  libaio-dev libssl-dev libapr1-dev lksctp-tools
+

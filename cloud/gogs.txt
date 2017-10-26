@@ -1,0 +1,133 @@
+# https://gogs.io/docs/installation/install_from_binary
+
+wget https://cdn.gogs.io/0.11.4/linux_amd64.zip
+
+unzip linux_amd64.zip
+
+mv gogs ~/software/gogs-0.11.4
+
+cat >> ~/.bash_profile <<"EOF"
+export GOGS_HOME=$HOME/software/gogs-0.11.4
+export PATH=$GOGS_HOME:$PATH
+EOF
+
+source ~/.bash_profile
+
+sudo apt-get install mysql-server
+
+mysql -u root -p < $GOGS_HOME/scripts/mysql.sql
+
+sudo mkdir -p /data/gogs/repositories
+sudo mkdir -p /data/gogs/avatar
+sudo mkdir -p /data/gogs/log
+sudo chown -R ubuntu /data/gogs
+
+mkdir -p $GOGS_HOME/custom/conf
+
+vi $GOGS_HOME/custom/conf/app.ini
+```
+APP_NAME = Gogs
+RUN_USER = ubuntu
+RUN_MODE = prod
+
+[database]
+DB_TYPE  = mysql
+HOST     = 127.0.0.1:3306
+NAME     = gogs
+USER     = root
+PASSWD   = <password>
+SSL_MODE = disable
+PATH     = data/gogs.db
+
+[repository]
+ROOT = /data/gogs/repositories
+
+[server]
+DOMAIN           = example.com
+HTTP_PORT        = 3000
+ROOT_URL         = http://gogs.example.com/
+DISABLE_SSH      = false
+SSH_PORT         = 22
+START_SSH_SERVER = false
+OFFLINE_MODE     = false
+
+[mailer]
+ENABLED = false
+
+[service]
+REGISTER_EMAIL_CONFIRM = false
+ENABLE_NOTIFY_MAIL     = false
+DISABLE_REGISTRATION   = false
+ENABLE_CAPTCHA         = false
+REQUIRE_SIGNIN_VIEW    = false
+
+[picture]
+AVATAR_UPLOAD_PATH	    = /data/gogs/avatar
+DISABLE_GRAVATAR        = false
+ENABLE_FEDERATED_AVATAR = false
+
+[session]
+PROVIDER = file
+
+[log]
+MODE      = file
+LEVEL     = Info
+ROOT_PATH = /data/gogs/log
+
+[security]
+INSTALL_LOCK = true
+SECRET_KEY   = 1Sz27ENNKAEi4g4
+```
+
+sudo vi /lib/systemd/system/gogs.service
+```
+[Unit]
+Description=Gogs
+After=syslog.target
+After=network.target
+After=mysql.service
+
+[Service]
+LimitMEMLOCK=infinity
+LimitNOFILE=65535
+Type=simple
+User=ubuntu
+Group=adm
+WorkingDirectory=/home/ubuntu/software/gogs-0.11.4
+ExecStart=/home/ubuntu/software/gogs-0.11.4/gogs web
+Restart=always
+Environment=USER=ubuntu HOME=/home/ubuntu
+
+[Install]
+WantedBy=multi-user.target
+```
+
+sudo systemctl daemon-reload
+sudo systemctl enable gogs.service
+sudo systemctl start gogs.service
+sudo systemctl status gogs.service
+
+sudo vi /etc/nginx/sites-available/example-gogs
+```
+server {
+  listen 0.0.0.0:80;
+  server_name gogs.example.com;
+  access_log /data/nginx/log/example-gogs_access.log;
+  error_log  /data/nginx/log/example-gogs_error.log;
+  location / {
+    client_max_body_size 1024M;
+    client_body_buffer_size 128k;
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_set_header X-Forwarder-For $proxy_add_x_forwarded_for;
+    proxy_set_header Host $http_host;
+    proxy_set_header X-NginX-Proxy true;
+    proxy_pass http://127.0.0.1:3000;
+    proxy_redirect off;
+  }
+}
+```
+
+sudo ln -s /etc/nginx/sites-available/example-gogs /etc/nginx/sites-enabled/example-gogs
+
+sudo systemctl restart nginx.service
+

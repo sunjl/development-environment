@@ -1,0 +1,25 @@
+sudo apt-get install maven
+
+sudo bash -c 'echo "export MAVEN_OPTS=\"-Xmx16g\"" > /etc/profile.d/maven.sh'
+
+source /etc/profile.d/maven.sh
+
+mvn archetype:generate -DgroupId=com.mycompany.app -DartifactId=my-app -DarchetypeArtifactId=maven-archetype-quickstart -DinteractiveMode=false
+
+mvn package
+
+java -cp target/my-app-1.0-SNAPSHOT.jar com.mycompany.app.App
+
+mvn clean dependency:copy-dependencies package
+mvn site
+mvn compile
+mvn clean install -Dmaven.test.skip=true
+mvn eclipse:eclipse
+mvn failsafe:integration-test
+mvn jetty:run -Djetty.port=8082 -e
+nohup mvn jetty:run &
+
+mvn javadoc:jar source:jar deploy
+mvn release:prepare
+mvn release:perform
+

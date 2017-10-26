@@ -1,0 +1,44 @@
+ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+brew list
+brew search <package_name>
+brew update
+brew upgrade
+
+xcode-select --install
+
+brew install pkg-config libffi libxml2 libxslt
+brew link libxml2 --force
+brew link libxslt --force
+
+brew install wget git imagemagick
+brew install nodejs
+
+brew install maven gradle
+
+brew install nexus
+ln -sfv /usr/local/opt/nexus/*.plist ~/Library/LaunchAgents
+launchctl load ~/Library/LaunchAgents/homebrew.mxcl.nexus.plist
+nexus start
+
+brew install mysql
+ln -sfv /usr/local/opt/mysql/*.plist ~/Library/LaunchAgents
+launchctl load ~/Library/LaunchAgents/homebrew.mxcl.mysql.plist
+mysql.server start
+mysql_secure_installation
+mysql -uroot
+
+brew install postgresql
+ln -sfv /usr/local/opt/postgresql/*.plist ~/Library/LaunchAgents
+launchctl load ~/Library/LaunchAgents/homebrew.mxcl.postgresql.plist
+postgres -D /usr/local/var/postgres
+
+brew install mongodb
+ln -sfv /usr/local/opt/mongodb/*.plist ~/Library/LaunchAgents
+launchctl load ~/Library/LaunchAgents/homebrew.mxcl.mongodb.plist
+mongod --config /usr/local/etc/mongod.conf
+
+brew install elasticsearch
+ln -sfv /usr/local/opt/elasticsearch/*.plist ~/Library/LaunchAgents
+launchctl load ~/Library/LaunchAgents/homebrew.mxcl.elasticsearch.plist
+elasticsearch
+

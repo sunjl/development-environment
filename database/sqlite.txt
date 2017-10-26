@@ -1,0 +1,4 @@
+sudo apt-get install sqlite3 libsqlite3-dev sqlitebrowser
+
+sqlite3 example.db < example.sql
+

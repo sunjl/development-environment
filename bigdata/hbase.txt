@@ -1,0 +1,111 @@
+tar xfz hbase-1.2.4-bin.tar.gz
+mv hbase-1.2.4 ~/software
+
+vi ~/.bash_profile
+```
+export HBASE_HOME=$HOME/software/hbase-1.2.4
+export PATH=$HBASE_HOME/bin:$PATH
+```
+
+source ~/.bash_profile
+
+sudo apt-get install ntp
+
+sudo vi /etc/hosts
+```
+#127.0.1.1 <host>
+<ip> <host>
+```
+
+sudo vi /etc/security/limits.conf
+```
+<username> - nofile 32768
+<username> soft/hard nproc 32000
+```
+
+vi $HBASE_HOME/conf/hbase-site.xml
+```
+<configuration>
+  <property>
+    <name>hbase.rootdir</name>
+    <value>hdfs://<host>:8020/hbase</value>
+  </property>
+  <property>
+    <name>hbase.cluster.distributed</name>
+    <value>true</value>
+  </property>
+  <property>
+    <name>hbase.zookeeper.quorum</name>
+    <value><host></value>
+  </property>
+  <property>
+    <name>hbase.zookeeper.property.dataDir</name>
+    <value>/data/zookeeper</value>
+  </property>
+  <property>
+    <name>hbase.rest.port</name>
+    <value>60050</value>
+  </property>
+</configuration>
+```
+
+vi $HADOOP_HOME/etc/hadoop/hdfs-site.xml
+```
+<configuration>
+  <property>
+    <name>dfs.support.append</name>
+    <value>true</value>
+  </property>
+  <property>
+    <name>dfs.datanode.max.xcievers</name>
+    <value>4096</value>
+  </property>
+</configuration>
+```
+
+sudo vi $HBASE_HOME/conf/regionservers
+```
+<host>
+```
+
+vi $HBASE_HOME/conf/hbase-env.sh
+```
+export JAVA_HOME=/usr/lib/jvm/default-java
+export HBASE_MANAGES_ZK=false
+export HBASE_LOG_DIR=/data/hbase/log
+```
+
+mkdir -p /data/hbase
+
+$HADOOP_HOME/sbin/start-dfs.sh
+$HADOOP_HOME/sbin/start-yarn.sh
+$HADOOP_HOME/sbin/mr-jobhistory-daemon.sh start historyserver
+
+$HADOOP_HOME/bin/hadoop fs -mkdir /hbase
+$HADOOP_HOME/bin/hadoop fs -ls /
+
+$ZOOKEEPER_HOME/bin/zkServer.sh start
+$HBASE_HOME/bin/start-hbase.sh
+
+# http://<host>:16010/
+
+$HBASE_HOME/bin/hbase shell
+> status 'detailed'
+> create 't1', 'cf1'
+> list
+> put 't1', 'row1', 'cf1:cq1', 'value1'
+> put 't1', 'row2', 'cf1:cq2', 'value2'
+> scan 't1', {STARTROW => 'row1', STOPROW => 'row2', LIMIT => 10}
+> count 't1'
+> get 't1', 'row1'
+> truncate 't1'
+> disable 't1'
+> alter 't1', 'cf2'
+> enable 't1'
+> disable 't1'
+> drop 't1'
+
+$HBASE_HOME/bin/stop-hbase.sh
+
+ps aux | grep hbase | awk '{print $2}' | xargs sudo kill -9
+

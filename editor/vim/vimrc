@@ -1,0 +1,53 @@
+autocmd FileType make,automake set noexpandtab shiftwidth=8 softtabstop=8
+autocmd InsertEnter * match ForbiddenWhitespace /\t\|\s\+\%#\@<!$/
+colorscheme pablo
+filetype plugin indent on
+highlight ForbiddenWhitespace ctermbg=red guibg=red
+let g:mapleader=","
+let mapleader=","
+map <C-c> :tabclose<cr>
+map <C-e> :tabedit
+map <C-h> <C-W>h
+map <C-j> <C-W>j
+map <C-k> <C-W>k
+map <C-l> <C-W>l
+map <C-m> :tabmove
+map <C-n> :tabnext<CR>
+map <C-p> :tabprevious<CR>
+map <C-t> :tabnew %<cr>
+map <leader>cd :cd %:p:h<cr>
+map <space> :
+match ForbiddenWhitespace /\s\+$\|\t/
+set autoindent
+set autoread
+set background=dark
+set backspace=2
+set cindent
+set cinoptions=(0
+set clipboard=unnamed
+set enc=utf-8
+set expandtab
+set fencs=utf-8,gb2312,gbk,gb18030
+set fenc=utf-8
+set history=500
+set hlsearch
+set ignorecase
+set incsearch
+set laststatus=2
+set nobackup
+set noerrorbells
+set number
+set ruler
+set shiftround
+set shiftwidth=4
+set showcmd
+set smartcase
+set smartindent
+set softtabstop=4
+set statusline=[%F]%y%r%m%*%=[Line:%l/%L,Column:%c][%p%%]
+set tabstop=2
+set visualbell
+set wildmenu
+syntax on
+vmap <leader>p "*p
+vmap <leader>y "+y
