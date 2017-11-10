@@ -27,6 +27,14 @@ for url in `cat ~/download/input.txt` ; do
   fi
 done
 
+for file in `ls .` ; do
+    if [[ -f $file ]] && [[ $file = *.png ]]; then
+        filename=`expr match $file '^\(.*\)\..*$'`
+        extension=`expr match $file '^.*\.\(.*\)$'`
+        convert $file -define morphology:compose=darken -morphology Thinning 'Rectangle:1x80+0+0<' new-$filename.$extension
+    fi
+done
+
 for dir in `ls -d -1 $PWD/**` ; do
   echo $dir;
   cd $dir && npm install;

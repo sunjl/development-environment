@@ -12,6 +12,20 @@ source /etc/profile.d/jmagick.sh
 
 sudo apt-get install graphicsmagick libgraphicsmagick3
 
+convert input.png -resize 192x48! png24:output.png
+
+for file in `ls .` ; do
+    if [[ -f $file ]] && [[ $file = *.png ]]; then
+        filename=`expr match $file '^\(.*\)\..*$'`
+        extension=`expr match $file '^.*\.\(.*\)$'`
+        convert $file -define morphology:compose=darken -morphology Thinning 'Rectangle:1x80+0+0<' new-$filename.$extension
+    fi
+done
+
+convert -list morphology
+
+convert -list kernel
+
 # image crop script
 #!/bin/bash
 IN_DIR=~/download/test

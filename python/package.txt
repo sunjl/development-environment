@@ -1,0 +1,5 @@
+sudo apt-get install build-essential libffi-dev python-dev
+sudo pip install -U bcrypt
+
+sudo pip install -U Celery
+

@@ -50,7 +50,6 @@ iptables -t nat -A POSTROUTING -o <device> -j MASQUERADE
 exit 0
 ```
 
-# 16.04
 sudo service openvpn@server start
 sudo service openvpn@server status
 
