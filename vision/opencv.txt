@@ -34,6 +34,10 @@ cd opencv-3.3.0/build
 
 cmake -D CMAKE_BUILD_TYPE=RELEASE \
   -D CMAKE_INSTALL_PREFIX=/usr/local \
+  -D WITH_CUDA=ON \
+  -D ENABLE_FAST_MATH=1 \
+  -D CUDA_FAST_MATH=1 \
+  -D WITH_CUBLAS=1 \
   -D OPENCV_EXTRA_MODULES_PATH=/full/path/to/opencv_contrib-3.3.0/modules \
   ..
 

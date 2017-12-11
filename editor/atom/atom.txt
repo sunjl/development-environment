@@ -1,7 +1,7 @@
 # https://atom.io/
 
-apm install file-icons minimap markdown-scroll-sync tidy-markdown \
-  language-gradle language-groovy language-scala
+apm install file-icons minimap markdown-preview-plus markdown-scroll-sync tidy-markdown \
+  language-gradle language-groovy language-javascript-jsx language-scala
 
 # Edit -> Stylesheet
 atom-text-editor::shadow {

@@ -26,6 +26,9 @@ sudo add-apt-repository ppa:graphics-drivers/ppa
 sudo apt-get update && sudo apt-get install nvidia-375 nvidia-settings
 sudo prime-select --help
 
+# server login
+Ctrl+Alt+F1
+
 # hp printer
 sudo apt-get install hplip libcups2 libcups2-dev cups-bsd cups-client libusb-1.0.0-dev libsane-dev \
   libsnmp-dev snmp-mibs-downloader python3-pyqt4 gtk2-engines-pixbuf libcupsimage2-dev \

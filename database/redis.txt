@@ -1,3 +1,66 @@
+# manual installation
+sudo apt-get install build-essential tcl
+
+wget http://download.redis.io/releases/redis-4.0.6.tar.gz
+
+tar xzf redis-4.0.6.tar.gz
+
+cd redis-4.0.6
+
+make
+
+sudo make PREFIX=/opt/redis-4.0.6 install
+
+sudo bash -c "cat > /etc/profile.d/redis.sh" <<"EOF"
+export REDIS_HOME=/opt/redis-4.0.6
+export PATH=$REDIS_HOME/bin:$PATH
+EOF
+
+source /etc/profile.d/redis.sh
+
+sudo mkdir -p $REDIS_HOME/conf
+
+sudo cp redis.conf $REDIS_HOME/conf
+
+sudo vi $REDIS_HOME/conf/redis.conf
+```
+supervised systemd
+dir /data/redis
+```
+
+sudo adduser --system --group --no-create-home redis
+
+sudo mkdir -p /data/redis
+
+sudo chown -R redis:redis /data/redis
+
+sudo chmod -R 770 /data/redis
+
+sudo bash -c "cat > /lib/systemd/system/redis.service" <<"EOF"
+[Unit]
+Description=Redis In-Memory Data Store
+After=network.target
+
+[Service]
+User=redis
+Group=redis
+ExecStart=/opt/redis-4.0.6/bin/redis-server /opt/redis-4.0.6/conf/redis.conf
+ExecStop=/opt/redis-4.0.6/bin/redis-cli shutdown
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+sudo systemctl daemon-reload
+
+sudo systemctl enable redis.service
+
+sudo systemctl start redis.service
+
+sudo systemctl status redis.service
+
+# package installation
 sudo apt-get install python-software-properties software-properties-common
 
 sudo add-apt-repository ppa:chris-lea/redis-server
@@ -29,12 +92,15 @@ sudo service redis-server restart
 sudo usermod -aG redis <username>
 
 redis-cli
+> set <key> "<value>"
+> get <key>
 > dbsize
 > keys *
 > type <key>
 > del <key>
 > flushall
 > hgetall <key>
->llen <key>
->lrange <key> 0 -1
+> llen <key>
+> lrange <key> 0 -1
+> exit
 
