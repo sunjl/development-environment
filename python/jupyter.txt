@@ -1,4 +1,4 @@
-sudo pip install -U ipython jupyter
+sudo pip3 install -U ipython jupyter jupyter_console
 
 jupyter notebook
 

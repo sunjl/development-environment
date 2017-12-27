@@ -8,10 +8,6 @@ cd $HOME/software/tensorflow-1.4
 
 git clone --recursive -b master https://github.com/tensorflow/models.git
 
-cd models/research
-
-protoc object_detection/protos/*.proto --python_out=.
-
 cat >> ~/.bash_profile <<"EOF"
 export TENSORFLOW_HOME=$HOME/software/tensorflow-1.4
 export PYTHONPATH=$PYTHONPATH:$TENSORFLOW_HOME/models/research/slim
@@ -19,5 +15,82 @@ EOF
 
 source ~/.bash_profile
 
+cd $TENSORFLOW_HOME/models/research
+
+protoc object_detection/protos/*.proto --python_out=.
+
 python3 object_detection/builders/model_builder_test.py
+
+cd cd $TENSORFLOW_HOME/models/research/object_detection
+
+wget http://download.tensorflow.org/models/object_detection/ssd_mobilenet_v1_coco_2017_11_17.tar.gz
+
+tar -xvf ssd_mobilenet_v1_coco_2017_11_17.tar.gz
+
+wget http://storage.googleapis.com/download.tensorflow.org/models/object_detection/faster_rcnn_resnet101_coco_11_06_2017.tar.gz
+
+tar -xvf faster_rcnn_resnet101_coco_11_06_2017.tar.gz
+
+cd $TENSORFLOW_HOME/models/research
+
+wget http://host.robots.ox.ac.uk/pascal/VOC/voc2012/VOCtrainval_11-May-2012.tar
+
+tar -xvf VOCtrainval_11-May-2012.tar
+
+python3 object_detection/dataset_tools/create_pascal_tf_record.py \
+    --label_map_path=object_detection/data/pascal_label_map.pbtxt \
+    --data_dir=VOCdevkit --year=VOC2012 --set=train \
+    --output_path=pascal_train.record
+
+python3 object_detection/dataset_tools/create_pascal_tf_record.py \
+    --label_map_path=object_detection/data/pascal_label_map.pbtxt \
+    --data_dir=VOCdevkit --year=VOC2012 --set=val \
+    --output_path=pascal_val.record
+
+wget http://www.robots.ox.ac.uk/~vgg/data/pets/data/images.tar.gz
+
+wget http://www.robots.ox.ac.uk/~vgg/data/pets/data/annotations.tar.gz
+
+tar -xvf images.tar.gz
+
+tar -xvf annotations.tar.gz
+
+python3 object_detection/dataset_tools/create_pet_tf_record.py \
+    --label_map_path=object_detection/data/pet_label_map.pbtxt \
+    --data_dir=`pwd` \
+    --output_dir=`pwd`
+
+cp pet_train_with_masks.record object_detection \
+  object_detection/faster_rcnn_resnet101_coco_11_06_2017/pet_train.record
+
+cp pet_val_with_masks.record object_detection \
+  object_detection/faster_rcnn_resnet101_coco_11_06_2017/pet_val.record
+
+cp object_detection/data/pet_label_map.pbtxt \
+  object_detection/faster_rcnn_resnet101_coco_11_06_2017/
+
+cp object_detection/samples/configs/faster_rcnn_resnet101_pets.config \
+  object_detection/faster_rcnn_resnet101_coco_11_06_2017/
+
+sed -i "s|PATH_TO_BE_CONFIGURED|$TENSORFLOW_HOME/models/research/object_detection/faster_rcnn_resnet101_coco_11_06_2017|g" \
+    object_detection/faster_rcnn_resnet101_coco_11_06_2017/faster_rcnn_resnet101_pets.config
+
+python3 object_detection/train.py \
+    --logtostderr \
+    --pipeline_config_path=object_detection/faster_rcnn_resnet101_coco_11_06_2017/faster_rcnn_resnet101_pets.config \
+    --train_dir=object_detection/faster_rcnn_resnet101_coco_11_06_2017/train
+
+python3 object_detection/eval.py \
+    --logtostderr \
+    --pipeline_config_path=object_detection/faster_rcnn_resnet101_coco_11_06_2017/faster_rcnn_resnet101_pets.config \
+    --checkpoint_dir=object_detection/faster_rcnn_resnet101_coco_11_06_2017 \
+    --eval_dir=object_detection/faster_rcnn_resnet101_coco_11_06_2017/eval
+
+tensorboard --logdir=object_detection/faster_rcnn_resnet101_coco_11_06_2017
+
+python3 object_detection/export_inference_graph.py \
+    --input_type image_tensor \
+    --pipeline_config_path object_detection/faster_rcnn_resnet101_coco_11_06_2017/faster_rcnn_resnet101_pets.config \
+    --trained_checkpoint_prefix object_detection/faster_rcnn_resnet101_coco_11_06_2017/train/model.ckpt-${CHECKPOINT_NUMBER} \
+    --output_directory object_detection/faster_rcnn_resnet101_coco_11_06_2017/export
 

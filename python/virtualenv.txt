@@ -1,0 +1,9 @@
+ENV_DIR=python-env
+PACKAGES="requests lxml w3lib cssselect twisted beautifulsoup4 queuelib"
+virtualenv $ENV_DIR
+source $ENV_DIR/bin/activate
+for package in $PACKAGES
+do
+    pip install $package
+done
+
