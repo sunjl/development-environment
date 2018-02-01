@@ -53,66 +53,6 @@
       </externalConfiguration>
     </repository>
     <repository>
-      <id>apache-snapshots</id>
-      <name>Apache Snapshots</name>
-      <providerRole>org.sonatype.nexus.proxy.repository.Repository</providerRole>
-      <providerHint>maven2</providerHint>
-      <localStatus>IN_SERVICE</localStatus>
-      <notFoundCacheActive>true</notFoundCacheActive>
-      <notFoundCacheTTL>1440</notFoundCacheTTL>
-      <userManaged>true</userManaged>
-      <exposed>true</exposed>
-      <browseable>true</browseable>
-      <writePolicy>READ_ONLY</writePolicy>
-      <indexable>true</indexable>
-      <searchable>true</searchable>
-      <localStorage>
-        <provider>file</provider>
-      </localStorage>
-      <remoteStorage>
-        <url>https://repository.apache.org/snapshots/</url>
-      </remoteStorage>
-      <externalConfiguration>
-        <proxyMode>ALLOW</proxyMode>
-        <artifactMaxAge>1440</artifactMaxAge>
-        <itemMaxAge>1440</itemMaxAge>
-        <cleanseRepositoryMetadata>false</cleanseRepositoryMetadata>
-        <downloadRemoteIndex>false</downloadRemoteIndex>
-        <checksumPolicy>WARN</checksumPolicy>
-        <repositoryPolicy>SNAPSHOT</repositoryPolicy>
-      </externalConfiguration>
-    </repository>
-    <repository>
-      <id>codehaus-snapshots</id>
-      <name>Codehaus Snapshots</name>
-      <providerRole>org.sonatype.nexus.proxy.repository.Repository</providerRole>
-      <providerHint>maven2</providerHint>
-      <localStatus>IN_SERVICE</localStatus>
-      <notFoundCacheActive>true</notFoundCacheActive>
-      <notFoundCacheTTL>1440</notFoundCacheTTL>
-      <userManaged>true</userManaged>
-      <exposed>true</exposed>
-      <browseable>true</browseable>
-      <writePolicy>READ_ONLY</writePolicy>
-      <indexable>true</indexable>
-      <searchable>true</searchable>
-      <localStorage>
-        <provider>file</provider>
-      </localStorage>
-      <remoteStorage>
-        <url>https://nexus.codehaus.org/snapshots/</url>
-      </remoteStorage>
-      <externalConfiguration>
-        <proxyMode>ALLOW</proxyMode>
-        <artifactMaxAge>1440</artifactMaxAge>
-        <itemMaxAge>1440</itemMaxAge>
-        <cleanseRepositoryMetadata>false</cleanseRepositoryMetadata>
-        <downloadRemoteIndex>false</downloadRemoteIndex>
-        <checksumPolicy>WARN</checksumPolicy>
-        <repositoryPolicy>SNAPSHOT</repositoryPolicy>
-      </externalConfiguration>
-    </repository>
-    <repository>
       <id>releases</id>
       <name>Releases</name>
       <providerRole>org.sonatype.nexus.proxy.repository.Repository</providerRole>
@@ -231,15 +171,11 @@
           <memberRepository>snapshots</memberRepository>
           <memberRepository>thirdparty</memberRepository>
           <memberRepository>central</memberRepository>
-          <memberRepository>apache-snapshots</memberRepository>
-          <memberRepository>codehaus-snapshots</memberRepository>
           <memberRepository>java.net</memberRepository>
           <memberRepository>jboss-releases</memberRepository>
           <memberRepository>sbt-plugin-releases</memberRepository>
           <memberRepository>typesafe-ivy-releases</memberRepository>
           <memberRepository>typesafe-releases</memberRepository>
-          <memberRepository>typesafe-snapshots</memberRepository>
-          <memberRepository>sonatype-snapshots</memberRepository>
         </memberRepositories>
       </externalConfiguration>
     </repository>
@@ -368,7 +304,7 @@
         <metadataMaxAge>1440</metadataMaxAge>
         <itemMaxAge>1440</itemMaxAge>
         <autoBlockActive>true</autoBlockActive>
-        <proxyMode>ALLOW</proxyMode>
+        <proxyMode>BLOCKED_AUTO</proxyMode>
       </externalConfiguration>
     </repository>
     <repository>
@@ -403,102 +339,6 @@
       </externalConfiguration>
     </repository>
     <repository>
-      <id>typesafe-snapshots</id>
-      <name>Typesafe Snapshots</name>
-      <providerRole>org.sonatype.nexus.proxy.repository.Repository</providerRole>
-      <providerHint>maven2</providerHint>
-      <localStatus>IN_SERVICE</localStatus>
-      <notFoundCacheActive>true</notFoundCacheActive>
-      <notFoundCacheTTL>1440</notFoundCacheTTL>
-      <userManaged>true</userManaged>
-      <exposed>true</exposed>
-      <browseable>true</browseable>
-      <writePolicy>READ_ONLY</writePolicy>
-      <indexable>true</indexable>
-      <searchable>true</searchable>
-      <localStorage>
-        <provider>file</provider>
-      </localStorage>
-      <remoteStorage>
-        <url>http://repo.typesafe.com/typesafe/snapshots/</url>
-      </remoteStorage>
-      <externalConfiguration>
-        <repositoryPolicy>SNAPSHOT</repositoryPolicy>
-        <checksumPolicy>WARN</checksumPolicy>
-        <fileTypeValidation>true</fileTypeValidation>
-        <downloadRemoteIndex>true</downloadRemoteIndex>
-        <artifactMaxAge>1440</artifactMaxAge>
-        <metadataMaxAge>1440</metadataMaxAge>
-        <itemMaxAge>1440</itemMaxAge>
-        <autoBlockActive>true</autoBlockActive>
-        <proxyMode>ALLOW</proxyMode>
-      </externalConfiguration>
-    </repository>
-    <repository>
-      <id>sonatype-snapshots</id>
-      <name>Sonatype Snapshots</name>
-      <providerRole>org.sonatype.nexus.proxy.repository.Repository</providerRole>
-      <providerHint>maven2</providerHint>
-      <localStatus>IN_SERVICE</localStatus>
-      <notFoundCacheActive>true</notFoundCacheActive>
-      <notFoundCacheTTL>1440</notFoundCacheTTL>
-      <userManaged>true</userManaged>
-      <exposed>true</exposed>
-      <browseable>true</browseable>
-      <writePolicy>READ_ONLY</writePolicy>
-      <indexable>true</indexable>
-      <searchable>true</searchable>
-      <localStorage>
-        <provider>file</provider>
-      </localStorage>
-      <remoteStorage>
-        <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
-      </remoteStorage>
-      <externalConfiguration>
-        <repositoryPolicy>SNAPSHOT</repositoryPolicy>
-        <checksumPolicy>WARN</checksumPolicy>
-        <fileTypeValidation>true</fileTypeValidation>
-        <downloadRemoteIndex>true</downloadRemoteIndex>
-        <artifactMaxAge>1440</artifactMaxAge>
-        <metadataMaxAge>1440</metadataMaxAge>
-        <itemMaxAge>1440</itemMaxAge>
-        <autoBlockActive>true</autoBlockActive>
-        <proxyMode>ALLOW</proxyMode>
-      </externalConfiguration>
-    </repository>
-    <repository>
-      <id>typesafe-ivy-snapshots</id>
-      <name>Typesafe Ivy Snapshots</name>
-      <providerRole>org.sonatype.nexus.proxy.repository.Repository</providerRole>
-      <providerHint>maven2</providerHint>
-      <localStatus>IN_SERVICE</localStatus>
-      <notFoundCacheActive>true</notFoundCacheActive>
-      <notFoundCacheTTL>1440</notFoundCacheTTL>
-      <userManaged>true</userManaged>
-      <exposed>true</exposed>
-      <browseable>true</browseable>
-      <writePolicy>READ_ONLY</writePolicy>
-      <indexable>true</indexable>
-      <searchable>true</searchable>
-      <localStorage>
-        <provider>file</provider>
-      </localStorage>
-      <remoteStorage>
-        <url>http://repo.typesafe.com/typesafe/ivy-snapshots/</url>
-      </remoteStorage>
-      <externalConfiguration>
-        <repositoryPolicy>SNAPSHOT</repositoryPolicy>
-        <checksumPolicy>WARN</checksumPolicy>
-        <fileTypeValidation>true</fileTypeValidation>
-        <downloadRemoteIndex>true</downloadRemoteIndex>
-        <artifactMaxAge>1440</artifactMaxAge>
-        <metadataMaxAge>1440</metadataMaxAge>
-        <itemMaxAge>1440</itemMaxAge>
-        <autoBlockActive>true</autoBlockActive>
-        <proxyMode>ALLOW</proxyMode>
-      </externalConfiguration>
-    </repository>
-    <repository>
       <id>sonatype-releases</id>
       <name>Sonatype Releases</name>
       <providerRole>org.sonatype.nexus.proxy.repository.Repository</providerRole>
@@ -517,6 +357,37 @@
       </localStorage>
       <remoteStorage>
         <url>https://oss.sonatype.org/content/repositories/releases/</url>
+      </remoteStorage>
+      <externalConfiguration>
+        <repositoryPolicy>RELEASE</repositoryPolicy>
+        <checksumPolicy>WARN</checksumPolicy>
+        <fileTypeValidation>true</fileTypeValidation>
+        <downloadRemoteIndex>true</downloadRemoteIndex>
+        <artifactMaxAge>-1</artifactMaxAge>
+        <metadataMaxAge>1440</metadataMaxAge>
+        <itemMaxAge>1440</itemMaxAge>
+        <autoBlockActive>true</autoBlockActive>
+      </externalConfiguration>
+    </repository>
+    <repository>
+      <id>jcenter</id>
+      <name>JCenter</name>
+      <providerRole>org.sonatype.nexus.proxy.repository.Repository</providerRole>
+      <providerHint>maven2</providerHint>
+      <localStatus>IN_SERVICE</localStatus>
+      <notFoundCacheActive>true</notFoundCacheActive>
+      <notFoundCacheTTL>1440</notFoundCacheTTL>
+      <userManaged>true</userManaged>
+      <exposed>true</exposed>
+      <browseable>true</browseable>
+      <writePolicy>READ_ONLY</writePolicy>
+      <indexable>true</indexable>
+      <searchable>true</searchable>
+      <localStorage>
+        <provider>file</provider>
+      </localStorage>
+      <remoteStorage>
+        <url>https://jcenter.bintray.com/</url>
       </remoteStorage>
       <externalConfiguration>
         <repositoryPolicy>RELEASE</repositoryPolicy>
@@ -632,11 +503,221 @@
       </patterns>
     </repositoryTarget>
   </repositoryTargets>
+  <tasks>
+    <task>
+      <id>1</id>
+      <name>Health Check: jboss-releases</name>
+      <enabled>true</enabled>
+      <type>HealthCheckTask</type>
+      <status>WAITING</status>
+      <nextRun>1515730430728</nextRun>
+      <schedule>
+        <type>hourly</type>
+        <startDate>1515730430728</startDate>
+      </schedule>
+      <properties>
+        <property>
+          <key>repoId</key>
+          <value>jboss-releases</value>
+        </property>
+        <property>
+          <key>.name</key>
+          <value>Health Check: jboss-releases</value>
+        </property>
+        <property>
+          <key>.id</key>
+          <value>1</value>
+        </property>
+      </properties>
+    </task>
+    <task>
+      <id>2</id>
+      <name>Health Check: typesafe-releases</name>
+      <enabled>true</enabled>
+      <type>HealthCheckTask</type>
+      <status>WAITING</status>
+      <nextRun>1515730440576</nextRun>
+      <schedule>
+        <type>hourly</type>
+        <startDate>1515730440576</startDate>
+      </schedule>
+      <properties>
+        <property>
+          <key>repoId</key>
+          <value>typesafe-releases</value>
+        </property>
+        <property>
+          <key>.name</key>
+          <value>Health Check: typesafe-releases</value>
+        </property>
+        <property>
+          <key>.id</key>
+          <value>2</value>
+        </property>
+      </properties>
+    </task>
+    <task>
+      <id>3</id>
+      <name>Health Check: typesafe-ivy-releases</name>
+      <enabled>true</enabled>
+      <type>HealthCheckTask</type>
+      <status>WAITING</status>
+      <nextRun>1515730473758</nextRun>
+      <schedule>
+        <type>hourly</type>
+        <startDate>1515730473758</startDate>
+      </schedule>
+      <properties>
+        <property>
+          <key>repoId</key>
+          <value>typesafe-ivy-releases</value>
+        </property>
+        <property>
+          <key>.name</key>
+          <value>Health Check: typesafe-ivy-releases</value>
+        </property>
+        <property>
+          <key>.id</key>
+          <value>3</value>
+        </property>
+      </properties>
+    </task>
+    <task>
+      <id>4</id>
+      <name>Health Check: sbt-plugin-releases</name>
+      <enabled>true</enabled>
+      <type>HealthCheckTask</type>
+      <status>WAITING</status>
+      <nextRun>1515730503766</nextRun>
+      <schedule>
+        <type>hourly</type>
+        <startDate>1515730503766</startDate>
+      </schedule>
+      <properties>
+        <property>
+          <key>repoId</key>
+          <value>sbt-plugin-releases</value>
+        </property>
+        <property>
+          <key>.name</key>
+          <value>Health Check: sbt-plugin-releases</value>
+        </property>
+        <property>
+          <key>.id</key>
+          <value>4</value>
+        </property>
+      </properties>
+    </task>
+    <task>
+      <id>5</id>
+      <name>Health Check: central</name>
+      <enabled>true</enabled>
+      <type>HealthCheckTask</type>
+      <status>WAITING</status>
+      <nextRun>1515730507762</nextRun>
+      <schedule>
+        <type>hourly</type>
+        <startDate>1515730507762</startDate>
+      </schedule>
+      <properties>
+        <property>
+          <key>repoId</key>
+          <value>central</value>
+        </property>
+        <property>
+          <key>.name</key>
+          <value>Health Check: central</value>
+        </property>
+        <property>
+          <key>.id</key>
+          <value>5</value>
+        </property>
+      </properties>
+    </task>
+    <task>
+      <id>6</id>
+      <name>Health Check: java.net</name>
+      <enabled>true</enabled>
+      <type>HealthCheckTask</type>
+      <status>WAITING</status>
+      <nextRun>1515730483913</nextRun>
+      <schedule>
+        <type>hourly</type>
+        <startDate>1515730483913</startDate>
+      </schedule>
+      <properties>
+        <property>
+          <key>repoId</key>
+          <value>java.net</value>
+        </property>
+        <property>
+          <key>.name</key>
+          <value>Health Check: java.net</value>
+        </property>
+        <property>
+          <key>.id</key>
+          <value>6</value>
+        </property>
+      </properties>
+    </task>
+    <task>
+      <id>7</id>
+      <name>Health Check: sonatype-releases</name>
+      <enabled>true</enabled>
+      <type>HealthCheckTask</type>
+      <status>WAITING</status>
+      <nextRun>1515730492293</nextRun>
+      <schedule>
+        <type>hourly</type>
+        <startDate>1515730492293</startDate>
+      </schedule>
+      <properties>
+        <property>
+          <key>repoId</key>
+          <value>sonatype-releases</value>
+        </property>
+        <property>
+          <key>.name</key>
+          <value>Health Check: sonatype-releases</value>
+        </property>
+        <property>
+          <key>.id</key>
+          <value>7</value>
+        </property>
+      </properties>
+    </task>
+    <task>
+      <id>8</id>
+      <name>Health Check: jcenter</name>
+      <enabled>true</enabled>
+      <type>HealthCheckTask</type>
+      <status>WAITING</status>
+      <nextRun>1515808077876</nextRun>
+      <schedule>
+        <type>hourly</type>
+        <startDate>1515808077876</startDate>
+      </schedule>
+      <properties>
+        <property>
+          <key>repoId</key>
+          <value>jcenter</value>
+        </property>
+        <property>
+          <key>.name</key>
+          <value>Health Check: jcenter</value>
+        </property>
+        <property>
+          <key>.id</key>
+          <value>8</value>
+        </property>
+      </properties>
+    </task>
+  </tasks>
   <smtpConfiguration>
     <hostname>smtp-host</hostname>
     <port>25</port>
     <username>smtp-username</username>
-    <password>{QB8iELyOVnYHBbt9lGqKOrDVNMTu5Q3H7lmg9CkUzSs=}</password>
+    <password>{IZXetgHWZO4HSAdYryavD8U8Rk9uC/VL9DjEzubJq1s=}</password>
     <systemEmailAddress>system@nexus.org</systemEmailAddress>
   </smtpConfiguration>
   <notification />

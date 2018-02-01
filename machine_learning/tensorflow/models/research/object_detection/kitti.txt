@@ -1,0 +1,61 @@
+mkdir -p /data/dataset/kitti/object
+
+cd /data/dataset/kitti/object
+
+wget http://kitti.is.tue.mpg.de/kitti/data_object_image_2.zip
+
+wget http://kitti.is.tue.mpg.de/kitti/data_object_label_2.zip
+
+unzip data_object_image_2.zip -d data_object_image_2
+
+unzip data_object_label_2.zip
+
+cd $TENSORFLOW_HOME/models/research/object_detection
+
+wget http://download.tensorflow.org/models/object_detection/faster_rcnn_resnet101_kitti_2017_11_08.tar.gz
+
+tar -xvf faster_rcnn_resnet101_kitti_2017_11_08.tar.gz
+
+cd $TENSORFLOW_HOME/models/research
+
+sed -i "s|DEFINE_list|DEFINE_string|g" object_detection/dataset_tools/create_kitti_tf_record.py
+
+python3 object_detection/dataset_tools/create_kitti_tf_record.py \
+    --label_map_path=object_detection/data/kitti_label_map.pbtxt \
+    --data_dir=/data/dataset/kitti/object/ \
+    --output_path=`pwd`/kitti
+
+cp kitti_train.tfrecord \
+  object_detection/faster_rcnn_resnet101_kitti_2017_11_08/
+
+cp kitti_val.tfrecord \
+  object_detection/faster_rcnn_resnet101_kitti_2017_11_08/
+
+cp object_detection/data/kitti_label_map.pbtxt \
+  object_detection/faster_rcnn_resnet101_kitti_2017_11_08/
+
+cp object_detection/samples/configs/faster_rcnn_resnet101_kitti.config \
+  object_detection/faster_rcnn_resnet101_kitti_2017_11_08/
+
+sed -i "s|PATH_TO_BE_CONFIGURED|$TENSORFLOW_HOME/models/research/object_detection/faster_rcnn_resnet101_kitti_2017_11_08|g" \
+    object_detection/faster_rcnn_resnet101_kitti_2017_11_08/faster_rcnn_resnet101_kitti.config
+
+python3 object_detection/train.py \
+    --logtostderr \
+    --pipeline_config_path=object_detection/faster_rcnn_resnet101_kitti_2017_11_08/faster_rcnn_resnet101_kitti.config \
+    --train_dir=object_detection/faster_rcnn_resnet101_kitti_2017_11_08/train
+
+python3 object_detection/eval.py \
+    --logtostderr \
+    --pipeline_config_path=object_detection/faster_rcnn_resnet101_kitti_2017_11_08/faster_rcnn_resnet101_kitti.config \
+    --checkpoint_dir=object_detection/faster_rcnn_resnet101_kitti_2017_11_08 \
+    --eval_dir=object_detection/faster_rcnn_resnet101_kitti_2017_11_08/eval
+
+tensorboard --logdir=object_detection/faster_rcnn_resnet101_kitti_2017_11_08
+
+python3 object_detection/export_inference_graph.py \
+    --input_type image_tensor \
+    --pipeline_config_path object_detection/faster_rcnn_resnet101_kitti_2017_11_08/faster_rcnn_resnet101_kitti.config \
+    --trained_checkpoint_prefix object_detection/faster_rcnn_resnet101_kitti_2017_11_08/train/model.ckpt-${CHECKPOINT_NUMBER} \
+    --output_directory object_detection/faster_rcnn_resnet101_kitti_2017_11_08/export
+

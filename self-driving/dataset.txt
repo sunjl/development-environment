@@ -1,0 +1,28 @@
+# Object Detection Evaluation 2012
+# http://www.cvlibs.net/datasets/kitti/eval_object.php?obj_benchmark
+
+wget http://kitti.is.tue.mpg.de/kitti/data_object_image_2.zip
+wget http://kitti.is.tue.mpg.de/kitti/data_object_image_3.zip
+wget http://kitti.is.tue.mpg.de/kitti/data_object_prev_2.zip
+wget http://kitti.is.tue.mpg.de/kitti/data_object_prev_3.zip
+wget http://kitti.is.tue.mpg.de/kitti/data_object_calib.zip
+wget http://kitti.is.tue.mpg.de/kitti/data_object_label_2.zip
+wget http://kitti.is.tue.mpg.de/kitti/devkit_object.zip
+
+# Road/Lane Detection Evaluation 2013
+# http://www.cvlibs.net/datasets/kitti/eval_road.php
+
+wget http://kitti.is.tue.mpg.de/kitti/data_road.zip
+wget http://kitti.is.tue.mpg.de/kitti/data_road_right.zip
+wget http://kitti.is.tue.mpg.de/kitti/data_road_gray.zip
+wget http://kitti.is.tue.mpg.de/kitti/devkit_road.zip
+wget http://kitti.is.tue.mpg.de/kitti/devkit_road_mapping.zip
+
+# German Traffic Sign Recognition Benchmark
+# http://benchmark.ini.rub.de/?section=gtsrb&subsection=dataset
+
+wget http://benchmark.ini.rub.de/Dataset/GTSRB_Final_Training_Images.zip
+wget http://benchmark.ini.rub.de/Dataset/GTSRB_Final_Test_Images.zip
+wget http://benchmark.ini.rub.de/Dataset/GTSRB_Final_Test_GT.zip
+wget http://benchmark.ini.rub.de/Dataset/GTSRB_Python_code.zip
+

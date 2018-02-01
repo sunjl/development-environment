@@ -38,3 +38,23 @@ pgrep -f elasticsearch
 pkill -f elasticsearch
 netstat -lnp | grep :9200 | awk '{print $7}' | sed 's/\/java//' | xargs kill
 
+# xpack
+vi $ELASTICSEARCH_HOME/config/elasticsearch.yml
+```
+action.auto_create_index: .security,.monitoring*,.watches,.triggered_watches,.watcher-history*
+xpack.security.enabled=true
+xpack.monitoring.enabled=true
+xpack.graph.enabled=true
+xpack.watcher.enabled=true
+xpack.reporting.enabled=true
+```
+
+elasticsearch-plugin install x-pack
+elasticsearch-plugin install file:///path/to/file/x-pack-<version>.zip
+
+kibana-plugin install x-pack
+kibana-plugin install file:///path/to/file/x-pack-<version>.zip
+
+logstash-plugin install x-pack
+logstash-plugin install file:///path/to/file/x-pack-<version>.zip
+

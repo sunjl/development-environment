@@ -1,27 +1,6 @@
-sudo apt-get install protobuf-compiler
+cd $TENSORFLOW_HOME/models/research/object_detection
 
-sudo pip3 install pillow lxml jupyter matplotlib
-
-sudo pip3 install tensorflow-gpu
-
-cd $HOME/software/tensorflow-1.4
-
-git clone --recursive -b master https://github.com/tensorflow/models.git
-
-cat >> ~/.bash_profile <<"EOF"
-export TENSORFLOW_HOME=$HOME/software/tensorflow-1.4
-export PYTHONPATH=$PYTHONPATH:$TENSORFLOW_HOME/models/research/slim
-EOF
-
-source ~/.bash_profile
-
-cd $TENSORFLOW_HOME/models/research
-
-protoc object_detection/protos/*.proto --python_out=.
-
-python3 object_detection/builders/model_builder_test.py
-
-cd cd $TENSORFLOW_HOME/models/research/object_detection
+# https://github.com/tensorflow/models/blob/master/research/object_detection/g3doc/detection_model_zoo.md
 
 wget http://download.tensorflow.org/models/object_detection/ssd_mobilenet_v1_coco_2017_11_17.tar.gz
 
@@ -60,10 +39,10 @@ python3 object_detection/dataset_tools/create_pet_tf_record.py \
     --data_dir=`pwd` \
     --output_dir=`pwd`
 
-cp pet_train_with_masks.record object_detection \
+cp pet_train_with_masks.record \
   object_detection/faster_rcnn_resnet101_coco_11_06_2017/pet_train.record
 
-cp pet_val_with_masks.record object_detection \
+cp pet_val_with_masks.record \
   object_detection/faster_rcnn_resnet101_coco_11_06_2017/pet_val.record
 
 cp object_detection/data/pet_label_map.pbtxt \

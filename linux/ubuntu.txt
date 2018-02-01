@@ -119,6 +119,13 @@ sudo vi /etc/pam.d/su
 session required pam_limits.so
 ```
 
+sudo vi /etc/sysctl.conf
+```
+fs.inotify.max_user_watches = 524288
+```
+
+sudo sysctl -p --system
+
 sudo apt-key list
 sudo apt-key del 98AB5139
 sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 16126D3A3E5C1192
