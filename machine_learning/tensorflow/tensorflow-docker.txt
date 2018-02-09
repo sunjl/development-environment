@@ -1,0 +1,51 @@
+# https://hub.docker.com/r/tensorflow/tensorflow/tags/
+
+# cpu
+docker run -it gcr.io/tensorflow/tensorflow:1.4.1-py3 bash
+
+# jupyter
+docker run -it -p 8888:8888 gcr.io/tensorflow/tensorflow:1.4.1-py3
+
+# tensorboard
+docker run -it -p 6006:6006 gcr.io/tensorflow/tensorflow:1.4.1-py3
+
+# gpu
+nvidia-docker run -it gcr.io/tensorflow/tensorflow:1.4.1-gpu-py3 bash
+
+nvidia-docker run -it -p 8888:8888 gcr.io/tensorflow/tensorflow:1.4.1-gpu-py3
+
+# debug
+export CUDA_SO=$(\ls /usr/lib/x86_64-linux-gnu/libcuda.* | xargs -I{} echo '-v {}:{}')
+
+export DEVICES=$(\ls /dev/nvidia* | xargs -I{} echo '--device {}:{}')
+
+docker run -it -p 8888:8888 $CUDA_SO $DEVICES gcr.io/tensorflow/tensorflow:1.4.1-gpu-py3
+
+# rebuild
+export TF_DOCKER_BUILD_IS_DEVEL=NO
+
+export TF_DOCKER_BUILD_TYPE=CPU
+
+export TF_DOCKER_BUILD_PYTHON_VERSION=PYTHON2
+
+export NIGHTLY_VERSION="1.head"
+
+export TF_DOCKER_BUILD_CENTRAL_PIP=$(echo ${TF_DOCKER_BUILD_PYTHON_VERSION} | sed s^PYTHON2^http://ci.tensorflow.org/view/Nightly/job/nightly-matrix-cpu/TF_BUILD_IS_OPT=OPT,TF_BUILD_IS_PIP=PIP,TF_BUILD_PYTHON_VERSION=${TF_DOCKER_BUILD_PYTHON_VERSION},label=cpu-slave/lastSuccessfulBuild/artifact/pip_test/whl/tensorflow-${NIGHTLY_VERSION}-cp27-cp27mu-manylinux1_x86_64.whl^ | sed s^PYTHON3^http://ci.tensorflow.org/view/Nightly/job/nightly-python35-linux-cpu/lastSuccessfulBuild/artifact/pip_test/whl/tensorflow-${NIGHTLY_VERSION}-cp35-cp35m-manylinux1_x86_64.whl^)
+
+tensorflow/tools/docker/parameterized_docker_build.sh
+
+# image tagged as ${USER}/tensorflow:latest
+
+# serving
+docker build --pull -t $USER/tensorflow-serving-devel -f Dockerfile.devel .
+
+docker run -it $USER/tensorflow-serving-devel
+
+git clone --recurse-submodules https://github.com/tensorflow/serving
+
+cd serving/tensorflow
+
+./configure
+
+cd .. && bazel test tensorflow_serving/...
+

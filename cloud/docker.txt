@@ -1,22 +1,43 @@
 # https://store.docker.com/editions/community/docker-ce-server-ubuntu
+# https://docs.docker.com/install/linux/docker-ce/ubuntu/
 
-sudo apt-get install apt-transport-https ca-certificates curl
+sudo apt-get install apt-transport-https ca-certificates curl software-properties-common
 
 curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+
+sudo apt-key fingerprint 0EBFCD88
 
 sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
 
 sudo apt-get update && sudo apt-get install docker-ce
 
+# apt-cache madison docker-ce
+# sudo apt-get install docker-ce=<VERSION>
+
+sudo chown "$USER":"$USER" /home/"$USER"/.docker -R
+
+sudo chmod g+rwx "/home/$USER/.docker" -R
+
 sudo groupadd docker
 
 sudo usermod -aG docker $USER
+
+env | grep DOCKER_HOST
+
+ps aux |grep dnsmasq
+
+sudo vi /etc/docker/daemon.json
+```
+{
+	"dns": ["8.8.8.8", "8.8.4.4"]
+}
+```
 
 sudo systemctl enable docker
 
 sudo service docker restart
 
-# basic commands
+# commands
 docker pull hello-world
 docker run hello-world
 docker build -t friendlyname .
@@ -35,4 +56,27 @@ docker login
 docker tag <image> username/repository:tag
 docker push username/repository:tag
 docker run username/repository:tag
+
+# https://github.com/nvidia/nvidia-docker/wiki/Installation-(version-2.0)
+
+curl -s -L https://nvidia.github.io/nvidia-docker/gpgkey | sudo apt-key add -
+
+curl -s -L https://nvidia.github.io/nvidia-docker/ubuntu16.04/amd64/nvidia-docker.list | \
+  sudo tee /etc/apt/sources.list.d/nvidia-docker.list
+
+sudo apt-get update && sudo apt-get install nvidia-docker2
+
+sudo pkill -SIGHUP dockerd
+
+docker run --runtime=nvidia --rm nvidia/cuda nvidia-smi
+
+docker run --runtime=nvidia -e NVIDIA_VISIBLE_DEVICES=0 --rm nvidia/cuda nvidia-smi
+
+docker run --runtime=nvidia -e NVIDIA_VISIBLE_DEVICES=all --rm debian:stretch nvidia-smi
+
+vi Dockerfiles
+```
+ENV NVIDIA_VISIBLE_DEVICES all
+ENV NVIDIA_DRIVER_CAPABILITIES compute,video,utility
+```
 

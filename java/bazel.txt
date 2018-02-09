@@ -1,0 +1,18 @@
+sudo apt-get install openjdk-8-jdk pkg-config zip g++ zlib1g-dev unzip
+
+# https://github.com/bazelbuild/bazel/releases
+
+chmod +x bazel-0.6.1-without-jdk-installer-linux-x86_64.sh
+
+./bazel-0.6.1-without-jdk-installer-linux-x86_64.sh --prefix=$HOME/software/bazel-0.6.1
+
+cat >> ~/.bash_profile <<"EOF"
+export BAZEL_HOME=$HOME/software/bazel-0.6.1
+export PATH=$BAZEL_HOME/bin:$PATH
+export PYTHON_BIN_PATH=/usr/bin/python3
+EOF
+
+source ~/.bash_profile
+
+bazel version
+

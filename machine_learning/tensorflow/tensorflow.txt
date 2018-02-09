@@ -3,11 +3,11 @@
 
 sudo apt-get install python-pip python-dev
 
-sudo pip3 install -U tensorflow-gpu
+sudo pip3 install -U tensorflow-gpu==1.4.1
 
-python -c 'import os; import inspect; import tensorflow; print(os.path.dirname(inspect.getfile(tensorflow)))'
+python3 -c 'import os; import inspect; import tensorflow; print(os.path.dirname(inspect.getfile(tensorflow)))'
 
-python -c 'import tensorflow as tf;hello = tf.constant("Hello");sess = tf.Session();print(sess.run(hello))'
+python3 -c 'import tensorflow as tf;hello = tf.constant("Hello");sess = tf.Session();print(sess.run(hello))'
 
 # install bazel
 sudo apt-get install openjdk-8-jdk pkg-config zip g++ zlib1g-dev unzip
@@ -26,6 +26,8 @@ EOF
 
 source ~/.bash_profile
 
+bazel version
+
 # build tensorflow from source
 # https://www.tensorflow.org/install/install_sources
 
@@ -37,7 +39,7 @@ cd $HOME/software
 
 git clone -b r1.4 https://github.com/tensorflow/tensorflow tensorflow-1.4
 
-cd tensorflow-1.4
+cd $HOME/software/tensorflow-1.4
 
 PYTHON_BIN_PATH=/usr/bin/python3 ./configure
 
@@ -46,16 +48,12 @@ PYTHON_BIN_PATH=/usr/bin/python3 ./configure
 # CUDA SDK version: 8.0
 # cuDNN version: 6
 
+sudo apt install flex bison gcc llvm clang libc6-dev libreadline-dev libacl1-dev liburcu-dev
+
 bazel build --cxxopt="-D_GLIBCXX_USE_CXX11_ABI=0" --config=opt --config=cuda \
   //tensorflow/tools/pip_package:build_pip_package
 
 bazel-bin/tensorflow/tools/pip_package/build_pip_package /tmp/tensorflow_pkg
 
 sudo pip3 install /tmp/tensorflow_pkg/tensorflow-1.4.1-cp35-cp35m-linux_x86_64.whl
-
-> python3
-import tensorflow as tf
-hello = tf.constant('Hello, TensorFlow!')
-sess = tf.Session()
-print(sess.run(hello))
 

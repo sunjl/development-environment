@@ -138,7 +138,7 @@ sudo deluser --remove-home <username>
 sudo usermod -aG <groupname> <username>
 sudo usermod -aG sudo <username>
 groups <username>
-passwd <username>
+sudo passwd <username>
 cat /etc/passwd | grep <username>
 cat /etc/group | grep <groupname>
 

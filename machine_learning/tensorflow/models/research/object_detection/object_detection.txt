@@ -2,7 +2,7 @@ sudo apt-get install protobuf-compiler
 
 sudo pip3 install pillow lxml jupyter matplotlib
 
-sudo pip3 install tensorflow-gpu
+sudo pip3 install tensorflow-gpu==1.4.1
 
 cd $HOME/software/tensorflow-1.4
 
@@ -18,6 +18,8 @@ source ~/.bash_profile
 cd $TENSORFLOW_HOME/models/research
 
 protoc object_detection/protos/*.proto --python_out=.
+
+sudo apt-get install python3-tk
 
 python3 object_detection/builders/model_builder_test.py
 

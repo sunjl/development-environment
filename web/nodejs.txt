@@ -36,7 +36,7 @@ npm install -g <package_name>
 npm install -g babel-cli nodemon node-static node-gyp pm2 webpack webpack-dev-server
 
 sudo gem install sass
-npm install -g node-sass
+npm install -g node-sass postcss-cli
 
 npm update -g <package_name>
 
