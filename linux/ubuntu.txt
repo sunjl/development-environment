@@ -94,7 +94,7 @@ axel -n 5 http://example.com/somefile.zip
 
 sudo apt-get install rsync grsync
 rsync --delete -azv --exclude '.git' /some/path/ /other/path/
-rsync --delete -vrltgoD -e ssh /some/path/ <user>@<host>:/some/path
+rsync --delete -vrltgoD --exclude-from='/path/to/.gitignore' -e ssh /some/path/ <user>@<host>:/some/path
 
 sudo apt-get install colordiff
 diff file1 file2 | colordiff
@@ -150,7 +150,12 @@ root  ALL=(ALL:ALL) ALL
 ```
 
 sudo vi /etc/hostname
+
 sudo vi /etc/hosts
+```
+127.0.1.1   <hostname>
+```
+
 sudo sed -i "s/<host-1>/<host-2>/g" /etc/hostname
 
 sudo vi /etc/default/grub

@@ -1,7 +1,7 @@
 # https://github.com/nodesource/distributions
 
 sudo apt-get install build-essential software-properties-common \
-  python-software-properties python g++ make
+  python-software-properties python g++ make nasm libtool
 
 curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -
 
@@ -33,7 +33,7 @@ npm info <package_name>
 
 npm install -g <package_name>
 
-npm install -g babel-cli nodemon node-static node-gyp pm2 webpack webpack-dev-server
+npm install -g babel-cli nodemon node-static node-gyp pm2 webpack
 
 sudo gem install sass
 npm install -g node-sass postcss-cli
@@ -41,8 +41,8 @@ npm install -g node-sass postcss-cli
 npm update -g <package_name>
 
 npm install -g npm-check-updates
-ncu -u
-ncu -a
+http_proxy=http://127.0.0.1:8123 ncu -u
+http_proxy=http://127.0.0.1:8123 ncu -a
 
 # remove all packages
 npm ls -gp --depth=0 | awk -F/node_modules/ '{print $2}' | grep -vE '^(npm|)$' | xargs -r npm -g rm
@@ -75,4 +75,6 @@ server {
 ```
 
 sudo ln -s /etc/nginx/sites-available/example-subdomain /etc/nginx/sites-enabled/example-subdomain
+
+sudo systemctl restart nginx.service
 

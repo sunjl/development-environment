@@ -1,2 +1,1 @@
-sudo pip install -U numpy scipy sympy matplotlib pandas scikit-learn scikit-image
-
+sudo pip3 install -U numpy scipy sympy matplotlib pandas scikit-learn scikit-image

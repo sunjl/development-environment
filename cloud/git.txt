@@ -1,4 +1,4 @@
-sudo apt-get install git-core
+sudo apt-get install git
 
 git config --global user.name "<name>"
 git config --global user.email "<email>"

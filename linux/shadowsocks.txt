@@ -42,7 +42,7 @@ sudo bash -c "cat > /etc/shadowsocks/config.json" <<"EOF"
 }
 EOF
 
-sudo sslocal -c /etc/shadowsocks/config.json -d start
+sudo sslocal -c /etc/shadowsocks/config.json -d restart
 
 sudo apt-get install polipo
 

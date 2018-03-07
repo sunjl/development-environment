@@ -25,10 +25,10 @@ upstream example-subdomain {
 }
 
 server {
-  listen 0.0.0.0:80;
+  listen 80;
   server_name subdomain.example.com;
-  access_log /var/log/nginx/example-subdomain_access.log;
-  error_log  /var/log/nginx/example-subdomain_error.log;
+  access_log /data/nginx/log/example-subdomain_access.log;
+  error_log  /data/nginx/log/example-subdomain_error.log;
   location / {
     client_max_body_size 1024M;
     client_body_buffer_size 128k;
@@ -42,9 +42,12 @@ server {
 }
 ```
 
+sudo nginx -t
+
 sudo ln -s /etc/nginx/sites-available/example-subdomain /etc/nginx/sites-enabled/example-subdomain
 
 sudo systemctl restart nginx.service
+
 netstat -tunlp |grep 80
 
 # original ip address
