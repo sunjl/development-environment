@@ -189,3 +189,5 @@ HOST=`ps aux | grep 'sh -c pptp' | grep -v grep | awk '{print $14}'`
 GW=`route -n | grep UG | awk '{print $2}' | head -n 1`
 DEV=`route -n | grep UG | awk '{print $8}' | head -n 1`
 
+fc-list | sed 's/.*:\(.*,\|\s\)\(.*\):.*/\2/'
+

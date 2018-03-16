@@ -1,7 +1,7 @@
 sudo dpkg --add-architecture i386 && sudo apt-get update
 sudo apt-get install libc6:i386 libncurses5:i386 libstdc++6:i386 lib32z1 libbz2-1.0:i386 zlib1g:i386
 
-unzip android-studio-ide-162.3871768-linux.zip
+unzip android-studio-ide-<version>-linux.zip
 mv android-studio ~/software/android-studio
 
 vi ~/.bash_profile
@@ -30,7 +30,7 @@ StartupWMClass=android-studio
 ```
 
 mkdir -p ~/software/android-sdk
-unzip sdk-tools-linux-3859397.zip
+unzip sdk-tools-linux-<version>.zip
 mv tools ~/software/android-sdk/tools
 
 vi ~/.bash_profile

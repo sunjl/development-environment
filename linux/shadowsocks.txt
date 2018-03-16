@@ -103,3 +103,10 @@ sudo apt-get update && sudo apt-get install shadowsocks-qt5
 # https://github.com/FelisCatus/SwitchyOmega
 # https://raw.githubusercontent.com/gfwlist/gfwlist/master/gfwlist.txt
 
+# Chrome -> Extensions -> SwitchyOmega
+proxy -> proxy servers -> Protocol: SOCKS5, Server: 127.0.0.1, Port: 1080
+auto switch -> Rule List Format: AutoProxy, Rule List URL: https://raw.githubusercontent.com/gfwlist/gfwlist/master/gfwlist.txt
+
+# Firefox -> Preferences
+Network Proxy -> Manual proxy -> SOCKS HOST: 127.0.0.1, Port: 1080, Protocol: SOCKS v5
+
