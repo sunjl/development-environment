@@ -24,6 +24,8 @@ sudo chown "$USER":"$USER" /home/"$USER"/.docker -R
 
 sudo chmod g+rwx "/home/$USER/.docker" -R
 
+sudo groupadd docker
+
 sudo usermod -aG docker $USER
 
 # log out and log in again
@@ -57,6 +59,8 @@ Environment="HTTPS_PROXY=https://127.0.0.1:8118/"
 EOF
 
 sudo systemctl enable docker
+
+systemctl show --property=Environment docker
 
 sudo service docker restart
 
@@ -94,6 +98,8 @@ RUN ["apt-get", "install", "-y", "vim"]
 ```
 
 # https://github.com/nvidia/nvidia-docker/wiki/Installation-(version-2.0)
+# https://github.com/NVIDIA/nvidia-docker/wiki/Third-party
+# https://gitlab.com/nvidia/cuda/tree/ubuntu16.04
 
 curl -s -L https://nvidia.github.io/nvidia-docker/gpgkey | sudo apt-key add -
 
@@ -102,17 +108,20 @@ curl -s -L https://nvidia.github.io/nvidia-docker/ubuntu16.04/amd64/nvidia-docke
 
 sudo apt-get update && sudo apt-get install nvidia-docker2
 
+# production
+apt-cache madison nvidia-docker2 nvidia-container-runtime
+
 sudo pkill -SIGHUP dockerd
 
-sudo docker run --runtime=nvidia --rm nvidia/cuda nvidia-smi
+docker run --runtime=nvidia --rm nvidia/cuda nvidia-smi
 
-sudo docker run --runtime=nvidia -e NVIDIA_VISIBLE_DEVICES=0 --rm nvidia/cuda nvidia-smi
+docker run --runtime=nvidia -e NVIDIA_VISIBLE_DEVICES=0 --rm nvidia/cuda nvidia-smi
 
-sudo docker run --runtime=nvidia -e NVIDIA_VISIBLE_DEVICES=all --rm debian:stretch nvidia-smi
+docker run --runtime=nvidia -e NVIDIA_VISIBLE_DEVICES=all --rm debian:stretch nvidia-smi
 
 vi Dockerfiles
 ```
 ENV NVIDIA_VISIBLE_DEVICES all
-ENV NVIDIA_DRIVER_CAPABILITIES compute,video,utility
+ENV NVIDIA_DRIVER_CAPABILITIES compute,utility
 ```
 

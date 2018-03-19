@@ -1,3 +1,5 @@
+# https://github.com/keras-team/keras/tree/master/docker
+
 sudo pip install -U keras
 
 KERAS_BACKEND=tensorflow python -c "from keras import backend; print backend._BACKEND"
