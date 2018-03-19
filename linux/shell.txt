@@ -191,3 +191,5 @@ DEV=`route -n | grep UG | awk '{print $8}' | head -n 1`
 
 fc-list | sed 's/.*:\(.*,\|\s\)\(.*\):.*/\2/'
 
+find . -type f -execdir sed -i 's/UBUNTU_PKG_NAME = "nvidia-367"/UBUNTU_PKG_NAME = "nvidia-375"/g' '{}' \;
+

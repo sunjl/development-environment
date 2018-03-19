@@ -25,7 +25,8 @@ EOF
 npm config ls -l
 npm config get prefix
 npm config set prefix '~/.npm-global'
-npm config set proxy http://127.0.0.1:8123
+npm config set proxy http://127.0.0.1:8118
+npm config delete proxy
 
 npm ls -g --depth=0
 
@@ -41,8 +42,8 @@ npm install -g node-sass postcss-cli
 npm update -g <package_name>
 
 npm install -g npm-check-updates
-http_proxy=http://127.0.0.1:8123 ncu -u
-http_proxy=http://127.0.0.1:8123 ncu -a
+http_proxy=http://127.0.0.1:8118 ncu -u
+http_proxy=http://127.0.0.1:8118 ncu -a
 
 # remove all packages
 npm ls -gp --depth=0 | awk -F/node_modules/ '{print $2}' | grep -vE '^(npm|)$' | xargs -r npm -g rm
@@ -77,4 +78,3 @@ server {
 sudo ln -s /etc/nginx/sites-available/example-subdomain /etc/nginx/sites-enabled/example-subdomain
 
 sudo systemctl restart nginx.service
-

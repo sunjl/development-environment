@@ -23,7 +23,7 @@ sudo mv /etc/apt/apt.conf.d/20auto-upgrades.ucf-dist \
   /etc/apt/apt.conf.d/20auto-upgrades
 
 sudo add-apt-repository ppa:graphics-drivers/ppa
-sudo apt-get update && sudo apt-get install nvidia-375 nvidia-settings
+sudo apt-get update && sudo apt-get install nvidia-384 nvidia-settings
 sudo prime-select --help
 
 # server login
@@ -292,6 +292,8 @@ ip route
 192.168.1.0/24 dev wlan0 proto kernel scope link src 192.168.1.103 metric 2
 169.254.0.0/16 dev wlan0 scope link metric 1000
 default via 192.168.1.1 dev wlan0 proto static
+
+nmcli dev show | grep IP4.DNS
 
 nmap localhost
 nmap <ip>

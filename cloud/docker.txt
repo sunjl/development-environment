@@ -16,13 +16,13 @@ sudo apt-get update && sudo apt-get install docker-ce
 
 sudo docker run hello-world
 
+sudo ls /var/lib/docker/
+
 mkdir -p /home/$USER/.docker
 
 sudo chown "$USER":"$USER" /home/"$USER"/.docker -R
 
 sudo chmod g+rwx "/home/$USER/.docker" -R
-
-sudo groupadd docker
 
 sudo usermod -aG docker $USER
 
@@ -32,20 +32,35 @@ env | grep DOCKER_HOST
 
 ps aux |grep dnsmasq
 
+sudo vi /etc/default/docker
+```
+export http_proxy="http://127.0.0.1:8118/"
+```
+
 sudo vi /etc/docker/daemon.json
 ```
 {
 	"dns": ["8.8.8.8", "8.8.4.4"],
-	"hosts": ["fd://", "tcp://0.0.0.0:2375"]
 }
 ```
 
-sudo ps aux |grep dockerd
+sudo mkdir -p /etc/systemd/system/docker.service.d
+
+sudo bash -c "cat > /etc/systemd/system/docker.service.d/http-proxy.conf" <<"EOF"
+[Service]
+Environment="HTTP_PROXY=http://127.0.0.1:8118/"
+EOF
+
+sudo bash -c "cat > /etc/systemd/system/docker.service.d/https-proxy.conf" <<"EOF"
+[Service]
+Environment="HTTPS_PROXY=https://127.0.0.1:8118/"
+EOF
 
 sudo systemctl enable docker
 
 sudo service docker restart
 
+docker run busybox nslookup google.com
 docker system info
 docker ps -a
 docker container ls -a
@@ -89,11 +104,11 @@ sudo apt-get update && sudo apt-get install nvidia-docker2
 
 sudo pkill -SIGHUP dockerd
 
-docker run --runtime=nvidia --rm nvidia/cuda nvidia-smi
+sudo docker run --runtime=nvidia --rm nvidia/cuda nvidia-smi
 
-docker run --runtime=nvidia -e NVIDIA_VISIBLE_DEVICES=0 --rm nvidia/cuda nvidia-smi
+sudo docker run --runtime=nvidia -e NVIDIA_VISIBLE_DEVICES=0 --rm nvidia/cuda nvidia-smi
 
-docker run --runtime=nvidia -e NVIDIA_VISIBLE_DEVICES=all --rm debian:stretch nvidia-smi
+sudo docker run --runtime=nvidia -e NVIDIA_VISIBLE_DEVICES=all --rm debian:stretch nvidia-smi
 
 vi Dockerfiles
 ```

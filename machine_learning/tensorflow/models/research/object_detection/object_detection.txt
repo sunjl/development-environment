@@ -2,14 +2,14 @@ sudo apt-get install protobuf-compiler
 
 sudo pip3 install pillow lxml jupyter matplotlib
 
-sudo pip3 install tensorflow-gpu==1.4.1
+sudo pip3 install tensorflow-gpu==1.6.0
 
-cd $HOME/software/tensorflow-1.4
+cd $HOME/software/tensorflow-1.6
 
 git clone --recursive -b master https://github.com/tensorflow/models.git
 
 cat >> ~/.bash_profile <<"EOF"
-export TENSORFLOW_HOME=$HOME/software/tensorflow-1.4
+export TENSORFLOW_HOME=$HOME/software/tensorflow-1.6
 export PYTHONPATH=$PYTHONPATH:$TENSORFLOW_HOME/models/research/slim
 EOF
 

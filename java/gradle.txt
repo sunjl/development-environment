@@ -26,7 +26,7 @@ gradlew -Dhttp.proxyHost=<host> -Dhttp.proxyPort=<port>
 
 cat >> ~/.gradle/gradle.properties <<"EOF"
 systemProp.http.proxyHost=127.0.0.1
-systemProp.http.proxyPort=8123
+systemProp.http.proxyPort=8118
 EOF
 
 mkdir -p ~/.gradle/wrapper/dists/gradle-3.4.1-bin/71zneekfcxxu7l9p7nr2sc65s

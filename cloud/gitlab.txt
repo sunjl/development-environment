@@ -5,7 +5,7 @@
 sudo docker run --detach \
     --hostname gitlab.example.com \
     --env GITLAB_OMNIBUS_CONFIG="external_url 'http://gitlab.example.com/';" \
-    --publish 8929:80 --publish 2289:22 \
+    --publish 6880:80 --publish 6822:22 \
     --name gitlab \
     --restart always \
     --volume /srv/gitlab/config:/etc/gitlab \
@@ -18,7 +18,7 @@ sudo docker exec -it gitlab /bin/bash
 sudo docker exec -it gitlab vi /etc/gitlab/gitlab.rb
 ```
 external_url 'http://gitlab.example.com'
-gitlab_rails['gitlab_shell_ssh_port'] = 2289
+gitlab_rails['gitlab_shell_ssh_port'] = 6822
 ```
 
 sudo docker restart gitlab
@@ -28,7 +28,7 @@ sudo docker logs -f gitlab
 sudo vi /etc/nginx/sites-available/example-gitlab
 ```
 upstream example-gitlab { 
-        server 127.0.0.1:8929; 
+        server 127.0.0.1:6880; 
 } 
 
 server { 
@@ -57,7 +57,7 @@ cd existing_project
 git init
 git remote add origin http://gitlab.example.com/<user>/<project>.git
 git add .
-git commit -m "Initial commit"
+git commit -m "init"
 git push -u origin master
 
 # RPC failed; HTTP 501 curl 22 The requested URL returned error: 501 Chunked requests not implemented
