@@ -39,6 +39,8 @@ npm install -g babel-cli nodemon node-static node-gyp pm2 webpack
 sudo gem install sass
 npm install -g node-sass postcss-cli
 
+npm install -g typescript
+
 npm update -g <package_name>
 
 npm install -g npm-check-updates

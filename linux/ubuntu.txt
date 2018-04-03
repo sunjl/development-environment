@@ -52,7 +52,21 @@ sudo dpkg-reconfigure locales
 sudo apt-get install vim vim-scripts exuberant-ctags cscope
 
 # desktop
-sudo apt-get install vim-gnome vim-gtk unrar p7zip fbreader
+sudo apt-get install vim-gnome vim-gtk unrar p7zip calibre
+
+vi ~/.local/share/applications/calibre-ebook-viewer.desktop
+```
+#!/usr/bin/env xdg-open
+
+[Desktop Entry]
+Type=Application
+Name=Calibre Ebook Viewer
+Exec=ebook-viewer
+Icon=/usr/share/app-install/icons/calibre-gui.png
+MimeType=application/x-mobipocket-ebook;application/epub+zip;
+StartupWMClass=calibre-ebook-viewer
+Terminal=false
+```
 
 sudo apt-get install gconf-editor
 

@@ -1,16 +1,16 @@
-vi ~/software/jetbrains/idea/bin/idea64.vmoptions
+vi ~/software/jetbrains/idea-2018.1/bin/idea64.vmoptions
 ```
 -Xms256m
 -Xmx8192m
 ```
 
-sudo vi /usr/share/applications/idea.desktop
+sudo vi /usr/share/applications/idea-2018.1.desktop
 ```
 [Desktop Entry]
 Type=Application
-Name=IDEA
-Icon=/home/ubuntu/software/jetbrains/idea/bin/idea.png
-Exec=/home/ubuntu/software/jetbrains/idea/bin/idea.sh %f
+Name=IDEA 2018.1
+Icon=/home/ubuntu/software/jetbrains/idea-2018.1/bin/idea.png
+Exec=/home/ubuntu/software/jetbrains/idea-2018.1/bin/idea.sh %f
 Categories=Development;IDE;
 Terminal=false
 StartupNotify=true

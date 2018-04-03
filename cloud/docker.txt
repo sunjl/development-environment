@@ -11,8 +11,8 @@ sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubun
 sudo apt-get update && sudo apt-get install docker-ce
 
 # production
-# apt-cache madison docker-ce
-# sudo apt-get install docker-ce=<VERSION>
+apt-cache madison docker-ce
+sudo apt-get install docker-ce=<VERSION>
 
 sudo docker run hello-world
 
@@ -50,12 +50,12 @@ sudo mkdir -p /etc/systemd/system/docker.service.d
 
 sudo bash -c "cat > /etc/systemd/system/docker.service.d/http-proxy.conf" <<"EOF"
 [Service]
-Environment="HTTP_PROXY=http://127.0.0.1:8118/"
+Environment="HTTP_PROXY=http://127.0.0.1:8118/" "NO_PROXY=localhost,127.0.0.1,docker-registry.example.com"
 EOF
 
 sudo bash -c "cat > /etc/systemd/system/docker.service.d/https-proxy.conf" <<"EOF"
 [Service]
-Environment="HTTPS_PROXY=https://127.0.0.1:8118/"
+Environment="HTTPS_PROXY=https://127.0.0.1:8118/" "NO_PROXY=localhost,127.0.0.1,docker-registry.example.com"
 EOF
 
 sudo systemctl enable docker
@@ -91,11 +91,19 @@ docker run username/repository:tag
 docker exec -it <container> /bin/bash
 apt-get update && apt-get install -y vim
 
-vi Dockerfile
-```
-RUN ["apt-get", "update"]
-RUN ["apt-get", "install", "-y", "vim"]
-```
+# https://docs.docker.com/compose/install/
+
+sudo curl -L https://github.com/docker/compose/releases/download/1.19.0/docker-compose-`uname -s`-`uname -m` -o /usr/local/bin/docker-compose
+
+sudo chmod +x /usr/local/bin/docker-compose
+
+docker-compose --version
+
+# upgrade
+docker-compose migrate-to-labels
+
+# uninstall
+sudo rm /usr/local/bin/docker-compose
 
 # https://github.com/nvidia/nvidia-docker/wiki/Installation-(version-2.0)
 # https://github.com/NVIDIA/nvidia-docker/wiki/Third-party
