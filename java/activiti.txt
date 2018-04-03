@@ -1,0 +1,12 @@
+unzip activiti-6.0.0.zip
+
+sudo cp activiti-6.0.0/wars/activiti-*.war /var/lib/tomcat8/webapps/
+
+# http://localhost:8080/activiti-admin
+# username: admin password: admin
+vi /var/lib/tomcat8/webapps/activiti-admin/WEB-INF/classes/META-INF/activiti-admin/activiti-admin.properties 
+
+# http://localhost:8080/activiti-app
+# username: admin password: test
+vi /var/lib/tomcat8/webapps/activiti-app/WEB-INF/classes/META-INF/activiti-app/activiti-app.properties
+

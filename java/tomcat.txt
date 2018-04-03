@@ -1,0 +1,31 @@
+# package installation
+sudo apt-get install tomcat8 tomcat8-admin
+
+dpkg --listfiles tomcat8
+
+dpkg --listfiles tomcat8-admin
+
+sudo vi /etc/default/tomcat8
+```
+JAVA_OPTS="-Djava.awt.headless=true -Xmx8096m -XX:+UseConcMarkSweepGC"
+```
+
+sudo vi /var/lib/tomcat8/conf/tomcat-users.xml
+```
+<role rolename="manager-gui"/>
+<role rolename="admin-gui"/>
+<user username="<username>" password="<password>" roles="manager-gui,admin-gui"/>
+```
+
+sudo vi /etc/tomcat8/server.xml
+
+sudo systemctl restart tomcat8
+
+sudo systemctl status tomcat8
+
+# http://localhost:8080/manager/html
+# http://localhost:8080/host-manager/html
+# username: <username> password: <password>
+
+ls /var/lib/tomcat8/webapps/
+

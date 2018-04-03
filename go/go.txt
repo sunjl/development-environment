@@ -1,10 +1,10 @@
 # https://golang.org/dl/
-tar xzf go1.7.3.linux-amd64.tar.gz
-sudo mv go /opt/go-1.7.3
-sudo chown -R root:root /opt/go-1.7.3
+tar xzf go1.8.3.linux-amd64.tar.gz
+sudo mv go /opt/go-1.8.3
+sudo chown -R root:root /opt/go-1.8.3
 
 sudo bash -c "cat > /etc/profile.d/go.sh" <<"EOF"
-export GOROOT=/opt/go-1.7.3
+export GOROOT=/opt/go-1.8.3
 export PATH=$GOROOT/bin:$PATH
 EOF
 
