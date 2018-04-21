@@ -1,0 +1,21 @@
+# https://www.hubin.info/archives/409
+# https://www.dadclab.com/archives/4808.jiecao
+
+# Windows Server 2012
+Server Manager -> Dashboard 
+  -> Add roles and features -> Role-based or feature-based installation
+    -> Select a server from the server pool -> Select roles: Windows Deployment Services
+
+Server Manager -> Tools -> Windows Deployment Services 
+  -> Servers -> right click on server name -> Configure Server
+    -> Standalone server -> Respond to all client computers
+    -> right click on Install Images -> Windows Installation Disc\sources\install.wim
+    -> right click on Boot Images -> Windows Installation Disc\sources\boot.wim
+  -> All Tasks -> Stop
+  -> Properties
+    -> DHCP: uncheck "Do not listen on DHCP ports" and "Configure DHCP options to indicate ..."
+    -> Multicast: Obtain IP address from DHCP
+  -> All Tasks -> Start
+
+# client computer
+BIOS PXE boot -> F12 -> username: domain\Administrator

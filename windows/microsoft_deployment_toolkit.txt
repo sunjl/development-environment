@@ -1,0 +1,93 @@
+# https://www.dadclab.com/archives/4841.jiecao
+# https://www.dadclab.com/archives/4877.jiecao
+# https://www.dadclab.com/archives/4915.jiecao
+# https://www.dadclab.com/archives/4953.jiecao
+
+Install
+  - Windows Assessment and Deployment Kit for Windows 10
+  - Microsoft Deployment Toolkit
+
+# LiteTouch
+Start menu -> Deployment Workbench
+  -> right click on Deployment Shares -> New Deployment Share -> Options: all uncheck
+  -> MDT Deployment Share
+    -> right click on Operating Systems
+      -> Import Operating System -> OS Type: Full set of source files
+    -> right click on Task Sequences
+      -> New Task Sequence -> Select Template: Standard Client Task Sequence
+      -> right click on ID <LITETOUCH> -> Properties -> Task Sequence
+        -> Preinstall -> New Comptuer Only -> Format and Partition Disk
+  -> right click on MDT Deployment Share -> Properties
+    -> Windows PE -> Platform: x64, uncheck Generate ISO image
+    -> Rules
+```
+[Default]
+OSInstall=Y
+SkipTaskSequence=NO
+SkipCapture=NO
+_SMSTSOrgName=Organization
+SkipComputerName=YES
+SkipDomainMembership=YES
+JoinWorkgroup=WORKGROUP
+SkipUserData=YES
+SkipComputerBackup=YES
+SkipProductKey=YES
+SkipLocaleSelection=YES
+KeyboardLocale=zh-CN
+UserLocale=zh-CN
+UILanguage=zh-CN
+SkipTimeZone=YES
+TimeZoneName=China Standard Time
+SkipAdminPassword=YES
+SkipBitLocker=YES
+SkipSummary=YES
+SkipFinalSummary=YES
+FinishAction=REBOOT
+```
+
+    -> Edit Bootstrap.ini
+```
+[Default]
+DeployRoot=\\<SERVER_NAME>\DeploymentShare$
+UserDomain=<server_domain>
+UserID=administrator
+UserPassword=<server_password>
+SkipBDDWelcome=YES
+```
+  -> right click on MDT Deployment Share -> Update Deployment Share
+
+Windows Deployment Services -> Add boot image
+  -> File location: C:\DeploymentShare\Boot\LiteTouchPE_x64.wim
+
+# Customize
+# on server
+Start menu -> Deployment Workbench
+  -> MDT Deployment Share
+    -> right click on Task Sequences
+      -> New Task Sequence -> Select Template: Sysprep and Capture
+
+# on client
+Win+R -> open: \\<SERVER_NAME>\DeploymentShare$
+  -> double click to execute Scripts\LiteTouch.vbs
+  -> Select task sequence: ID <CAPTURE>
+  -> Specify whether to capture an image
+    -> Capture and image of this reference computer
+      -> Location: \\<SERVER_NAME>\DeploymentShare$\Captures
+      -> File name: <CAPTURE>.wim
+
+# on server
+Start menu -> Deployment Workbench
+  -> MDT Deployment Share
+    -> right click on Operating Systems
+      -> Import Operating System -> OS Type: Custom image file
+      -> File location: C:\DeploymentShare\Captures\<CAPTURE>.wim
+    -> right click on Task Sequences
+      -> New Task Sequence -> Select Template: Standard Client Task Sequence
+        -> Select OS: <CUSTOM>.wim
+  -> right click on MDT Deployment Share -> Properties
+    -> Rules
+```
+SkipTaskSequence=YES
+TaskSequenceID=<CUSTOM>
+SkipCapture=YES
+```

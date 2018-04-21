@@ -1,31 +1,16 @@
-# https://dev.mysql.com/doc/mysql-apt-repo-quick-guide/en/
+sudo apt-get install mysql-server mysql-client mysql-utilities libmysqlclient-dev
 
-sudo apt-key adv --keyserver pgp.mit.edu --recv-keys 5072E1F5 
+sudo apt-get install mysql-workbench
 
-sudo bash -c "cat > /etc/apt/sources.list.d/mysql.list" <<"EOF"
-deb http://repo.mysql.com/apt/ubuntu/ trusty mysql-5.7
-deb http://repo.mysql.com/apt/ubuntu/ trusty workbench-6.3
-deb http://repo.mysql.com/apt/ubuntu/ trusty connector-python-2.1
-deb http://repo.mysql.com/apt/ubuntu/ trusty router-2.0
-deb http://repo.mysql.com/apt/ubuntu/ trusty mysql-utilities-1.5
-deb http://repo.mysql.com/apt/ubuntu/ trusty mysql-tools
-EOF
-
-sudo apt-get update
-sudo apt-get install mysql-server mysql-client libmysqlclient-dev
-sudo apt-get install mysql-workbench-community
+sudo systemctl restart mysql.service
 
 dpkg -l | grep mysql | grep ii
 
-sudo sed -i 's/^bind-address/# &/' /etc/mysql/my.cnf
-
 sudo mysql_secure_installation
-
-sudo service mysql restart
 
 mysql -u root -p -e "set @@global.show_compatibility_56=ON;"
 
-mysql -u root -p -h <hostname>
+mysql -u root -p -h <host>
 > show databases;
 > select user();
 > select current_user();
@@ -41,13 +26,10 @@ mysql -u root -p -h <hostname>
 > grant all privileges on <db_name>.* to '<username>'@'<hostname>' identified by '<password>' with grant option;
 > flush privileges;
 > show grants for '<username>'@'<hostname>';
+> show tables;
 
 mysqldump --all-databases --all-routines -u <username> -p > ~/path/to/dump.sql
 mysqldump -u <username> -p<password> <db_name> | gzip > /path/to/backup/<db_name>_`date +%y_%m_%d`.gz
-
-sudo update-rc.d mysql defaults
-sudo apt-get install sysv-rc-conf
-sudo sysv-rc-conf --list | grep -i mysql
 
 # reset password
 sudo /etc/init.d/mysql stop

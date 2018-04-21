@@ -1,10 +1,15 @@
-# https://www.elastic.co/downloads/elasticsearch
+# https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-6.2.3.tar.gz
+# https://artifacts.elastic.co/downloads/kibana/kibana-6.2.3-linux-x86_64.tar.gz
+# https://artifacts.elastic.co/downloads/logstash/logstash-6.2.3.tar.gz
+# https://artifacts.elastic.co/downloads/packs/x-pack/x-pack-6.2.3.zip
+# https://artifacts.elastic.co/downloads/elasticsearch-plugins/analysis-icu/analysis-icu-6.2.3.zip
+# https://artifacts.elastic.co/downloads/elasticsearch-plugins/analysis-smartcn/analysis-smartcn-6.2.3.zip
 
-tar xfz elasticsearch-5.2.1.tar.gz
-mv elasticsearch-5.2.1 ~/software
+tar xfz elasticsearch-6.2.3.tar.gz
+mv elasticsearch-6.2.3 ~/software
 
 cat >> ~/.bash_profile <<"EOF"
-export ELASTICSEARCH_HOME=$HOME/software/elasticsearch-5.2.1
+export ELASTICSEARCH_HOME=$HOME/software/elasticsearch-6.2.3
 export PATH=$ELASTICSEARCH_HOME/bin:$PATH
 EOF
 
@@ -21,8 +26,12 @@ sudo mkdir -p /data/elasticsearch/logs
 sudo chown -R ubuntu /data/elasticsearch
 
 elasticsearch-plugin list
+
 elasticsearch-plugin install analysis-icu
+elasticsearch-plugin install file:///path/to/analysis-icu-<version>.zip
+
 elasticsearch-plugin install analysis-smartcn
+elasticsearch-plugin install file:///path/to/analysis-smartcn-<version>.zip
 
 elasticsearch -d
 
@@ -30,13 +39,19 @@ elasticsearch -d
 http://localhost:9200
 http://localhost:9200/_cat/nodes?v
 http://localhost:9200/_cat/health?v
-http://localhost:9200/_stats?pretty=true
-http://localhost:9200/_mapping?pretty=true
 http://localhost:9200/_cat/indices?v
+http://localhost:9200/_mapping?pretty
+http://localhost:9200/_stats?pretty
 
 pgrep -f elasticsearch
 pkill -f elasticsearch
 netstat -lnp | grep :9200 | awk '{print $7}' | sed 's/\/java//' | xargs kill
+
+# api
+curl -XGET 'localhost:9200/<index>?pretty'
+curl -XDELETE 'localhost:9200/<index>?pretty'
+
+curl -XGET 'localhost:9200/<index>/<type>/_search'
 
 # xpack
 vi $ELASTICSEARCH_HOME/config/elasticsearch.yml
@@ -50,11 +65,11 @@ xpack.reporting.enabled=true
 ```
 
 elasticsearch-plugin install x-pack
-elasticsearch-plugin install file:///path/to/file/x-pack-<version>.zip
+elasticsearch-plugin install file:///path/to/x-pack-<version>.zip
 
 kibana-plugin install x-pack
-kibana-plugin install file:///path/to/file/x-pack-<version>.zip
+kibana-plugin install file:///path/to/x-pack-<version>.zip
 
 logstash-plugin install x-pack
-logstash-plugin install file:///path/to/file/x-pack-<version>.zip
+logstash-plugin install file:///path/to/x-pack-<version>.zip
 

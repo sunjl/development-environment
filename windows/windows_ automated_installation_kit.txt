@@ -1,0 +1,52 @@
+Install
+  - Server Manager -> Add Features .NET Framework 3.5
+  - Windows Automated Installation Kit for Windows 7
+
+Start menu -> Microsoft Windows AIK-> Windows System Image Manager
+
+File menu 
+  -> Select Windows Image
+  -> Open Answer File 
+    -> C:\Program Files\Windows AIK\Samples\autounattend_sample.xml
+  -> Save Answer File As -> Autounattend.xml
+
+Copy the Autounattend.xml file to the root directory of a USB flash drive (UFD)
+
+c:\windows\system32\sysprep\sysprep.exe /oobe /generalize /shutdown
+
+Start -> Windows AIK -> right click Deployment Tools Command Prompt -> Run as administrator
+
+copype.cmd amd64 c:\winpe_amd64
+
+copy "c:\program files\Windows AIK\Tools\x86\imagex.exe" c:\winpe_amd64\iso\
+
+oscdimg -n -bc:\winpe_amd64\etfsboot.com c:\winpe_amd64\iso
+c:\winpe_amd64\winpe_amd64.iso
+
+# on reference computer
+e:\imagex.exe /capture d: d:\myimage.wim "my Win7 Install" /compress fast /verify
+
+net use y: \\network_share\images
+copy d:\myimage.wim y:
+
+# on new computer
+diskpart /s <scriptname>.txt
+select disk 0
+clean
+create partition primary size=200
+select partition 1
+format fs=ntfs label="system"
+assign letter=c
+active
+create partition primary
+select partition 2
+format fs=ntfs label="Windows"
+assign letter=d
+exit
+
+net use y: \\network_share\images
+copy y:\myimage.wim d:
+
+e:\imagex.exe /apply d:\myimage.wim 1 d:
+
+d:\windows\system32\bcdboot d:\windows

@@ -112,7 +112,7 @@ sudo tee /etc/apt/sources.list.d/mongodb.list
 
 echo -e "<ip-address> `hostname -f` `hostname -s`" | sudo tee -a /etc/hosts
 
-find .-name .DS_Store -print0 | xargs -0 git-rm
+find . -name .DS_Store -print0 | xargs -0 git-rm
 
 sudo find /var/lib/puppet -type f -print0 |xargs -0r sudo rm
 

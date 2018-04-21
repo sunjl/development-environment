@@ -80,3 +80,4 @@ server {
 sudo ln -s /etc/nginx/sites-available/example-subdomain /etc/nginx/sites-enabled/example-subdomain
 
 sudo systemctl restart nginx.service
+

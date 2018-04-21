@@ -4,12 +4,12 @@ sudo apt-get update && sudo apt-get install gradle
 
 # manual
 # https://gradle.org/gradle-download/
-unzip gradle-3.4.1-all.zip
-sudo mv gradle-3.4.1 /opt/gradle-3.4.1
-sudo chown -R root:root /opt/gradle-3.4.1
+unzip gradle-4.6-all.zip
+sudo mv gradle-4.6 /opt/gradle-4.6
+sudo chown -R root:root /opt/gradle-4.6
 
 sudo bash -c "cat > /etc/profile.d/gradle.sh" <<"EOF"
-export GRADLE_HOME=/opt/gradle-3.4.1
+export GRADLE_HOME=/opt/gradle-4.6
 export PATH=$GRADLE_HOME/bin:$PATH
 EOF
 
@@ -29,15 +29,10 @@ systemProp.http.proxyHost=127.0.0.1
 systemProp.http.proxyPort=8118
 EOF
 
-mkdir -p ~/.gradle/wrapper/dists/gradle-3.4.1-bin/71zneekfcxxu7l9p7nr2sc65s
-cp gradle-3.4.1-bin.zip ~/.gradle/wrapper/dists/gradle-3.4.1-bin/71zneekfcxxu7l9p7nr2sc65s/
-
-mkdir -p ~/.gradle/wrapper/dists/gradle-3.4.1-all/c3ib5obfnqr0no9szq6qc17do
-cp gradle-3.4.1-all.zip ~/.gradle/wrapper/dists/gradle-3.4.1-all/c3ib5obfnqr0no9szq6qc17do/
-
 gradle tasks
 gradle build
 gradle wrapper
+gradle dependencies
 
 ./gradlew tasks
 ./gradlew build
