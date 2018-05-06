@@ -1,0 +1,6 @@
+Windows PowerShell command: add-windowsfeature wireless-networking
+
+Control Panel -> Administrative Tools Services -> WLAN AutoConfig -> Start
+
+Server Manager -> Add Roles and Features -> Features -> Wireless LAN Service
+

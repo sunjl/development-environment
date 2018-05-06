@@ -1,16 +1,17 @@
 # https://neo4j.com/download/
 
 tar -xzf neo4j-community-3.3.1-unix.tar.gz
-mv neo4j-community-3.3.1 ~/software/neo4j-3.3.1
 
-cat >> ~/.bash_profile <<"EOF"
-export NEO4J_HOME=$HOME/software/neo4j-3.3.1
+sudo mv neo4j-community-3.3.1 /opt/neo4j-3.3.1
+
+sudo bash -c "cat > /etc/profile.d/neo4j.sh" <<"EOF"
+export NEO4J_HOME=/opt/neo4j-3.3.1
 export PATH=$NEO4J_HOME/bin:$PATH
 EOF
 
-source ~/.bash_profile
+source /etc/profile.d/neo4j.sh
 
-vi $NEO4J_HOME/conf/neo4j.conf
+sudo vi $NEO4J_HOME/conf/neo4j.conf
 ```
 dbms.directories.data=/data/neo4j/data
 dbms.directories.certificates=/data/neo4j/certificates
@@ -22,19 +23,58 @@ sudo mkdir -p /data/neo4j/data
 sudo mkdir -p /data/neo4j/certificates
 sudo mkdir -p /data/neo4j/logs
 sudo mkdir -p /data/neo4j/import
-sudo chown -R ubuntu /data/neo4j
+
+sudo adduser --system --group --no-create-home --disabled-password neo4j
+
+sudo chown -R neo4j:neo4j /opt/neo4j-3.3.1
+
+sudo chown -R neo4j:neo4j /data/neo4j
+
+sudo chmod -R 755 /data/neo4j
 
 sudo vi /etc/security/limits.conf
 ```
-<username>   soft    nofile  40000
-<username>   hard    nofile  40000
+neo4j   soft    nofile  40000
+neo4j   hard    nofile  40000
 ```
 
-neo4j-admin set-initial-password <password>
-neo4j console
-neo4j start
-neo4j status
-neo4j stop
+sudo -u neo4j bash -c "source /etc/profile.d/neo4j.sh"
+
+sudo -u neo4j bash -c "$NEO4J_HOME/bin/neo4j-admin set-initial-password <password>"
+
+sudo -u neo4j bash -c "$NEO4J_HOME/bin/neo4j console"
+
+sudo -u neo4j bash -c "$NEO4J_HOME/bin/neo4j start"
+
+sudo -u neo4j bash -c "$NEO4J_HOME/bin/neo4j status"
+
+sudo -u neo4j bash -c "$NEO4J_HOME/bin/neo4j stop"
+
+sudo bash -c "cat > /lib/systemd/system/neo4j.service" <<"EOF"
+[Unit]
+Description=Neo4j Graph Database
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+User=neo4j
+Group=neo4j
+ExecStart=/opt/neo4j-3.3.1/bin/neo4j console
+LimitNOFILE=60000
+TimeoutSec=120
+SuccessExitStatus=143
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+sudo systemctl daemon-reload
+sudo systemctl enable neo4j.service
+sudo systemctl start neo4j.service
+sudo systemctl status neo4j.service
+sudo systemctl stop neo4j.service
+
+journalctl -e -u neo4j
 
 # http://<host>:7474/browser/
 

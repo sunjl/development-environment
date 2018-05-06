@@ -2,20 +2,22 @@
 # https://docs.mongodb.com/manual/administration/configuration/
 
 tar xzf mongodb-linux-x86_64-ubuntu1604-3.4.2.tgz
-mv mongodb-linux-x86_64-ubuntu1604-3.4.2 ~/software/mongodb-3.4.2
 
-cat >> ~/.bash_profile <<"EOF"
-export MONGODB_HOME=$HOME/software/mongodb-3.4.2
+sudo mv mongodb-linux-x86_64-ubuntu1604-3.4.2 /opt/mongodb-3.4.2
+
+sudo bash -c "cat > /etc/profile.d/mongodb.sh" <<"EOF"
+export MONGODB_HOME=/opt/mongodb-3.4.2
 export PATH=$MONGODB_HOME/bin:$PATH
 EOF
 
-source ~/.bash_profile
+source /etc/profile.d/mongodb.sh
 
-mkdir $MONGODB_HOME/conf/
-vi $MONGODB_HOME/conf/mongod.conf
+sudo mkdir $MONGODB_HOME/conf/
+
+sudo vi $MONGODB_HOME/conf/mongod.conf
 ```
 processManagement:
-  fork: true
+  fork: false
 net:
   bindIp: 127.0.0.1
   port: 27017
@@ -30,17 +32,57 @@ storage:
     enabled: true
 ```
 
+sudo adduser --system --group --no-create-home --disabled-password mongodb
+
+sudo chown -R mongodb:mongodb /opt/mongodb-3.4.2
+
 sudo mkdir -p /data/mongodb/db
 sudo mkdir -p /data/mongodb/log
-sudo chown -R ubuntu /data/mongodb
+sudo chown -R mongodb:mongodb /data/mongodb
+sudo chmod -R 755 /data/mongodb
 
-$MONGODB_HOME/bin/mongod --config $MONGODB_HOME/conf/mongod.conf
+sudo mkdir /var/run/mongodb
+sudo chown mongodb:mongodb /var/run/mongodb
+sudo chmod 755 /var/run/mongodb
 
-netstat -tln
+sudo -u mongodb bash -c "source /etc/profile.d/mongodb.sh"
+
+sudo -u mongodb bash -c "$MONGODB_HOME/bin/mongod -f $MONGODB_HOME/conf/mongod.conf"
+
 sudo lsof -i:27017
 tail -f /data/mongodb/log/mongod.log
 
-$MONGODB_HOME/bin/mongod --config $MONGODB_HOME/conf/mongod.conf --shutdown
+sudo -u mongodb bash -c "$MONGODB_HOME/bin/mongod -f $MONGODB_HOME/conf/mongod.conf --shutdown"
+
+sudo bash -c "cat > /lib/systemd/system/mongod.service" <<"EOF"
+[Unit]
+Description=MongoDB Server
+After=network.target
+
+[Service]
+User=mongodb
+Group=mongodb
+ExecStart=/opt/mongodb-3.4.2/bin/mongod -f /opt/mongodb-3.4.2/conf/mongod.conf
+ExecStop=/opt/mongodb-3.4.2/bin/mongod -f /opt/mongodb-3.4.2/conf/mongod.conf --shutdown
+LimitFSIZE=infinity
+LimitCPU=infinity
+LimitAS=infinity
+LimitNOFILE=64000
+LimitNPROC=64000
+LimitMEMLOCK=infinity
+TasksMax=infinity
+TasksAccounting=false
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+sudo systemctl daemon-reload
+sudo systemctl enable mongod.service
+sudo systemctl start mongod.service
+sudo systemctl status mongod.service
+sudo systemctl stop mongod.service
 
 # gui
 tar xvzf robomongo-0.9.0.tar.gz

@@ -6,34 +6,47 @@
 # https://artifacts.elastic.co/downloads/elasticsearch-plugins/analysis-smartcn/analysis-smartcn-6.2.3.zip
 
 tar xfz elasticsearch-6.2.3.tar.gz
-mv elasticsearch-6.2.3 ~/software
 
-cat >> ~/.bash_profile <<"EOF"
-export ELASTICSEARCH_HOME=$HOME/software/elasticsearch-6.2.3
-export PATH=$ELASTICSEARCH_HOME/bin:$PATH
+sudo mv elasticsearch-6.2.3 /opt/elasticsearch-6.2.3
+
+sudo bash -c "cat > /etc/profile.d/elasticsearch.sh" <<"EOF"
+export ES_HOME=/opt/elasticsearch-6.2.3
+export PATH=$ES_HOME/bin:$PATH
 EOF
 
-source ~/.bash_profile
+source /etc/profile.d/elasticsearch.sh
 
-vi $ELASTICSEARCH_HOME/config/elasticsearch.yml
+sudo vi $ES_HOME/config/elasticsearch.yml
 ```
 path.data: /data/elasticsearch/data
 path.logs: /data/elasticsearch/logs
 ```
 
+sudo adduser --system --group --no-create-home --disabled-password elasticsearch
+
+sudo chown -R elasticsearch:elasticsearch /opt/elasticsearch-6.2.3
+
 sudo mkdir -p /data/elasticsearch/data
 sudo mkdir -p /data/elasticsearch/logs
-sudo chown -R ubuntu /data/elasticsearch
+sudo chown -R elasticsearch:elasticsearch /data/elasticsearch
+sudo chmod -R 755 /data/elasticsearch
 
-elasticsearch-plugin list
+sudo mkdir /var/run/elasticsearch
+sudo chown elasticsearch:elasticsearch /var/run/elasticsearch
+sudo chmod 755 /var/run/elasticsearch
 
-elasticsearch-plugin install analysis-icu
-elasticsearch-plugin install file:///path/to/analysis-icu-<version>.zip
+sudo -u elasticsearch bash -c "source /etc/profile.d/elasticsearch.sh"
 
-elasticsearch-plugin install analysis-smartcn
-elasticsearch-plugin install file:///path/to/analysis-smartcn-<version>.zip
+sudo -u elasticsearch bash -c "$ES_HOME/bin/elasticsearch-plugin list"
 
-elasticsearch -d
+sudo -u elasticsearch bash -c "$ES_HOME/bin/elasticsearch-plugin install file:///path/to/analysis-icu-6.2.3.zip"
+
+sudo -u elasticsearch bash -c "$ES_HOME/bin/elasticsearch-plugin install file:///path/to/analysis-smartcn-6.2.3.zip"
+
+sudo -u elasticsearch bash -c "$ES_HOME/bin/elasticsearch -d"
+
+sudo lsof -i:9200
+tail -f /data/elasticsearch/logs/elasticsearch.log
 
 # status
 http://localhost:9200
@@ -43,18 +56,53 @@ http://localhost:9200/_cat/indices?v
 http://localhost:9200/_mapping?pretty
 http://localhost:9200/_stats?pretty
 
-pgrep -f elasticsearch
-pkill -f elasticsearch
-netstat -lnp | grep :9200 | awk '{print $7}' | sed 's/\/java//' | xargs kill
+sudo -u elasticsearch bash -c "pgrep -f elasticsearch"
+sudo -u elasticsearch bash -c "pkill -f elasticsearch"
+sudo -u elasticsearch bash -c "netstat -lnp | grep :9200 | awk '{print \$7}' | sed 's/\/java//' | xargs kill"
+
+sudo bash -c "cat > /lib/systemd/system/elasticsearch.service" <<"EOF"
+[Unit]
+Description=Elasticsearch
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+User=elasticsearch
+Group=elasticsearch
+
+ExecStart=/opt/elasticsearch-6.2.3/bin/elasticsearch
+
+StandardOutput=journal
+StandardError=inherit
+
+LimitNOFILE=65536
+LimitNPROC=4096
+LimitAS=infinity
+LimitFSIZE=infinity
+TimeoutStopSec=0
+KillSignal=SIGTERM
+KillMode=process
+SendSIGKILL=no
+SuccessExitStatus=143
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+sudo systemctl daemon-reload
+sudo systemctl enable elasticsearch.service
+sudo systemctl start elasticsearch.service
+sudo systemctl status elasticsearch.service
+sudo systemctl stop elasticsearch.service
 
 # api
+curl -XPUT 'localhost:9200/<index>?pretty' -H 'Content-Type: application/json' -d "@path/to/mapping.json"
 curl -XGET 'localhost:9200/<index>?pretty'
+curl -XGET 'localhost:9200/<index>/<type>/_search'
 curl -XDELETE 'localhost:9200/<index>?pretty'
 
-curl -XGET 'localhost:9200/<index>/<type>/_search'
-
 # xpack
-vi $ELASTICSEARCH_HOME/config/elasticsearch.yml
+sudo vi $ES_HOME/config/elasticsearch.yml
 ```
 action.auto_create_index: .security,.monitoring*,.watches,.triggered_watches,.watcher-history*
 xpack.security.enabled=true
@@ -64,12 +112,9 @@ xpack.watcher.enabled=true
 xpack.reporting.enabled=true
 ```
 
-elasticsearch-plugin install x-pack
-elasticsearch-plugin install file:///path/to/x-pack-<version>.zip
+elasticsearch-plugin install file:///path/to/x-pack-6.2.3.zip
 
-kibana-plugin install x-pack
-kibana-plugin install file:///path/to/x-pack-<version>.zip
+kibana-plugin install file:///path/to/x-pack-6.2.3.zip
 
-logstash-plugin install x-pack
-logstash-plugin install file:///path/to/x-pack-<version>.zip
+logstash-plugin install file:///path/to/x-pack-6.2.3.zip
 
