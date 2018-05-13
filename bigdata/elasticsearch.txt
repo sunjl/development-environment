@@ -31,10 +31,6 @@ sudo mkdir -p /data/elasticsearch/logs
 sudo chown -R elasticsearch:elasticsearch /data/elasticsearch
 sudo chmod -R 755 /data/elasticsearch
 
-sudo mkdir /var/run/elasticsearch
-sudo chown elasticsearch:elasticsearch /var/run/elasticsearch
-sudo chmod 755 /var/run/elasticsearch
-
 sudo -u elasticsearch bash -c "source /etc/profile.d/elasticsearch.sh"
 
 sudo -u elasticsearch bash -c "$ES_HOME/bin/elasticsearch-plugin list"

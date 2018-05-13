@@ -1,0 +1,35 @@
+# https://docs.anaconda.com/anaconda/install/linux
+
+wget https://repo.anaconda.com/archive/Anaconda3-5.1.0-Linux-x86_64.sh
+
+bash Anaconda3-5.1.0-Linux-x86_64.sh -b -p $HOME/software/anaconda3-5.1.0
+
+cat >> ~/.bash_profile <<"EOF"
+export CONDA_HOME=$HOME/software/anaconda3-5.1.0
+export PATH=$CONDA_HOME/bin:$PATH
+EOF
+
+source ~/.bash_profile
+
+cat >> ~/.bashrc <<"EOF"
+[[ -f $HOME/.bash_profile ]] && . $HOME/.bash_profile
+EOF
+
+conda search <package>
+
+conda install <package>=<version>
+
+conda remove <package>
+
+conda update anaconda
+
+conda update --all
+
+conda create --name <env> <package>
+
+source activate <env>
+
+conda info --envs
+
+source deactivate
+

@@ -1,4 +1,4 @@
-sudo pip install -U twisted service_identity pytz \
+sudo pip3 install -U twisted service_identity pytz \
   requests lxml cssselect beautifulsoup4 pyquery queuelib w3lib \
   scrapy pymongo scrapy-mongodb
 
@@ -8,7 +8,7 @@ virtualenv $ENV_DIR
 source $ENV_DIR/bin/activate
 for package in $PACKAGES
 do
-    pip install $package
+   sudo pip3 install $package
 done
 
 find . -name "*.pyc" -exec rm -rf {} \;

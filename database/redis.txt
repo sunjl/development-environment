@@ -30,6 +30,8 @@ dir /data/redis
 
 sudo adduser --system --group --no-create-home redis
 
+sudo chown -R redis:redis /opt/redis-4.0.6/
+
 sudo mkdir -p /data/redis
 
 sudo chown -R redis:redis /data/redis

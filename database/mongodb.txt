@@ -41,10 +41,6 @@ sudo mkdir -p /data/mongodb/log
 sudo chown -R mongodb:mongodb /data/mongodb
 sudo chmod -R 755 /data/mongodb
 
-sudo mkdir /var/run/mongodb
-sudo chown mongodb:mongodb /var/run/mongodb
-sudo chmod 755 /var/run/mongodb
-
 sudo -u mongodb bash -c "source /etc/profile.d/mongodb.sh"
 
 sudo -u mongodb bash -c "$MONGODB_HOME/bin/mongod -f $MONGODB_HOME/conf/mongod.conf"

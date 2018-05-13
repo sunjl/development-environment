@@ -122,6 +122,8 @@ npm config delete proxy
 
 http_proxy=http://127.0.0.1:8118 ncu -a
 
+sudo http_proxy=http://127.0.0.1:8118 apt install <package>
+
 sudo apt-get install proxychains
 
 sudo bash -c "cat > /etc/proxychains.conf" <<"EOF"

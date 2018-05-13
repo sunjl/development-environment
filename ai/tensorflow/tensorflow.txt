@@ -43,7 +43,7 @@ cd $HOME/software/tensorflow-1.6
 
 PYTHON_BIN_PATH=/usr/bin/python3 ./configure
 
-# Python library path: /usr/local/lib/python3.5/dist-packages
+# Python library path: /usr/local/lib/python3.6/dist-packages
 # CUDA support: yes
 # CUDA SDK version: 9.0
 # cuDNN version: 7
@@ -55,5 +55,5 @@ bazel build --cxxopt="-D_GLIBCXX_USE_CXX11_ABI=0" --config=opt --config=cuda \
 
 bazel-bin/tensorflow/tools/pip_package/build_pip_package /tmp/tensorflow_pkg
 
-sudo pip3 install /tmp/tensorflow_pkg/tensorflow-1.6.0-cp35-cp35m-linux_x86_64.whl
+sudo pip3 install /tmp/tensorflow_pkg/tensorflow-1.6.0-cp36-cp36m-linux_x86_64.whl
 

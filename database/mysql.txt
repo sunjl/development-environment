@@ -33,7 +33,9 @@ mysqldump -u <username> -p<password> <db_name> | gzip > /path/to/backup/<db_name
 
 # reset password
 sudo /etc/init.d/mysql stop
+
 sudo mysqld --skip-grant-tables &
+
 mysql -u root mysql
 > update user set password=password('<new_password>') where user='root';
 > flush privileges;

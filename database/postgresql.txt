@@ -31,5 +31,5 @@ postgres=# \q
 
 psql -h localhost -U <username> -d <db_name> -W
 
-sudo vi /etc/postgresql/9.4/main/pg_hba.conf
+sudo vi /etc/postgresql/9.6/main/pg_hba.conf
 

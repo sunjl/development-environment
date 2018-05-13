@@ -19,17 +19,15 @@ dbms.directories.logs=/data/neo4j/logs
 dbms.directories.import=/data/neo4j/import
 ```
 
-sudo mkdir -p /data/neo4j/data
-sudo mkdir -p /data/neo4j/certificates
-sudo mkdir -p /data/neo4j/logs
-sudo mkdir -p /data/neo4j/import
-
 sudo adduser --system --group --no-create-home --disabled-password neo4j
 
 sudo chown -R neo4j:neo4j /opt/neo4j-3.3.1
 
+sudo mkdir -p /data/neo4j/data
+sudo mkdir -p /data/neo4j/certificates
+sudo mkdir -p /data/neo4j/logs
+sudo mkdir -p /data/neo4j/import
 sudo chown -R neo4j:neo4j /data/neo4j
-
 sudo chmod -R 755 /data/neo4j
 
 sudo vi /etc/security/limits.conf

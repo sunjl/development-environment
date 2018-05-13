@@ -1,0 +1,4 @@
+Windows+R -> netplwiz -> uncheck "Users must enter a user name and password to use this computer"
+
+Control Panel\All Control Panel Items\Ease of Access Center\Make the keyboard easier to use
+  -> check "Underline keyboard shortcuts and access keys"
