@@ -33,8 +33,8 @@ pip search <package_name>
 sudo pip install -U <package_name>
 pip show <package_name>
 
-ls /usr/lib/python3.6/dist-packages/
-ls /usr/local/lib/python3.6/dist-packages/
+ls /usr/lib/python3.5/dist-packages/
+ls /usr/local/lib/python3.5/dist-packages/
 
 find . -name "*.pyc" -exec rm -rf {} \;
 

@@ -19,9 +19,13 @@ conda search <package>
 
 conda install <package>=<version>
 
+conda list
+
 conda remove <package>
 
 conda update anaconda
+
+conda update -n base conda
 
 conda update --all
 

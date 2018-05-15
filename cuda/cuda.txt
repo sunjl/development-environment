@@ -1,6 +1,9 @@
 lspci | grep -i nvidia
+
 sudo apt-get install nvidia-384 nvidia-settings
+
 cat /proc/driver/nvidia/version
+
 nvidia-smi
 
 sudo apt-get install linux-headers-$(uname -r) build-essential freeglut3-dev \
@@ -9,7 +12,19 @@ sudo apt-get install linux-headers-$(uname -r) build-essential freeglut3-dev \
 # https://developer.nvidia.com/cuda-downloads
 # https://developer.nvidia.com/cuda-90-download-archive
 
+chmod +x cuda_9.0.176_384.81_linux.run
+
 sudo sh cuda_9.0.176_384.81_linux.run --silent --toolkit
+
+# ubuntu 18.04
+sudo apt install gcc-6 g++-6
+
+sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-6 60 \
+  --slave /usr/bin/g++ g++ /usr/bin/g++-6
+  
+sudo update-alternatives --set gcc /usr/bin/gcc-6
+
+sudo sh cuda_9.0.176_384.81_linux.run --silent --toolkit --override
 
 sudo bash -c "cat > /etc/profile.d/cuda.sh" <<"EOF"
 export CUDA_HOME=/usr/local/cuda
@@ -25,26 +40,39 @@ sudo vi /usr/local/cuda/libnvvp/nvvp.ini
 ```
 
 mkdir -p ~/workspace/nvidia/cuda/
+
 cd ~/workspace/nvidia/cuda/
+
 cuda-install-samples-9.0.sh .
+
 cd NVIDIA_CUDA-9.0_Samples/
+
 make
+
 cd bin/x86_64/linux/release/
+
 ./deviceQuery
+
 ./nbody
 
 # https://developer.nvidia.com/cudnn
 
 tar xvzf cudnn-9.0-linux-x64-v7.tgz
+
 sudo cp cuda/include/cudnn.h /usr/local/cuda/include
+
 sudo cp cuda/lib64/libcudnn* /usr/local/cuda/lib64
+
 sudo chmod a+r /usr/local/cuda/include/cudnn.h
+
 sudo chmod a+r /usr/local/cuda/lib64/libcudnn*
 
 cat /usr/local/cuda/include/cudnn.h | grep CUDNN_MAJOR -A 2
 
 # uninstall
 sudo rm /usr/local/cuda/include/cudnn.h
+
 sudo rm /usr/local/cuda/lib64/libcudnn*
+
 sudo /usr/local/cuda-9.0/bin/uninstall_cuda_9.0.pl
 

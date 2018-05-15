@@ -1,0 +1,40 @@
+sudo apt-get install cmake g++ gcc libboost-all-dev libzmq3-dev
+
+sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-7 70
+  --slave /usr/bin/g++ g++ /usr/bin/g++-7
+
+sudo update-alternatives --set gcc /usr/bin/gcc-7
+
+conda install numpy zeromq pyzmq
+
+cd $HOME/software/pytorch
+
+git clone https://github.com/pytorch/ELF.git
+
+cd ELF
+
+git submodule sync && git submodule update --init --recursive
+
+source scripts/devmode_set_pythonpath.sh
+
+make clean && make && make test
+
+# https://github.com/pytorch/ELF/releases
+
+cd scripts/elfgames/go/
+
+vi server_addrs.py
+```
+addrs = {
+    "myserver": "[127.0.0.1]",
+}
+```
+
+./start_server.sh
+
+./start_client.sh
+
+./gtp.sh /path/to/modelfile.bin --verbose --gpu 0 --num_block 20 --dim 224 --mcts_puct 1.50 --batchsize 16 --mcts_rollout_per_batch 16 --mcts_threads 2 --mcts_rollout_per_thread 8192 --resign_thres 0.05 --mcts_virtual_loss 1
+
+./analysis.sh /path/to/model --preload_sgf /path/to/sgf --preload_sgf_move_to [move_number] --dump_record_prefix [tree] --verbose --gpu 0 --mcts_puct 1.50 --batchsize 16 --mcts_rollout_per_batch 16 --mcts_threads 2 --mcts_rollout_per_thread 8192 --resign_thres 0.0 --mcts_virtual_loss 1 --num_games 1
+

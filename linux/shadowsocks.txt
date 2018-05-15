@@ -2,7 +2,7 @@
 
 # server
 sudo apt-get install python-pip python-m2crypto python-gevent
-sudo pip install shadowsocks
+sudo pip3 install shadowsocks
 
 sudo mkdir -p /etc/shadowsocks
 
@@ -26,7 +26,7 @@ tail -f /var/log/shadowsocks.log
 sudo ssserver -c /etc/shadowsocks/config.json -d stop
 
 # client command line
-sudo pip install shadowsocks
+sudo pip3 install shadowsocks
 
 sudo mkdir -p /etc/shadowsocks
 
@@ -56,6 +56,15 @@ SuccessExitStatus=15
 
 [Install]
 WantedBy=multi-user.target
+```
+
+# ubuntu 18.04
+sudo vim /usr/local/lib/python3.6/dist-packages/shadowsocks/crypto/openssl.py
+```
+#libcrypto.EVP_CIPHER_CTX_cleanup.argtypes = (c_void_p,)
+libcrypto.EVP_CIPHER_CTX_reset.argtypes = (c_void_p,)
+#libcrypto.EVP_CIPHER_CTX_cleanup(self._ctx)
+libcrypto.EVP_CIPHER_CTX_reset(self._ctx)
 ```
 
 sudo systemctl daemon-reload
@@ -94,7 +103,7 @@ telnet 127.0.0.1 1080
 telnet 127.0.0.1 8118
 
 export http_proxy="http://localhost:8118"
-export https_proxy=http://localhost:8118
+export https_proxy="http://localhost:8118"
 
 unset http_proxy
 unset https_proxy
@@ -147,13 +156,16 @@ wget https://www.twitter.com/
 sudo add-apt-repository ppa:hzwhuang/ss-qt5
 sudo apt-get update && sudo apt-get install shadowsocks-qt5
 
-# https://github.com/FelisCatus/SwitchyOmega
+# https://github.com/FelisCatus/SwitchyOmega/releases
 # https://raw.githubusercontent.com/gfwlist/gfwlist/master/gfwlist.txt
 
 # Chrome -> Extensions -> SwitchyOmega
 proxy -> proxy servers -> Protocol: SOCKS5, Server: 127.0.0.1, Port: 1080
-auto switch -> Rule List Format: AutoProxy, Rule List URL: https://raw.githubusercontent.com/gfwlist/gfwlist/master/gfwlist.txt
+auto switch -> add a rule list -> Rule List Format: AutoProxy
+  -> Rule List URL: https://raw.githubusercontent.com/gfwlist/gfwlist/master/gfwlist.txt
 
 # Firefox -> Preferences
-Network Proxy -> Manual proxy -> Http Proxy: 127.0.0.1, Port: 8118
+Network Proxy -> Manual proxy
+  -> Http Proxy: 127.0.0.1, Port: 8118
+  -> check 'Use this proxy server for all protocols'
 

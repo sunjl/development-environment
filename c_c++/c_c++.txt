@@ -12,3 +12,29 @@ make
 
 make install
 
+# ubuntu 18.04
+sudo apt install gcc-5 g++-5 gcc-6 g++-6 gcc g++ cmake
+
+sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-5 50
+  --slave /usr/bin/g++ g++ /usr/bin/g++-5
+
+sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-6 60
+  --slave /usr/bin/g++ g++ /usr/bin/g++-6
+
+sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-7 70
+  --slave /usr/bin/g++ g++ /usr/bin/g++-7
+
+sudo update-alternatives --list gcc
+
+sudo update-alternatives --set gcc /usr/bin/gcc-5
+
+sudo update-alternatives --config gcc
+
+sudo update-alternatives --display gcc
+
+# sudo update-alternatives --remove gcc /usr/bin/gcc-5
+
+# sudo update-alternatives --remove gcc /usr/bin/gcc-6
+
+# sudo update-alternatives --remove gcc /usr/bin/gcc-7
+

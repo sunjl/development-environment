@@ -1,0 +1,31 @@
+# ubuntu 18.04
+sudo apt install gcc-5 g++-5
+
+sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-5 50
+  --slave /usr/bin/g++ g++ /usr/bin/g++-5
+
+sudo update-alternatives --set gcc /usr/bin/gcc-5
+
+export CMAKE_PREFIX_PATH="$(dirname $(which conda))/../"
+
+conda install numpy pyyaml mkl mkl-include setuptools cmake cffi typing
+
+conda install -c pytorch magma-cuda90
+
+# build from source
+mkdir -p $HOME/software/pytorch
+
+cd $HOME/software/pytorch
+
+git clone -b v0.4.0 --recursive https://github.com/pytorch/pytorch pytorch-0.4.0
+
+cd pytorch-0.4.0
+
+python setup.py clean && python setup.py install
+
+# install package
+conda install pytorch torchvision cuda90 -c pytorch
+
+# docker
+docker build -t pytorch -f docker/pytorch/Dockerfile .
+
