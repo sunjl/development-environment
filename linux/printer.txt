@@ -1,0 +1,7 @@
+# hp printer
+sudo apt-get install hplip libcups2 libcups2-dev cups-bsd cups-client libusb-1.0.0-dev libsane-dev \
+  libsnmp-dev snmp-mibs-downloader python3-pyqt4 gtk2-engines-pixbuf libcupsimage2-dev \
+  libtool libtool-bin gtk2-engines-pixbuf xsane python3-dbus.mainloop.qt python3-notify2
+
+hp-doctor
+

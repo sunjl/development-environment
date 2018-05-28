@@ -1,10 +1,11 @@
 # https://golang.org/dl/
-tar xzf go1.8.3.linux-amd64.tar.gz
-sudo mv go /opt/go-1.8.3
-sudo chown -R root:root /opt/go-1.8.3
+
+tar xzf go1.10.2.linux-amd64.tar.gz
+sudo mv go /opt/go-1.10.2
+sudo chown -R root:root /opt/go-1.10.2
 
 sudo bash -c "cat > /etc/profile.d/go.sh" <<"EOF"
-export GOROOT=/opt/go-1.8.3
+export GOROOT=/opt/go-1.10.2
 export PATH=$GOROOT/bin:$PATH
 EOF
 
@@ -21,9 +22,29 @@ cat >> ~/.bashrc <<"EOF"
 [[ -f $HOME/.bash_profile ]] && . $HOME/.bash_profile
 EOF
 
-mkdir -p $HOME/workspace/go
+mkdir -p $HOME/workspace/go/bin
 
 # dependency manager
 go get -u github.com/Masterminds/glide
 go list -e -json github.com/Masterminds/glide
+
+curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
+
+mkdir -p $GOPATH/src/github.com/me/example
+
+cd $GOPATH/src/github.com/me/example
+
+dep init
+
+dep ensure
+
+dep ensure -add github.com/pkg/errors@v0.8.0
+
+dep ensure -update
+
+dep ensure -update github.com/pkg/errors
+
+sudo apt-get install graphviz
+
+dep status -dot | dot -T png | display
 

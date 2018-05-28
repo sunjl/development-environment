@@ -1,0 +1,20 @@
+rfkill list
+
+dmesg | grep Blue
+
+lspci -knn | grep Net -A2; lsusb
+
+sudo apt-get install bluetooth bluez bluez-tools blueman \
+    pulseaudio-module-bluetooth ubuntu-desktop unity-control-center
+
+sudo vi /etc/bluetooth/main.conf
+```
+AutoEnable=true
+```
+
+sudo service bluetooth restart
+
+Bluetooth Manager -> Search -> right click on device -> Connect to Handsfree
+
+System Settings -> Sound -> Output -> Choose a device
+

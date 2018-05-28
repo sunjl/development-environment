@@ -1,0 +1,59 @@
+cd fabric-samples/fabcar
+
+docker rm -f $(docker ps -aq)
+
+docker network prune
+
+npm install
+
+./startFabric.sh
+
+./startFabric.sh node
+
+docker images -a
+
+docker ps -a
+
+docker network ls
+
+docker volume ls
+
+docker logs -f ca.example.com
+
+node enrollAdmin.js
+
+node registerUser.js
+
+node query.js
+
+vi query.js
+```
+fcn: 'queryCar',
+args: ['CAR4']
+```
+
+vi invoke.js
+```
+var request = {
+  chaincodeId: 'fabcar',
+  fcn: 'createCar',
+  args: ['CAR10', 'Chevy', 'Volt', 'Red', 'Nick'],
+  chainId: 'mychannel',
+  txId: tx_id
+};
+```
+
+node invoke.js
+
+vi invoke.js
+```
+var request = {
+  //targets: let default to the peer assigned to the client
+  chaincodeId: 'fabcar',
+  fcn: 'changeCarOwner',
+  args: ['CAR10', 'Dave'],
+  chainId: 'mychannel',
+  txId: tx_id
+};
+```
+

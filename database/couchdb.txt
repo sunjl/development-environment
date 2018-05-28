@@ -1,0 +1,83 @@
+# http://docs.couchdb.org/
+
+# install package
+echo "deb https://apache.bintray.com/couchdb-deb $(lsb_release -sc) main" | \
+    sudo tee /etc/apt/sources.list.d/couchdb.list
+
+curl -L https://couchdb.apache.org/repo/bintray-pubkey.asc | sudo apt-key add -
+
+sudo apt-get update && sudo apt-get install couchdb
+
+# http://127.0.0.1:5984/_utils#setup
+
+curl -X PUT http://127.0.0.1:5984/_users
+
+curl -X PUT http://127.0.0.1:5984/_replicator
+
+curl -X PUT http://127.0.0.1:5984/_global_changes
+
+# build from source
+sudo apt-get install build-essential pkg-config erlang \
+    libicu-dev libmozjs185-dev libcurl4-openssl-dev
+
+./configure
+
+make release
+
+make release ERL_CFLAGS="-I/usr/local/include/js -I/usr/local/lib/erlang/usr/include"
+
+adduser --system \
+        --shell /bin/bash \
+        --group --gecos \
+        "CouchDB Administrator" couchdb
+
+cp -R /path/to/couchdb/rel/couchdb /home/couchdb
+
+chown -R couchdb:couchdb /home/couchdb
+
+find /home/couchdb -type d -exec chmod 0770 {} \;
+
+chmod 0644 /home/couchdb/etc/*
+
+sudo -i -u couchdb /home/couchdb/bin/couchdb
+
+# http://127.0.0.1:5984/_utils/index.html
+
+# http://localhost:5984/_utils/index.html#verifyinstall
+
+sudo apt-get install runit
+
+sudo mkdir /var/log/couchdb
+
+sudo chown couchdb:couchdb /var/log/couchdb
+
+sudo mkdir /etc/sv/couchdb
+
+sudo mkdir /etc/sv/couchdb/log
+
+sudo vi /etc/sv/couchdb/log/run
+```
+#!/bin/sh
+exec svlogd -tt /var/log/couchdb
+```
+
+sudo vi /etc/sv/couchdb/run
+```
+#!/bin/sh
+export HOME=/home/couchdb
+exec 2>&1
+exec chpst -u couchdb /home/couchdb/bin/couchdb
+```
+
+sudo chmod u+x /etc/sv/couchdb/log/run
+
+sudo chmod u+x /etc/sv/couchdb/run
+
+sudo ln -s /etc/sv/couchdb/ /etc/service/couchdb
+
+sudo sv status couchdb
+
+sudo sv stop couchdb
+
+sudo sv start couchdb
+

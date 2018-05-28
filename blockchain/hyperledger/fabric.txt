@@ -1,0 +1,42 @@
+# http://hyperledger-fabric.readthedocs.io/en/latest/install.html
+
+docker --version
+docker-compose --version
+go version
+echo $GOPATH
+python --version
+node --version
+
+npm install -g grpc
+
+mkdir -p $HOME/software/hyperledger-1.1.0
+
+cd $HOME/software/hyperledger-1.1.0
+
+wget -c https://nexus.hyperledger.org/content/repositories/releases/org/hyperledger/fabric/hyperledger-fabric/linux-amd64-1.1.0/hyperledger-fabric-linux-amd64-1.1.0.tar.gz
+
+wget -c https://nexus.hyperledger.org/content/repositories/releases/org/hyperledger/fabric/hyperledger-fabric/linux-amd64-1.1.0/hyperledger-fabric-linux-amd64-1.1.0.tar.gz.md5
+
+wget -c https://nexus.hyperledger.org/content/repositories/releases/org/hyperledger/fabric-ca/hyperledger-fabric-ca/linux-amd64-1.1.0/hyperledger-fabric-ca-linux-amd64-1.1.0.tar.gz
+
+wget -c https://nexus.hyperledger.org/content/repositories/releases/org/hyperledger/fabric-ca/hyperledger-fabric-ca/linux-amd64-1.1.0/hyperledger-fabric-ca-linux-amd64-1.1.0.tar.gz.md5
+
+wget -c https://raw.githubusercontent.com/hyperledger/fabric/master/scripts/bootstrap.sh
+
+vi bootstrap.sh
+```
+cd fabric-samples && git checkout v${VERSION} && cd ..
+git clone -b master https://github.com/hyperledger/fabric-samples.git && cd fabric-samples && git checkout v${VERSION} && cd ..
+```
+
+bash bootstrap.sh -s 1.1.0
+
+cat >> ~/.bash_profile <<"EOF"
+export HYPERLEDGER_HOME=$HOME/software/hyperledger-1.1.0
+export PATH=$HYPERLEDGER_HOME/bin:$PATH
+EOF
+
+source ~/.bash_profile
+
+go get -u github.com/hyperledger/fabric
+
