@@ -60,6 +60,9 @@ sudo systemctl start redis.service
 sudo systemctl status redis.service
 sudo systemctl stop redis.service
 
+# gui
+sudo snap install redis-desktop-manager
+
 redis-cli
 > set <key> "<value>"
 > get <key>

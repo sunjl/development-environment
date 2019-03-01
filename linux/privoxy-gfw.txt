@@ -57,7 +57,7 @@ esac
 
 sudo chmod +x /etc/init.d/shadowsocks-privoxy
 
-sudo update-rc.d /etc/init.d/nexus defaults
+sudo update-rc.d shadowsocks-privoxy defaults
 
 sudo service shadowsocks-privoxy start
 

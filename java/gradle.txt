@@ -22,7 +22,7 @@ cat >> ~/.gradle/gradle.properties <<"EOF"
 org.gradle.daemon=true
 EOF
 
-gradlew -Dhttp.proxyHost=<host> -Dhttp.proxyPort=<port>
+./gradlew -Dhttp.proxyHost=127.0.0.1 -Dhttp.proxyPort=8118
 
 cat >> ~/.gradle/gradle.properties <<"EOF"
 systemProp.http.proxyHost=127.0.0.1

@@ -1,6 +1,6 @@
 # https://atom.io/
 
-apm install file-icons minimap markdown-preview-plus markdown-scroll-sync tidy-markdown \
+apm install file-icons minimap markdown-preview-plus tidy-markdown \
   language-gradle language-groovy language-javascript-jsx language-scala
 
 # Edit -> Stylesheet

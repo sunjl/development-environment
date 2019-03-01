@@ -1,0 +1,95 @@
+# https://docs.docker.com/install/linux/docker-ce/ubuntu/
+
+sudo apt-get install apt-transport-https ca-certificates curl software-properties-common
+
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+
+sudo apt-key fingerprint 0EBFCD88
+
+sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+
+sudo apt-get update && sudo apt-get install docker-ce
+
+# production
+apt-cache madison docker-ce
+sudo apt-get install docker-ce=<VERSION>
+
+sudo docker run hello-world
+
+sudo ls /var/lib/docker/
+
+# https://docs.docker.com/install/linux/linux-postinstall/
+
+mkdir -p /home/$USER/.docker
+
+sudo chown "$USER":"$USER" /home/"$USER"/.docker -R
+
+sudo chmod g+rwx "/home/$USER/.docker" -R
+
+sudo groupadd docker
+
+sudo usermod -aG docker $USER
+
+# log out and log in again
+
+env | grep DOCKER_HOST
+
+ps aux |grep dnsmasq
+
+sudo vi /etc/default/docker
+```
+export http_proxy="http://127.0.0.1:8118/"
+```
+
+sudo vi /etc/docker/daemon.json
+```
+{
+	"dns": ["8.8.8.8", "8.8.4.4"],
+}
+```
+
+sudo mkdir -p /etc/systemd/system/docker.service.d
+
+sudo bash -c "cat > /etc/systemd/system/docker.service.d/http-proxy.conf" <<"EOF"
+[Service]
+Environment="HTTP_PROXY=http://127.0.0.1:8118/" "NO_PROXY=localhost,127.0.0.1,docker-registry.example.com"
+EOF
+
+sudo bash -c "cat > /etc/systemd/system/docker.service.d/https-proxy.conf" <<"EOF"
+[Service]
+Environment="HTTPS_PROXY=https://127.0.0.1:8118/" "NO_PROXY=localhost,127.0.0.1,docker-registry.example.com"
+EOF
+
+sudo systemctl enable docker
+
+systemctl show --property=Environment docker
+
+sudo service docker restart
+
+docker run busybox nslookup google.com
+docker info
+docker ps -a
+docker container ls -a
+docker image ls -a
+docker network ls
+docker volume ls
+
+docker pull <image_name>
+docker run <image_name>
+docker build -t <image_name> .
+docker run -d -p <host_port>:<container_port> <image_name>
+docker container stop <container_id>
+docker container stop -f $(docker container ls -a -q)
+docker container kill <container_id>
+docker container rm <container_id>
+docker container rm -f $(docker container ls -a -q)
+docker image rm <image_id>
+docker image rm -f $(docker image ls -a -q)
+docker login
+docker tag <image_name> <username>/<repository>:<tag>
+docker push <username>/<repository>:<tag>
+docker run <username>/<repository>:<tag>
+
+docker exec -it <container_name> /bin/bash
+> apt-get update && apt-get install -y vim
+

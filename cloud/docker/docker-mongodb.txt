@@ -1,0 +1,64 @@
+docker run -d -it \
+  --rm \
+  --restart always \
+  --name <container_name> \
+  -p 27017:27017 \
+  -v /path/on/host:/data/db \
+  --config /etc/mongo/mongod.conf \
+  -e MONGO_INITDB_ROOT_USERNAME=root \
+  -e MONGO_INITDB_ROOT_PASSWORD=<password> \
+  -e MONGO_INITDB_ROOT_PASSWORD_FILE=/path/to/secret/file \
+  mongo
+
+docker exec -it <container_name> bash
+root:/# mongo
+> db.getName();
+
+docker logs <container_name>
+
+docker update --restart=no <container_name>
+docker update --restart=no $(docker ps -a -q)
+
+vi stack.yml
+```
+version: '3.1'
+services:
+  mongo:
+    image: mongo
+    restart: always
+    ports:
+      - 27017:27017
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: <password>
+  mongo-express:
+    image: mongo-express
+    restart: always
+    ports:
+      - 8081:8081
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: root
+      ME_CONFIG_MONGODB_ADMINPASSWORD: <password>
+```
+
+docker-machine start
+
+docker-machine ip
+
+docker swarm init --advertise-addr 192.168.99.1
+
+docker stack deploy -c stack.yml mongo
+
+docker-compose -f stack.yml up
+
+# http://<host-ip>:8081
+
+docker run -it --rm \
+  --name mongo-express \
+  --link some-mongo:mongo \
+  -p 8081:8081 \
+  -e ME_CONFIG_OPTIONS_EDITORTHEME="ambiance" \
+  -e ME_CONFIG_BASICAUTH_USERNAME="<username>" \
+  -e ME_CONFIG_BASICAUTH_PASSWORD="<password>" \
+  mongo-express
+

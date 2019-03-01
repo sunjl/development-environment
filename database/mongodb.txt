@@ -1,12 +1,12 @@
 # https://docs.mongodb.com/manual/tutorial/install-mongodb-on-ubuntu/
 # https://docs.mongodb.com/manual/administration/configuration/
 
-tar xzf mongodb-linux-x86_64-ubuntu1604-3.4.2.tgz
+tar xzf mongodb-linux-x86_64-ubuntu1804-4.0.3.tgz
 
-sudo mv mongodb-linux-x86_64-ubuntu1604-3.4.2 /opt/mongodb-3.4.2
+sudo mv mongodb-linux-x86_64-ubuntu1804-4.0.3 /opt/mongodb-4.0.3
 
 sudo bash -c "cat > /etc/profile.d/mongodb.sh" <<"EOF"
-export MONGODB_HOME=/opt/mongodb-3.4.2
+export MONGODB_HOME=/opt/mongodb-4.0.3
 export PATH=$MONGODB_HOME/bin:$PATH
 EOF
 
@@ -34,7 +34,7 @@ storage:
 
 sudo adduser --system --group --no-create-home --disabled-password mongodb
 
-sudo chown -R mongodb:mongodb /opt/mongodb-3.4.2
+sudo chown -R mongodb:mongodb /opt/mongodb-4.0.3
 
 sudo mkdir -p /data/mongodb/db
 sudo mkdir -p /data/mongodb/log
@@ -58,8 +58,8 @@ After=network.target
 [Service]
 User=mongodb
 Group=mongodb
-ExecStart=/opt/mongodb-3.4.2/bin/mongod -f /opt/mongodb-3.4.2/conf/mongod.conf
-ExecStop=/opt/mongodb-3.4.2/bin/mongod -f /opt/mongodb-3.4.2/conf/mongod.conf --shutdown
+ExecStart=/opt/mongodb-4.0.3/bin/mongod -f /opt/mongodb-4.0.3/conf/mongod.conf
+ExecStop=/opt/mongodb-4.0.3/bin/mongod -f /opt/mongodb-4.0.3/conf/mongod.conf --shutdown
 LimitFSIZE=infinity
 LimitCPU=infinity
 LimitAS=infinity
@@ -122,6 +122,8 @@ mongo
 > use <db_name>
 > db.dropDatabase()
 > show collections
+> db.createCollection("<collection_name>")
+> db.<collection_name>.insert({<field_name>: "<value>"})
 > db.<collection_name>.drop()
 > db.<collection_name>.find().limit(5)
 > db.<collection_name>.find({"aliases": {$exists: true}})

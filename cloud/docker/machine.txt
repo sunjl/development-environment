@@ -1,0 +1,63 @@
+# https://docs.docker.com/machine/install-machine/
+# https://github.com/docker/machine/releases/
+
+curl -L https://github.com/docker/machine/releases/download/v0.16.0/docker-machine-`uname -s`-`uname -m` >/tmp/docker-machine &&
+    chmod +x /tmp/docker-machine &&
+    sudo cp /tmp/docker-machine /usr/local/bin/docker-machine
+
+base=https://raw.githubusercontent.com/docker/machine/v0.16.0
+for i in docker-machine-prompt.bash docker-machine-wrapper.bash docker-machine.bash
+do
+  sudo wget "$base/contrib/completion/bash/${i}" -P /etc/bash_completion.d
+done
+
+vi ~/.bashrc
+```
+PS1='[\u@\h \W$(__docker_machine_ps1)]\$ '
+```
+
+docker-machine create --driver virtualbox <machine-name>
+
+docker-machine ls
+
+docker-machine ssh <manager-name> "docker swarm init --advertise-addr <manager-ip>"
+
+docker-machine ssh <worker-name> "docker swarm join --token <token> <manager-ip>:2377"
+
+docker-machine ssh <manager-name> "docker node ls"
+
+docker-machine ssh <machine-name> "docker swarm leave -f"
+
+docker-machine env <machine-name>
+
+eval $(docker-machine env <machine-name>)
+
+docker-machine ls
+
+docker-machine start <machine-name>
+
+docker stack deploy -c <compose-file> <app-name>
+
+docker login registry.example.com
+
+docker stack deploy --with-registry-auth -c <compose-file> <app-name>
+
+docker stack ps <app-name>
+
+docker-machine rm <app-name>
+
+docker-machine rm -f $(docker-machine ls -q)
+
+docker-machine scp <compose-file> <machine-name>
+
+docker-machine ssh <machine-name> "docker stack deploy -c <compose-file> <app-name>"
+
+eval $(docker-machine env -u)
+
+docker-machine stop $(docker-machine ls -q)
+
+docker-machine rm $(docker-machine ls -q)
+
+# uninstall
+sudo rm $(which docker-machine)
+

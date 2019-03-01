@@ -16,6 +16,8 @@ sudo mkdir -p /data1
 sudo mkdir -p /data2
 sudo chown -R ubuntu /data1/
 sudo chown -R ubuntu /data2/
+sudo chmod -R 755 /data1/
+sudo chmod -R 755 /data2/
 sudo mount -a
 sudo df -h
 
@@ -33,7 +35,7 @@ Ctrl+Alt+F1
 sudo systemctl disable lightdm.service
 
 sudo apt-get install linux-generic linux-headers-generic linux-image-generic \
-  build-essential python-software-properties software-properties-common
+  build-essential software-properties-common
 
 sudo apt-get install language-pack-zh-hans language-pack-zh-hans-base \
   fonts-arphic-uming fonts-arphic-ukai fonts-wqy-microhei fonts-wqy-zenhei
@@ -73,9 +75,8 @@ deb http://archive.canonical.com/ubuntu xenial partner
 deb-src http://archive.canonical.com/ubuntu xenial partner
 ```
 
-sudo apt-get install gstreamer1.0-plugins-ugly gstreamer1.0-libav gstreamer1.0-fluendo-mp3
-sudo apt-get install vlc vlc-plugin-fluidsynth
-sudo apt-get install flashplugin-installer
+sudo apt-get install vlc vlc-plugin-fluidsynth flashplugin-installer \
+  gstreamer1.0-plugins-ugly gstreamer1.0-libav gstreamer1.0-fluendo-mp3
 
 sudo apt-get install curl ssh openssh-server
 
@@ -100,8 +101,8 @@ sudo apt-get install axel
 axel -n 5 http://example.com/somefile.zip
 
 sudo apt-get install rsync grsync
-rsync --delete -azv --exclude '.git' /some/path/ /other/path/
-rsync --delete -vrltgoD --exclude-from='/path/to/.gitignore' -e ssh /some/path/ <user>@<host>:/some/path
+rsync --delete -azv --exclude 'file/or/path/to/ignore' /some/path/ /other/path/
+rsync --delete -vrltgoD --exclude-from='file/or/path/to/ignore' -e ssh /some/path/ <user>@<host>:/some/path
 
 sudo apt-get install colordiff
 diff file1 file2 | colordiff
@@ -290,12 +291,12 @@ sudo apt-get install traceroute
 
 sudo route add default gw 210.51.23.1
 
-ip route
+# ip route
 210.51.23.0/24 dev eth2 proto kernel scope link src 210.51.23.18
 169.254.0.0/16 dev eth2 scope link metric 1000
 default via 210.51.23.1 dev eth2 metric 100
 
-ip route
+# ip route
 192.168.1.0/24 dev wlan0 proto kernel scope link src 192.168.1.103 metric 2
 169.254.0.0/16 dev wlan0 scope link metric 1000
 default via 192.168.1.1 dev wlan0 proto static

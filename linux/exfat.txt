@@ -1,0 +1,10 @@
+sudo apt-get install exfat-fuse exfat-utils
+
+sudo mkdir /media/exfat
+
+sudo mount -t exfat /dev/sdc1 /media/exfat
+
+sudo lsblk -o NAME,FSTYPE,SIZE,MOUNTPOINT,LABEL
+
+sudo umount /dev/sdc1
+

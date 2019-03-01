@@ -1,7 +1,7 @@
-sudo apt-get install software-properties-common python-software-properties
+sudo apt-get install software-properties-common
 
 sudo apt-add-repository ppa:brightbox/ruby-ng
-sudo apt-get update && sudo apt-get install ruby2.4 ruby2.4-dev
+sudo apt-get update && sudo apt-get install ruby2.5 ruby2.5-dev
 
 sudo update-alternatives --config ruby
 sudo update-alternatives --config gem
@@ -10,9 +10,9 @@ ls /usr/lib/ruby/
 ls /var/lib/gems/
 
 sudo gem sources -l
-sudo gem sources -a https://ruby.taobao.org/
+sudo gem sources -a https://gems.ruby-china.com/
 sudo gem sources -r https://rubygems.org/
-sudo gem install <package_name> --source http://ruby.taobao.org/
+sudo gem install <package_name> --source https://gems.ruby-china.com/
 sudo gem update
 sudo gem update --system
 sudo gem update <package_name>

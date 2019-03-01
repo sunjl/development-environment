@@ -1,11 +1,5 @@
 sudo apt-get install openjdk-8-jdk
 
-# package
-sudo add-apt-repository ppa:webupd8team/java
-sudo apt-get update && sudo apt-get install oracle-java8-installer
-ls /var/cache/oracle-jdk8-installer/
-
-# manual
 # http://www.oracle.com/technetwork/java/javase/downloads/index.html
 tar xvzf jdk-8u161-linux-x64.tar.gz
 sudo mkdir -p /opt/jdk1.8.0_161
