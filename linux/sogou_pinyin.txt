@@ -1,0 +1,16 @@
+sudo apt install fcitx-bin fcitx-table
+
+sudo apt-get purge ibus indicator-keyboard
+
+im-config -n fcitx
+
+# https://pinyin.sogou.com/linux/
+
+sudo dpkg -i sogoupinyin_2.2.0.0108_amd64.deb
+
+sudo apt-get install -f
+
+# reboot
+
+fcitx-configtool
+
