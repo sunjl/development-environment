@@ -14,8 +14,6 @@ UUID=<uuid> /data2 xfs defaults 0 2
 
 sudo mkdir -p /data1
 sudo mkdir -p /data2
-sudo chown -R ubuntu /data1/
-sudo chown -R ubuntu /data2/
 sudo chmod -R 755 /data1/
 sudo chmod -R 755 /data2/
 sudo mount -a

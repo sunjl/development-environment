@@ -44,7 +44,7 @@ export http_proxy="http://127.0.0.1:8118/"
 sudo vi /etc/docker/daemon.json
 ```
 {
-	"dns": ["8.8.8.8", "8.8.4.4"],
+	"dns": ["8.8.8.8", "8.8.4.4"]
 }
 ```
 

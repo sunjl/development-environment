@@ -3,7 +3,6 @@ sudo apt-get install openjdk-8-jdk
 # http://www.oracle.com/technetwork/java/javase/downloads/index.html
 tar xvzf jdk-8u161-linux-x64.tar.gz
 sudo mkdir -p /opt/jdk1.8.0_161
-sudo chown -R root:root /opt/jdk1.8.0_161/
 sudo cp -r jdk1.8.0_161/* /opt/jdk1.8.0_161/
 
 sudo rm /usr/lib/jvm/default-java
