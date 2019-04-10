@@ -1,8 +1,18 @@
-sudo apt-get install mysql-server mysql-client mysql-utilities libmysqlclient-dev
+# https://dev.mysql.com/downloads/repo/apt/
 
-sudo apt-get install mysql-workbench
+sudo dpkg -i mysql-apt-config_0.8.12-1_all.deb
 
-sudo systemctl restart mysql.service
+sudo dpkg-reconfigure mysql-apt-config
+
+sudo apt-get update
+
+sudo apt-get install mysql-server
+
+sudo service mysql start
+
+sudo apt-get install mysql-utilities mysql-shell mysql-workbench-community
+
+mysqlsh --mysqlx -u <user> -h <host> -P <port>
 
 dpkg -l | grep mysql | grep ii
 
@@ -32,7 +42,7 @@ mysqldump --all-databases --all-routines -u <username> -p > ~/path/to/dump.sql
 mysqldump -u <username> -p<password> <db_name> | gzip > /path/to/backup/<db_name>_`date +%y_%m_%d`.gz
 
 # reset password
-sudo /etc/init.d/mysql stop
+sudo service mysql stop
 
 sudo mysqld --skip-grant-tables &
 

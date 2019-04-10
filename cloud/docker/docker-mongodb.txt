@@ -1,5 +1,4 @@
 docker run -d -it \
-  --rm \
   --restart always \
   --name <container_name> \
   -p 27017:27017 \
@@ -16,10 +15,7 @@ root:/# mongo
 
 docker logs <container_name>
 
-docker update --restart=no <container_name>
-docker update --restart=no $(docker ps -a -q)
-
-vi stack.yml
+vi docker-mongodb.yml
 ```
 version: '3.1'
 services:
@@ -47,9 +43,9 @@ docker-machine ip
 
 docker swarm init --advertise-addr 192.168.99.1
 
-docker stack deploy -c stack.yml mongo
+docker stack deploy -c docker-mongodb.yml mongo
 
-docker-compose -f stack.yml up
+docker-compose -f docker-mongodb.yml up
 
 # http://<host-ip>:8081
 

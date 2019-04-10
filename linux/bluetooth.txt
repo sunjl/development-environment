@@ -1,6 +1,6 @@
 rfkill list
 
-dmesg | grep Blue
+dmesg | grep Bluetooth
 
 lspci -knn | grep Net -A2; lsusb
 

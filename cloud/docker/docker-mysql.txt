@@ -1,0 +1,51 @@
+docker run -d -it \
+  --restart always \
+  --name <container_name> \
+  -p 3306:3306 \
+  -v /host/conf/path:/etc/mysql/conf.d \
+  -v /host/data/path:/var/lib/mysql \
+  --user 1000:1000 \
+  -e MYSQL_ROOT_PASSWORD=<password> \
+  -e MYSQL_ROOT_PASSWORD_FILE=/run/secrets/mysql-root \
+  mysql
+
+vi /host/conf/path/config-file.cnf
+
+sudo mkdir -p /host/data/path
+
+sudo chown -R "$USER":docker /host/data/path
+
+docker exec -it <container_name> mysql -h <host> -u <user> -p
+
+MYSQL_ROOT_PASSWORD=<password>
+
+docker exec <container_name> sh -c 'exec mysqldump -u root -p"$MYSQL_ROOT_PASSWORD" --all-databases' > /host/path/all-databases.sql
+
+docker exec -i <container_name> mysql -u root -p<password> < /host/path/database.sql
+
+docker exec <container_name> mysqldump -u root -p<password> <database_name> > /host/path/database.sql
+
+docker exec -i <container_name> mysql -u root -p<password> <database_name> < /host/path/database.sql
+
+docker logs <container_name>
+
+vi docker-mysql.yml
+```
+version: '3.1'
+services:
+  db:
+    image: mysql
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: <password>
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8080:8080
+```
+
+docker-compose -f docker-mysql.yml up
+
+# http://<host>:8080
