@@ -4,12 +4,12 @@ sudo apt-get update && sudo apt-get install gradle
 
 # manual
 # https://gradle.org/gradle-download/
-unzip gradle-4.6-all.zip
-sudo mv gradle-4.6 /opt/gradle-4.6
-sudo chown -R root:root /opt/gradle-4.6
+unzip gradle-4.10.3-bin.zip
+sudo mv gradle-4.10.3 /opt/gradle-4.10.3
+sudo chown -R root:root /opt/gradle-4.10.3
 
 sudo bash -c "cat > /etc/profile.d/gradle.sh" <<"EOF"
-export GRADLE_HOME=/opt/gradle-4.6
+export GRADLE_HOME=/opt/gradle-4.10.3
 export PATH=$GRADLE_HOME/bin:$PATH
 EOF
 

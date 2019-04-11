@@ -7,7 +7,7 @@ docker run -d \
   -p 5000:5000 \
   --restart=always \
   --name registry \
-  -v /data:/var/lib/registry \
+  -v /data/docker/registry:/var/lib/registry \
   registry:2
 
 docker pull ubuntu:18.04
@@ -63,7 +63,7 @@ docker service create \
   --secret domain.crt \
   --secret domain.key \
   --constraint 'node.labels.registry==true' \
-  --mount type=bind,src=/data,dst=/var/lib/registry \
+  --mount type=bind,src=/data/docker/registry,dst=/var/lib/registry \
   -e REGISTRY_HTTP_ADDR=0.0.0.0:443 \
   -e REGISTRY_HTTP_TLS_CERTIFICATE=/run/secrets/domain.crt \
   -e REGISTRY_HTTP_TLS_KEY=/run/secrets/domain.key \
