@@ -2,3 +2,30 @@ sudo apt-get install software-properties-common
 sudo apt-add-repository ppa:ansible/ansible
 sudo apt-get update && sudo apt-get install ansible
 
+
+sudo vi /etc/ansible/hosts
+```
+localhost ansible_connection=local ansible_python_interpreter="/usr/bin/env python"
+[test]
+test-[00001:99999] ansible_python_interpreter="/usr/bin/env python3"
+```
+
+ansible <host> -a "cat /etc/hostname"
+ansible <host> -a "reboot" -u <user> -bK --become-user <other-user>
+ansible <host> -m copy -a "src=/etc/hosts dest=/tmp/hosts"
+ansible <host> -m file -a "dest=/path/to/a.txt mode=600"
+ansible <host> -m file -a "dest=/path/to/b.txt mode=600 owner=<owner> group=<group>"
+ansible <host> -m file -a "dest=/path/to/c mode=755 owner=<owner> group=<group> state=directory"
+ansible <host> -m file -a "dest=/path/to/c state=absent"
+ansible <host> -m user -a "name=<name> password=<password>"
+ansible <host> -m user -a "name=<name> state=absent"
+ansible <host> -m apt -a "name=vim state=latest"
+ansible <host> -m apt -a "name=vim state=absent"
+ansible <host> -m git -a "repo=https://example.com/repo.git dest=/path/to/repo version=HEAD"
+ansible <host> -m service -a "name=httpd state=started"
+ansible <host> -m service -a "name=httpd state=restarted"
+ansible <host> -m service -a "name=httpd state=stopped"
+ansible <host> -m setup
+ansible <host> -m template -a "src=/tmp/motd.j2 dest=/etc/motd"
+
+ansible-playbook -i <inventory-file> <playbook>.yml -bK

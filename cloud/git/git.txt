@@ -64,8 +64,6 @@ git clean -fdx
 git push -f
 git rebase -i HEAD
 git rebase master
-
-gitk
 git status
 git diff HEAD
 git diff --cached

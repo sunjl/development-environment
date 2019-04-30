@@ -10,10 +10,6 @@ sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubun
 
 sudo apt-get update && sudo apt-get install docker-ce
 
-# production
-apt-cache madison docker-ce
-sudo apt-get install docker-ce=<VERSION>
-
 sudo docker run hello-world
 
 sudo ls /var/lib/docker/
@@ -69,6 +65,7 @@ sudo service docker restart
 docker run busybox nslookup google.com
 docker info
 docker ps -a
+docker ps -q | xargs  docker stats --no-stream
 docker container ls -a
 docker image ls -a
 docker network ls
@@ -89,6 +86,7 @@ docker update --restart=no $(docker ps -a -q)
 
 docker image rm <image_id>
 docker image rm -f $(docker image ls -a -q)
+docker image ls |grep none | awk '{print $3}' | xargs docker image rm
 
 docker login
 docker tag <image_name> <username>/<repository>:<tag>
@@ -98,3 +96,4 @@ docker run <username>/<repository>:<tag>
 docker exec -it <container_name> /bin/bash
 > apt-get update && apt-get install -y vim
 
+docker container run -e "DOCKER_HOST=$(ip -4 addr show docker0 | grep -Po 'inet \K[\d.]+')"

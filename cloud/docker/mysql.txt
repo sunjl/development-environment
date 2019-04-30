@@ -1,10 +1,12 @@
+sudo mkdir -p /host/data/path
+
+sudo chown -R "$USER":docker /host/data/path
+
 docker run -d -it \
   --restart always \
   --name <container_name> \
   -p 3306:3306 \
-  -v /host/conf/path:/etc/mysql/conf.d \
   -v /host/data/path:/var/lib/mysql \
-  --user 1000:1000 \
   -e MYSQL_ROOT_PASSWORD=<password> \
   -e MYSQL_ROOT_PASSWORD_FILE=/run/secrets/mysql-root \
   mysql

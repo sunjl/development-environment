@@ -57,6 +57,9 @@ java -version
 ls -la /etc/alternatives/java*
 update-java-alternatives -l
 
+unzip jce_policy-8.zip
+sudo cp UnlimitedJCEPolicyJDK8/*.jar $JAVA_HOME/jre/lib/security
+
 # firefox plugin
 cd /usr/lib/firefox-addons/plugins/
 sudo ln -s /usr/lib/jvm/default-java/jre/lib/amd64/libnpjp2.so .
