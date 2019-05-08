@@ -98,7 +98,7 @@ docker login myregistrydomain.com:5000
 
 # Deploy your registry using a Compose file
 
-vi docker-registry.yml
+vi docker-compose.yml
 ```
 registry:
   restart: always
@@ -117,7 +117,7 @@ registry:
     - /path/auth:/auth
 ```
 
-docker-compose -f docker-registry.yml up -d
+docker-compose -f docker-compose.yml up -d
 
 # Considerations for air-gapped registries
 

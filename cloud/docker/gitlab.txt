@@ -1,0 +1,140 @@
+# https://docs.gitlab.com/omnibus/
+# https://docs.gitlab.com/omnibus/docker/
+# https://docs.gitlab.com/omnibus/settings/nginx.html
+
+# run docker container
+sudo mkdir -p /data/gitlab/config
+sudo mkdir -p /data/gitlab/logs
+sudo mkdir -p /data/gitlab/data
+sudo chown -R "$USER":docker /data/gitlab
+
+docker run -d -it \
+    --hostname gitlab.example.com \
+    --env GITLAB_OMNIBUS_CONFIG="external_url 'http://gitlab.example.com:8929';" \
+    --publish 8929:8929 \
+    --name gitlab \
+    --restart always \
+    --volume /data/gitlab/config:/etc/gitlab \
+    --volume /data/gitlab/logs:/var/log/gitlab \
+    --volume /data/gitlab/data:/var/opt/gitlab \
+    gitlab/gitlab-ce:latest
+
+docker exec -it gitlab vi /etc/gitlab/gitlab.rb
+```
+external_url 'http://gitlab.example.com:8929'
+```
+
+docker exec gitlab update-permissions
+
+docker restart gitlab
+
+docker logs -f gitlab
+
+# install using docker-compose
+vi docker-compose.yml
+```
+web:
+  image: 'gitlab/gitlab-ce:latest'
+  restart: always
+  hostname: 'gitlab.example.com'
+  environment:
+    GITLAB_OMNIBUS_CONFIG: |
+      external_url 'http://gitlab.example.com:8929'
+  ports:
+    - '8929:8929'
+  volumes:
+    - '/data/gitlab/config:/etc/gitlab'
+    - '/data/gitlab/logs:/var/log/gitlab'
+    - '/data/gitlab/data:/var/opt/gitlab'
+```
+
+docker-compose up -d
+
+# deploy in docker swarm
+vi docker-compose.yml
+```
+version: "3.6"
+services:
+ gitlab:
+   image: gitlab/gitlab-ce:latest
+   ports:
+     - "8929:80"
+   volumes:
+     - /data/gitlab/data:/var/opt/gitlab
+     - /data/gitlab/logs:/var/log/gitlab
+     - /data/gitlab/config:/etc/gitlab
+   environment:
+     GITLAB_OMNIBUS_CONFIG: "from_file('/omnibus_config.rb')"
+   configs:
+     - source: gitlab
+       target: /omnibus_config.rb
+   secrets:
+     - gitlab_root_password
+ gitlab-runner:
+   image: gitlab/gitlab-runner:alpine
+   deploy:
+     mode: replicated
+     replicas: 4
+configs:
+ gitlab:
+   file: ./gitlab.rb
+secrets:
+ gitlab_root_password:
+   file: ./root_password.txt
+```
+
+vi gitlab.rb
+```
+external_url 'http://gitlab.example.com:8929'
+gitlab_rails['initial_root_password'] = File.read('/run/secrets/gitlab_root_password')
+```
+
+vi root_password.txt
+```
+MySuperSecretAndSecurePass0rd!
+```
+
+docker stack deploy --compose-file docker-compose.yml mystack
+
+sudo vi /etc/nginx/sites-available/example-gitlab
+```
+upstream example-gitlab { 
+        server 127.0.0.1:8929; 
+} 
+
+server { 
+        listen 80; 
+        server_name gitlab.example.com; 
+        access_log /data/nginx/log/example-gitlab_access.log; 
+        error_log  /data/nginx/log/example-gitlab_error.log; 
+        location / { 
+                client_max_body_size 1024M; 
+                client_body_buffer_size 128k; 
+                proxy_set_header X-Real-IP $remote_addr; 
+                proxy_set_header X-Forwarder-For $proxy_add_x_forwarded_for; 
+                proxy_set_header Host $http_host; 
+                proxy_set_header X-NginX-Proxy true; 
+                proxy_pass http://example-gitlab; 
+                proxy_redirect off; 
+        } 
+}
+```
+
+sudo ln -s /etc/nginx/sites-available/example-gitlab /etc/nginx/sites-enabled/example-gitlab
+
+sudo service nginx reload
+
+# http://gitlab.example.com:8929
+# username: root
+
+cd existing_project
+git init
+git remote add origin http://gitlab.example.com/<user>/<project>.git
+git add .
+git commit -am "init"
+git push -u origin master
+
+# RPC failed; HTTP 501 curl 22 The requested URL returned error: 501 Chunked requests not implemented
+git gc --aggressive
+git config --get http.postBuffer
+git config http.postBuffer 524288000

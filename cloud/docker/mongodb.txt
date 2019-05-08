@@ -1,8 +1,12 @@
+sudo mkdir -p /data/mongodb
+
+sudo chown -R "$USER":docker /data/mongodb
+
 docker run -d -it \
   --restart always \
   --name some-mongo \
   -p 27017:27017 \
-  -v /path/on/host:/data/db \
+  -v /data/mongodb:/data/db \
   --config /etc/mongo/mongod.conf \
   -e MONGO_INITDB_ROOT_USERNAME=root \
   -e MONGO_INITDB_ROOT_PASSWORD=<password> \

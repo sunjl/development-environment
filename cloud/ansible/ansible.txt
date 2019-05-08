@@ -5,17 +5,18 @@ sudo apt-get update && sudo apt-get install ansible
 
 sudo vi /etc/ansible/hosts
 ```
-localhost ansible_connection=local ansible_python_interpreter="/usr/bin/env python"
+localhost ansible_connection=local ansible_python_interpreter="/usr/bin/env python3"
 [test]
-test-[00001:99999] ansible_python_interpreter="/usr/bin/env python3"
+test-[00001:00002] ansible_python_interpreter="/usr/bin/env python3"
 ```
+ansible-inventory --list --yaml
 
 ansible <host> -a "cat /etc/hostname"
 ansible <host> -a "reboot" -u <user> -bK --become-user <other-user>
+
 ansible <host> -m copy -a "src=/etc/hosts dest=/tmp/hosts"
-ansible <host> -m file -a "dest=/path/to/a.txt mode=600"
-ansible <host> -m file -a "dest=/path/to/b.txt mode=600 owner=<owner> group=<group>"
-ansible <host> -m file -a "dest=/path/to/c mode=755 owner=<owner> group=<group> state=directory"
+ansible <host> -m file -a "dest=/path/to/a.txt mode=600 owner=<owner> group=<group>"
+ansible <host> -m file -a "dest=/path/to/b mode=755 owner=<owner> group=<group> state=directory"
 ansible <host> -m file -a "dest=/path/to/c state=absent"
 ansible <host> -m user -a "name=<name> password=<password>"
 ansible <host> -m user -a "name=<name> state=absent"

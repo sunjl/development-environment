@@ -76,7 +76,7 @@ deb-src http://archive.canonical.com/ubuntu xenial partner
 sudo apt-get install vlc vlc-plugin-fluidsynth flashplugin-installer \
   gstreamer1.0-plugins-ugly gstreamer1.0-libav gstreamer1.0-fluendo-mp3
 
-sudo apt-get install curl ssh openssh-server
+sudo apt-get install curl ssh
 
 sudo bash -c "cat >> /etc/ssh/ssh_config" <<"EOF"
 TCPKeepAlive yes

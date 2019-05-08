@@ -1,21 +1,15 @@
-sudo mkdir -p /host/data/path
+sudo mkdir -p /data/mysql
 
-sudo chown -R "$USER":docker /host/data/path
+sudo chown -R "$USER":docker /data/mysql
 
 docker run -d -it \
   --restart always \
   --name <container_name> \
   -p 3306:3306 \
-  -v /host/data/path:/var/lib/mysql \
+  -v /data/mysql:/var/lib/mysql \
   -e MYSQL_ROOT_PASSWORD=<password> \
   -e MYSQL_ROOT_PASSWORD_FILE=/run/secrets/mysql-root \
   mysql
-
-vi /host/conf/path/config-file.cnf
-
-sudo mkdir -p /host/data/path
-
-sudo chown -R "$USER":docker /host/data/path
 
 docker exec -it <container_name> mysql -h <host> -u <user> -p
 
@@ -31,7 +25,7 @@ docker exec -i <container_name> mysql -u root -p<password> <database_name> < /ho
 
 docker logs <container_name>
 
-vi docker-mysql.yml
+vi docker-compose.yml
 ```
 version: '3.1'
 services:
@@ -48,6 +42,6 @@ services:
       - 8080:8080
 ```
 
-docker-compose -f docker-mysql.yml up
+docker-compose -f docker-compose.yml up
 
 # http://<host>:8080

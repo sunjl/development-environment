@@ -10,6 +10,8 @@ sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubun
 
 sudo apt-get update && sudo apt-get install docker-ce
 
+sudo pip3 install docker
+
 sudo docker run hello-world
 
 sudo ls /var/lib/docker/

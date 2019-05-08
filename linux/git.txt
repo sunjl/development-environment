@@ -1,9 +1,9 @@
 sudo apt-get install git
 
-git config --global user.name "<name>"
-git config --global user.email "<email>"
 git config --global color.ui auto
 git config --global push.default simple
+git config --global user.name "<name>"
+git config --global user.email "<email>"
 git config --list
 cat ~/.gitconfig
 
@@ -79,4 +79,3 @@ git submodule update --init --recursive
 echo ".DS_Store" >> ~/.gitignore
 git config --global core.excludesfile ~/.gitignore
 find .-name .DS_Store -print0 | xargs -0 git-rm
-
