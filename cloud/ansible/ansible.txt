@@ -7,7 +7,7 @@ sudo vi /etc/ansible/hosts
 ```
 localhost ansible_connection=local ansible_python_interpreter="/usr/bin/env python3"
 [test]
-test-[00001:00002] ansible_python_interpreter="/usr/bin/env python3"
+test-[001:002] ansible_python_interpreter="/usr/bin/env python3"
 ```
 ansible-inventory --list --yaml
 

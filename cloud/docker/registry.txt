@@ -2,30 +2,51 @@
 
 # Run a local registry
 
+sudo mkdir -p /data/docker_registry
+sudo chown -R "$USER":docker /data/docker_registry
+
+docker network create docker-registry-net
+
 docker run -d \
-  -e REGISTRY_HTTP_ADDR=0.0.0.0:5000 \
-  -p 5000:5000 \
   --restart=always \
-  --name registry \
-  -v /data/docker/registry:/var/lib/registry \
+  --name docker-registry \
+  --net docker-registry-net \
+  -p 5000:5000 \
+  -v /data/docker_registry:/var/lib/registry \
+  -e REGISTRY_HTTP_ADDR=0.0.0.0:5000 \
   registry:2
+
+docker run -d \
+  --name docker-registry-ui \
+  --net docker-registry-net \
+  -p 8980:80 \
+  -e REGISTRY_URL=http://docker-registry:5000 \
+  joxit/docker-registry-ui:static
+
+# on localhost
+sudo vi /etc/docker/daemon.json
+```
+{
+    "insecure-registries": ["<remote-host>:5000"]
+}
+```
+sudo service docker restart
 
 docker pull ubuntu:18.04
 
-docker tag ubuntu:18.04 localhost:5000/my-ubuntu
+docker tag ubuntu:18.04 <host>:5000/my-ubuntu
 
-docker push localhost:5000/my-ubuntu
+docker push <host>:5000/my-ubuntu
 
 docker image remove ubuntu:18.04
 
-docker image remove localhost:5000/my-ubuntu
+docker image remove <host>:5000/my-ubuntu
 
-docker pull localhost:5000/my-ubuntu
+docker pull <host>:5000/my-ubuntu
 
 docker container stop registry && docker container rm -v registry
 
 # Run an externally-accessible registry
-
 mkdir -p certs
 
 cp domain.crt domain.key certs/
@@ -42,16 +63,7 @@ docker run -d \
   -p 443:443 \
   registry:2
 
-docker pull ubuntu:16.04
-
-docker tag ubuntu:16.04 myregistrydomain.com/my-ubuntu
-
-docker push myregistrydomain.com/my-ubuntu
-
-docker pull myregistrydomain.com/my-ubuntu
-
 # Run the registry as a service
-
 docker secret create domain.crt certs/domain.crt
 
 docker secret create domain.key certs/domain.key
@@ -72,7 +84,6 @@ docker service create \
   registry:2
 
 # Restricting access
-
 mkdir auth
 
 docker run \
@@ -97,7 +108,6 @@ docker run -d \
 docker login myregistrydomain.com:5000
 
 # Deploy your registry using a Compose file
-
 vi docker-compose.yml
 ```
 registry:
@@ -120,7 +130,6 @@ registry:
 docker-compose -f docker-compose.yml up -d
 
 # Considerations for air-gapped registries
-
 vi /etc/docker/daemon.json
 ```
 {
