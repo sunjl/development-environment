@@ -1,7 +1,7 @@
 # https://github.com/shadowsocks/shadowsocks/wiki
 
 # server
-sudo apt-get install python3-pip python-m2crypto python-gevent
+sudo apt-get update && sudo apt-get install python3-pip python-m2crypto python-gevent
 sudo pip3 install shadowsocks
 
 sudo mkdir -p /etc/shadowsocks

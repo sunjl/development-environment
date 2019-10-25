@@ -1,0 +1,15 @@
+# https://www.rust-lang.org/tools/install
+
+curl https://sh.rustup.rs -sSf | sh
+
+cat >> ~/.bash_profile <<"EOF"
+export CARGO_HOME=$HOME/.cargo
+export PATH=$CARGO_HOME/bin:$PATH
+export RUSTUP_HOME=$HOME/.rustup
+EOF
+
+source ~/.bash_profile
+
+cat >> ~/.bashrc <<"EOF"
+[[ -f $HOME/.bash_profile ]] && . $HOME/.bash_profile
+EOF

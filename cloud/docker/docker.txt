@@ -99,3 +99,4 @@ docker exec -it <container_name> /bin/bash
 > apt-get update && apt-get install -y vim
 
 docker container run -e "DOCKER_HOST=$(ip -4 addr show docker0 | grep -Po 'inet \K[\d.]+')"
+

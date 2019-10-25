@@ -1,0 +1,14 @@
+# https://developer.nvidia.com/cuda-downloads
+# https://docs.nvidia.com/cuda/cuda-installation-guide-microsoft-windows/index.html
+
+Open a run window from the Start Menu
+control /name Microsoft.DeviceManager
+
+Start > All Programs > Accessories > Command Prompt
+nvidia-smi
+nvcc -V
+
+C:\ProgramData\NVIDIA Corporation\CUDA Samples\v10.1\bin\win64\Release
+deviceQuery
+bandwidthTest
+simpleD3D9

@@ -22,8 +22,13 @@ sudo df -h
 sudo mv /etc/apt/apt.conf.d/20auto-upgrades.ucf-dist \
   /etc/apt/apt.conf.d/20auto-upgrades
 
+# bcm4360 wireless
+sudo lshw -class network
+wget http://mirrors.edge.kernel.org/ubuntu/pool/restricted/b/bcmwl/bcmwl-kernel-source_6.30.223.271+bdcom-0ubuntu1~1.3_amd64.deb
+sudo dpkg -i bcmwl-kernel-source_6.30.223.271+bdcom-0ubuntu1~1.3_amd64.deb
+
 sudo add-apt-repository ppa:graphics-drivers/ppa
-sudo apt-get update && sudo apt-get install nvidia-384 nvidia-settings
+sudo apt-get update && sudo apt-get install nvidia-driver-418 nvidia-settings nvidia-prime
 sudo prime-select --help
 
 # server login
@@ -74,7 +79,11 @@ deb-src http://archive.canonical.com/ubuntu xenial partner
 ```
 
 sudo apt-get install vlc vlc-plugin-fluidsynth flashplugin-installer \
+  mediainfo mediainfo-gui \
   gstreamer1.0-plugins-ugly gstreamer1.0-libav gstreamer1.0-fluendo-mp3
+
+sudo add-apt-repository ppa:stebbins/handbrake-releases
+sudo apt-get update && sudo apt-get install handbrake-gtk handbrake-cli
 
 sudo apt-get install curl ssh
 
