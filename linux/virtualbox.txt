@@ -1,3 +1,5 @@
-Create Virtual Machine -> Bridge network
-Login: Virtualbox toolbar -> Input -> Keyboard -> Insert Ctrl-Alt-Del
+sudo apt install virtualbox virtualbox-ext-pack
+
+# Create Virtual Machine -> Bridge network
+# Login: Virtualbox toolbar -> Input -> Keyboard -> Insert Ctrl-Alt-Del
 

@@ -1,5 +1,5 @@
 # https://github.com/NVIDIA/nvidia-docker
-# https://gitlab.com/nvidia/cuda/tree/ubuntu18.04
+# https://gitlab.com/nvidia/container-images/cuda/tree/ubuntu18.04
 
 curl -s -L https://nvidia.github.io/nvidia-docker/gpgkey | sudo apt-key add -
 
@@ -7,19 +7,12 @@ distribution=$(. /etc/os-release;echo $ID$VERSION_ID)
 curl -s -L https://nvidia.github.io/nvidia-docker/$distribution/nvidia-docker.list | \
   sudo tee /etc/apt/sources.list.d/nvidia-docker.list
 
-sudo apt-get update && sudo apt-get install nvidia-docker2
+sudo apt-get update && sudo apt-get install nvidia-container-toolkit
 
-sudo pkill -SIGHUP dockerd
+sudo systemctl restart docker
 
-docker run --runtime=nvidia --rm nvidia/cuda:9.0-base nvidia-smi
-
-docker run --runtime=nvidia -e NVIDIA_VISIBLE_DEVICES=0 --rm nvidia/cuda nvidia-smi
-
-docker run --runtime=nvidia -e NVIDIA_VISIBLE_DEVICES=all --rm debian:stretch nvidia-smi
-
-vi Dockerfiles
-```
-ENV NVIDIA_VISIBLE_DEVICES all
-ENV NVIDIA_DRIVER_CAPABILITIES compute,utility
-```
+docker run --rm --gpus all nvidia/cuda:10.1-base nvidia-smi
+docker run --rm --gpus 1 nvidia/cuda:10.1-base nvidia-smi
+docker run --rm --gpus '"device=1,2"' nvidia/cuda:10.1-base nvidia-smi
+docker run --rm --gpus all,capabilities=utility nvidia/cuda:10.1-base nvidia-smi
 

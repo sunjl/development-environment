@@ -1,0 +1,62 @@
+# https://developer.nvidia.com/cuda-downloads
+# https://docs.nvidia.com/cuda/cuda-installation-guide-linux/index.html
+
+lspci | grep -i nvidia
+
+uname -m && cat /etc/*release
+
+sudo apt install nvidia-driver-418
+
+cat /proc/driver/nvidia/version
+
+nvidia-smi
+
+# ubuntu 18.04
+sudo apt install linux-headers-$(uname -r) build-essential gcc-7 g++-7 \
+  freeglut3-dev libx11-dev libxmu-dev libxi-dev libgl1-mesa-glx libglu1-mesa libglu1-mesa-dev
+
+sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-7 70 \
+  --slave /usr/bin/g++ g++ /usr/bin/g++-7
+
+sudo update-alternatives --set gcc /usr/bin/gcc-7
+
+gcc --version
+
+wget http://developer.download.nvidia.com/compute/cuda/10.1/Prod/local_installers/cuda_10.1.243_418.87.00_linux.run
+
+chmod +x cuda_10.1.243_418.87.00_linux.run
+
+sudo sh cuda_10.1.243_418.87.00_linux.run --silent --toolkit --samples
+
+sudo bash -c "cat > /etc/profile.d/cuda.sh" <<"EOF"
+export CUDA_HOME=/usr/local/cuda
+export PATH=$CUDA_HOME/bin${PATH:+:${PATH}}
+export LD_LIBRARY_PATH=$CUDA_HOME/lib64:$CUDA_HOME/extras/CUPTI/lib64/${LD_LIBRARY_PATH:+:${LD_LIBRARY_PATH}}
+EOF
+
+source /etc/profile.d/cuda.sh
+
+sudo vi /usr/local/cuda/libnvvp/nvvp.ini
+```
+@user.home/workspace/nvidia/nvvp
+```
+
+mkdir -p ~/workspace/nvidia/cuda/
+
+cd ~/workspace/nvidia/cuda/
+
+cuda-install-samples-10.1.sh .
+
+cd NVIDIA_CUDA-10.1_Samples/
+
+make
+
+cd bin/x86_64/linux/release/
+
+./deviceQuery
+
+./nbody
+
+# uninstall
+sudo /usr/local/cuda-10.1/bin/cuda-uninstaller
+

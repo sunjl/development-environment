@@ -1,0 +1,21 @@
+# https://developer.nvidia.com/cudnn
+# https://docs.nvidia.com/deeplearning/sdk/cudnn-install/index.html
+
+Copy the following files into the CUDA Toolkit directory.
+Copy <installpath>\cuda\bin\cudnn64_7.dll to C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v10.1\bin.
+Copy <installpath>\cuda\ include\cudnn.h to C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v10.1\include.
+Copy <installpath>\cuda\lib\x64\cudnn.lib to C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v10.1\lib\x64.
+
+Open a command prompt from the Start menu.
+Type Run and hit Enter.
+Issue the control sysdm.cpl command.
+Select the Advanced tab at the top of the window.
+Click Environment Variables at the bottom of the window.
+Ensure the following values are set:
+Variable Name: CUDA_PATH 
+Variable Value: C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v10.1
+
+Include cudnn.lib in your Visual Studio project.
+Open the Visual Studio project and right-click on the project name.
+Click Linker > Input > Additional Dependencies.
+Add cudnn.lib and click OK.
